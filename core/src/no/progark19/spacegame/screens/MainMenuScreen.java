@@ -1,11 +1,10 @@
 package no.progark19.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,25 +24,47 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 public class MainMenuScreen implements Screen {
 
+    private static final int EXIT_BUTTON_WIDTH = 250;
+    private static final int EXIT_BUTTON_HEIGHT = 120;
+    private static final int PLAY_BUTTON_WIDTH = 300;
+    private static final int PLAY_BUTTON_HEIGHT = 120;
+    private static final int EXIT_BUTTON_Y = 120;
+    private static final int PLAY_BUTTON_Y = 360;
+    private static final int LOGO_WIDTH = 400;
+    private static final int LOGO_HEIGHT = 250;
+    private static final int LOGO_Y = 480;
+
+
+
     private final SpaceGame game;
-
-    private Texture background;
-    private Texture playBtn;
-
     private Stage stage;
+    private ShapeRenderer shapeRenderer;
+
+    Texture background;
+    Texture playButtonActive;
+    Texture playButtonInactive;
+    Texture exitButtonActive;
+    Texture exitButtonInactive;
+    Texture logo;
+
     private Skin skin;
 
 
     private TextButton buttonTutorial, buttonSetupGame, buttonExit;
 
-    private ShapeRenderer shapeRenderer;
-
     public MainMenuScreen(final SpaceGame game){
+
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
 
-        background = new Texture("paralax_space2.png");
+        playButtonActive = new Texture("textImg/play_button_active.png");
+        playButtonInactive = new Texture("textImg/play_button_inactive.png");
+        exitButtonActive = new Texture("textImg/exit_button_active.png");
+        exitButtonInactive = new Texture("textImg/exit_button_inactive.png");
+        logo = new Texture("textImg/logo.png");
+
+        background = new Texture("img/space_sample.png");
 
     }
 
@@ -52,8 +73,6 @@ public class MainMenuScreen implements Screen {
         System.out.println("MAIN MENU");
         Gdx.input.setInputProcessor(stage);
         stage.clear();
-
-
 
         //this.skin = new Skin();
         //this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
@@ -72,14 +91,15 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        game.batch.begin();
+
+        game.batch.draw(background, 0, 0, game.WIDTH, game.HEIGHT);
+        game.batch.draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
 
         update(delta);
+        initButtons();
 
-        stage.getBatch().begin();
-        stage.getBatch().draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
-        stage.getBatch().end();
-
-        stage.draw();
+        game.batch.end();
     }
 
     @Override
@@ -104,24 +124,38 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
+//        game.dispose();
         stage.dispose();
         shapeRenderer.dispose();
     }
 
     private void initButtons(){
+        stage.getBatch().begin();
+        stage.getBatch().draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
+        stage.getBatch().draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
 
-        buttonExit = new TextButton("Exit", skin, "default");
-        buttonExit.setPosition(110, 190);
-        buttonExit.setSize(280, 60);
-        buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, -5f, Interpolation.pow5Out))));
-        buttonExit.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
+        int x = SpaceGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2;
+        if (Gdx.input.getX() < x + EXIT_BUTTON_WIDTH && Gdx.input.getX() > x && SpaceGame.HEIGHT - Gdx.input.getY() < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT && SpaceGame.HEIGHT - Gdx.input.getY() > EXIT_BUTTON_Y){
+            stage.getBatch().draw(exitButtonActive,  x,  EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
+            if (Gdx.input.isTouched()){
                 Gdx.app.exit();
             }
-        });
+        } else {
+            stage.getBatch().draw(exitButtonInactive, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
+        }
 
-        stage.addActor(buttonExit);
+        int y = SpaceGame.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2;
+        if (Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > y && SpaceGame.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && SpaceGame.HEIGHT - Gdx.input.getY() > PLAY_BUTTON_Y){
+            stage.getBatch().draw(playButtonActive,  y,  PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
+            if (Gdx.input.isTouched()){
+                game.setScreen(new LobbyScreen(game));
+            }
+        } else {
+            stage.getBatch().draw(playButtonInactive, y, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
+        }
+
+        stage.getBatch().end();
+        stage.draw();
 
     }
 }
