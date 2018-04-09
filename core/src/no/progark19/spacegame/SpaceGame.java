@@ -59,6 +59,7 @@ public class SpaceGame extends Game {
 	@Override
 	public void render() {
 		super.render();
+		//FIXME tror det er bedre å bruke interrupts istedenfor å polle? [AndersRahu]
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
 			Gdx.app.exit();
 		}

@@ -73,6 +73,7 @@ public class MainMenuScreen implements Screen {
         System.out.println("MAIN MENU");
         Gdx.input.setInputProcessor(stage);
         stage.clear();
+        //game.setScreen(new PlayScreen_DEMO(game));
 
         //this.skin = new Skin();
         //this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
@@ -93,7 +94,7 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
 
-        game.batch.draw(background, 0, 0, game.WIDTH, game.HEIGHT);
+        game.batch.draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         game.batch.draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
 
         update(delta);
@@ -130,6 +131,7 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initButtons(){
+        //FIXME litt ille å polle etter input hver gang? vurder actors [AndersRAHU]
         stage.getBatch().begin();
         stage.getBatch().draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         stage.getBatch().draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
