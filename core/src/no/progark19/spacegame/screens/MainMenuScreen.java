@@ -159,7 +159,7 @@ public class MainMenuScreen implements Screen {
         if (Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > y && SpaceGame.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && SpaceGame.HEIGHT - Gdx.input.getY() > PLAY_BUTTON_Y){
             stage.getBatch().draw(playButtonActive,  y,  PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
             if (Gdx.input.isTouched()){
-                game.setScreen(new LobbyScreen(game));
+                game.setScreen(new PlayScreen(game));
             }
         } else {
             stage.getBatch().draw(playButtonInactive, y, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);

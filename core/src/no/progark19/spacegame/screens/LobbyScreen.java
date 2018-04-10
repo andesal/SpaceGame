@@ -35,6 +35,7 @@ public class LobbyScreen implements Screen {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
+
         game.batch.end();
         //TODO Begynn lobbyvirksomhet, setter den kun til å hoppe rett inn i PlayScreen_DEMO for nu
         game.setScreen(new PlayScreen_DEMO(game));
