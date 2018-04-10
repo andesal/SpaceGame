@@ -6,6 +6,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+
 import no.progark19.spacegame.screens.LoadingScreen;
 import no.progark19.spacegame.screens.LobbyScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
@@ -30,6 +33,12 @@ public class SpaceGame extends Game {
 	public PlayScreen playScreen;
 	public SettingsScreen settingsScreen;
 
+    public Vector3 translateScreenCoordinates(Vector3 coordinates){
+        Gdx.app.log("Translation","Screen Coordinates" + coordinates.x + "," + coordinates.y);
+        Vector3 worldCoordinates = camera.unproject(coordinates);
+        Gdx.app.log("Translation","Screen Coordinates" + worldCoordinates.x + "," + worldCoordinates.y);
+        return worldCoordinates;
+    }
 
 	@Override
 	public void create() {
