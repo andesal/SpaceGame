@@ -132,6 +132,7 @@ public class MainMenuScreen implements Screen {
 
     private void initButtons(){
         //FIXME litt ille å polle etter input hver gang? vurder actors [AndersRAHU]
+        //FIXME gdx.input gir i tilegg ikke verdiene du er ute etter på android
         stage.getBatch().begin();
         stage.getBatch().draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         stage.getBatch().draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);

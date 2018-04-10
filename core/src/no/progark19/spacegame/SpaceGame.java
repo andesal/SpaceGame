@@ -13,7 +13,7 @@ import no.progark19.spacegame.screens.PlayScreen;
 import no.progark19.spacegame.screens.SettingsScreen;
 
 
-public class SpaceGame extends Game {
+public class SpaceGame extends Game{
 	//public static final String TITLE = "SpaceGame";
 	public static final int WIDTH = 480;
 	public static final int HEIGHT = 720;
@@ -29,7 +29,6 @@ public class SpaceGame extends Game {
 	public LobbyScreen lobbyScreen;
 	public PlayScreen playScreen;
 	public SettingsScreen settingsScreen;
-
 
 	@Override
 	public void create() {
