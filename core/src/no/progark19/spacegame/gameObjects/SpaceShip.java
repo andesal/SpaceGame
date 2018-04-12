@@ -1,5 +1,6 @@
 package no.progark19.spacegame.gameObjects;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Affine2;
@@ -22,6 +23,8 @@ public class SpaceShip {
     private final int maxSpeed = 1;
     private Affine2 affine;
 
+    Sprite controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
+
     public void setBody_baseShip(Body body_baseShip) {
         this.body_baseShip = body_baseShip;
     }
@@ -40,7 +43,12 @@ public class SpaceShip {
         sprite_baseShip.draw(batch);
         for (SpaceShipEngine engine: engines) {
             engine.draw(batch);
+            System.out.println(engine.getOriginWorldpoint());
+            if (engine.engineOn) {
+                controllDebugOverlay.draw(batch);
+            }
         }
+        System.out.println("-------------------------------------------");
     }
 
     //Getters and setters --------------------------------------------------------------------------
@@ -84,6 +92,11 @@ public class SpaceShip {
                 System.out.println(force);
                 System.out.println(engine.getRotation());
                 //body_baseShip.applyForceToCenter(force,true);
+                //FIXME REMOVE DEBUG
+                controllDebugOverlay.setOriginBasedPosition(engine.getOriginWorldpoint().x, engine.getOriginWorldpoint().y);
+                controllDebugOverlay.setRotation(force.angle());
+
+
                 body_baseShip.applyForce(
                         force, engine.getOriginWorldpoint().scl(1/PlayScreen_DEMO.PIXELS_TO_METERS), true
                 );

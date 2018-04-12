@@ -167,29 +167,28 @@ public class PlayScreen_DEMO implements Screen {
         //body_Spaceship.
         spaceShip.setBody_baseShip(body_Spaceship);
         // Add engines
+        //Slider 1 [Bottom left]
         spaceShip.addEngine(new Vector2(-23,-50), engineSprite, 360, 270);  //Bottom left
+        createEngineSlider(0, 10, 10);
+        //Slider 2 [Top left]
         spaceShip.addEngine(new Vector2(-23,50), engineSprite, 270, 180);  //Top left
+        createEngineSlider(1, 10,SpaceGame.HEIGHT/2 + 20);
+        //Slider 3 [Bottom Right]
         spaceShip.addEngine(new Vector2(23, -50), engineSprite, 0, 90 );  //Bottom right
+        createEngineSlider(2,SpaceGame.WIDTH-25,10 );
+        //Slider 4 [Top Right]
         spaceShip.addEngine(new Vector2(23, 50),  engineSprite, 90, 180);   //Top right
+        createEngineSlider(3,SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20 );
 
 
         // Set up camera ---------------------------------------------------------------------------
-
-        //Setup UI-sliders
-        //Slider 1 [Bottom left]
-        createEngineSlider(0, 10, 10);
-        //Slider 2 [Top left]
-        createEngineSlider(1, 10,SpaceGame.HEIGHT/2 + 20);
-        //Slider 3 [Bottom Right]
-        createEngineSlider(2,SpaceGame.WIDTH-25,10 );
-        //Slider 4 [Top Right]
-        createEngineSlider(3,SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20 );
         Gdx.input.setInputProcessor(uiStage);
 
         /*TODO {1} -----------------------------------------------------------------------*/
         //FIXME REMOVE
         controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
         debugRenderer.setDrawVelocities(true);
+        debugRenderer.setDrawAABBs(true);
 
         //body_Spaceship.setAngularVelocity(0.5f);
         //body_Spaceship.setLinearVelocity(0,0.5f);

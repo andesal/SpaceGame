@@ -39,8 +39,8 @@ public class SpaceShipEngine {
 
     public Vector2 getOriginWorldpoint(){
         return new Vector2(
-                sprite_engine.getX() + sprite_engine.getOriginX(),
-                sprite_engine.getY() + sprite_engine.getOriginY()
+                position.x,
+                position.y
         );
     }
 
