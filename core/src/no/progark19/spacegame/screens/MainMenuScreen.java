@@ -71,7 +71,7 @@ public class MainMenuScreen implements Screen {
         logo = new Texture("textImg/logo.png");
 
         background = new Texture("img/space_sample.png");
-        
+
     }
 
     @Override
