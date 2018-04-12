@@ -5,10 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import no.progark19.spacegame.gameObjects.SpaceShip;
 import no.progark19.spacegame.screens.LoadingScreen;
 import no.progark19.spacegame.screens.LobbyScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
@@ -26,6 +29,7 @@ public class SpaceGame extends Game {
 
 	//public BitmapFont font24;
 	public AssetManager assets;
+	private Skin skin;
 
 	public LoadingScreen loadingScreen;
 	public MainMenuScreen mainMenuScreen;
@@ -34,10 +38,11 @@ public class SpaceGame extends Game {
 	public SettingsScreen settingsScreen;
 
     public Vector3 translateScreenCoordinates(Vector3 coordinates){
-        Gdx.app.log("Translation","Screen Coordinates" + coordinates.x + "," + coordinates.y);
-        Vector3 worldCoordinates = camera.unproject(coordinates);
-        Gdx.app.log("Translation","Screen Coordinates" + worldCoordinates.x + "," + worldCoordinates.y);
-        return worldCoordinates;
+        return camera.unproject(coordinates.add(0, SpaceGame.HEIGHT - 1, 0));
+    }
+
+    public Skin getSkin(){
+        return skin;
     }
 
 	@Override
@@ -54,7 +59,9 @@ public class SpaceGame extends Game {
 		settingsScreen = new SettingsScreen(this);
 
 		this.setScreen(loadingScreen);
-	}
+
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+    }
 
 	@Override
 	public void render() {

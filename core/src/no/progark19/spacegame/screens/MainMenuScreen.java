@@ -7,10 +7,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -47,6 +50,9 @@ public class MainMenuScreen implements Screen {
     Texture exitButtonInactive;
     Texture logo;
 
+    //FIXME remove this, had to test some stuff
+    Slider testSlider;
+
     private Skin skin;
 
 
@@ -65,14 +71,16 @@ public class MainMenuScreen implements Screen {
         logo = new Texture("textImg/logo.png");
 
         background = new Texture("img/space_sample.png");
-
+        
     }
 
     @Override
     public void show() {
         System.out.println("MAIN MENU");
         Gdx.input.setInputProcessor(stage);
-        stage.clear();
+        //stage.clear();
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
         //game.setScreen(new PlayScreen_DEMO(game));
 
         //this.skin = new Skin();
