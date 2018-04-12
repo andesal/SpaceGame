@@ -2,10 +2,7 @@ package no.progark19.spacegame.gameObjects;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Affine2;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by Anders on 10.04.2018.
@@ -59,7 +56,6 @@ public class SpaceShipEngine {
     protected void rotateRelativeTo(float degrees){
         relativePosition.setAngle(degrees + relativeAngle);
         rotation = ((engineRotation % 360) + (degrees % 360));
-        //System.out.println(rotation);
     }
 
     public void draw(SpriteBatch batch){

@@ -4,10 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Affine2;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
 import no.progark19.spacegame.screens.PlayScreen_DEMO;
@@ -43,12 +41,10 @@ public class SpaceShip {
         sprite_baseShip.draw(batch);
         for (SpaceShipEngine engine: engines) {
             engine.draw(batch);
-            System.out.println(engine.getOriginWorldpoint());
             if (engine.engineOn) {
                 controllDebugOverlay.draw(batch);
             }
         }
-        System.out.println("-------------------------------------------");
     }
 
     //Getters and setters --------------------------------------------------------------------------
@@ -89,8 +85,6 @@ public class SpaceShip {
                 force.setAngle(engine.getRotation());
                 force.rotate(90);
 
-                System.out.println(force);
-                System.out.println(engine.getRotation());
                 //body_baseShip.applyForceToCenter(force,true);
                 //FIXME REMOVE DEBUG
                 controllDebugOverlay.setOriginBasedPosition(engine.getOriginWorldpoint().x, engine.getOriginWorldpoint().y);
@@ -109,7 +103,6 @@ public class SpaceShip {
     }
 
     public void changeEngineAngle (int engineIndex, float anglePercentage){
-        //System.out.println("Setting engine [" + engineIndex + "] to percentage " + anglePercentage);
         engines.get(engineIndex).setRotationByPercentage(anglePercentage);
     }
 
@@ -117,9 +110,18 @@ public class SpaceShip {
         return sprite_baseShip;
     }
 
+    public float getWidth(){
+        return sprite_baseShip.getWidth();
+    }
+
+    public float getHeight(){
+        return sprite_baseShip.getHeight();
+    }
 
     public void setEngineOn(int i, boolean b) {
         engines.get(i).engineOn = b;
     }
+
+
     //----------------------------------------------------------------------------------------------
 }

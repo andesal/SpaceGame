@@ -6,13 +6,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -20,18 +17,14 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.gameObjects.SpaceShip;
 import no.progark19.spacegame.gameObjects.SpaceShipEngine;
@@ -45,38 +38,23 @@ public class PlayScreen_DEMO implements Screen {
     private Stage stage;
     private ShapeRenderer shapeRenderer;
 
-    /*TODO{1} NOT IN PlayScreen -----------------------------------------------------*/
-    //DEBUGSTUFF -TODO REMOVE
-    private Sprite controllDebugOverlay;
-    private boolean rotateCamera = true;
-    private boolean drawPhysicsDebug = true;
-
-    // Viewstuff
-    private Viewport viewport;
-
     // Textures
     private Texture background;
 
-
     // Sprites
-    private Sprite sprite_Spaceship;
-    //private Sprite sprite_engine;
+    //private Sprite sprite_Spaceship;
     private SpaceShip spaceShip;
 
     // Box2d values and objects
-    public static final float PIXELS_TO_METERS = 100f;     //Used to scale box2d drawings
-    private World world;                // Simulates physics on bodies
-    private Body body_Spaceship;        // Spaceship world-object
-    private Matrix4 debugMatrix;   // Contains draw-values, like velocity etc.
-    private Box2DDebugRenderer debugRenderer; // Used to draw the simulation
+    public static final float PIXELS_TO_METERS = 100f;  // Used to scale box2d drawings
+    private World world;                                // Simulates physics on bodies
+    private Body body_Spaceship;                        // Spaceship world-object
+    private Matrix4 debugMatrix;                        // Contains draw-values, like velocity etc.
+    private Box2DDebugRenderer debugRenderer;           // Used to draw the simulation
 
     // UI elements
-    private Camera uiCamera;
-    private Stage uiStage;
-    //private Slider engineSlider1;
-    //private Slider engineSlider2;
-    //private Slider engineSlider3;
-    //private Slider engineSlider4;
+    private Camera uiCamera;    // A static camera that displays the UI
+    private Stage uiStage;      // Contains all acting ui-elements
 
     private Body createDynamicBody(Sprite sprite, World world,
                                    PolygonShape shape, float density, float restitution){
@@ -113,7 +91,6 @@ public class PlayScreen_DEMO implements Screen {
         engineSlider.setSize(20, SpaceGame.HEIGHT/2 - 20);
         engineSlider.setScaleX(3);
         engineSlider.setValue(50);
-        //engineSlider1.scaleBy(1,2);
         engineSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -124,7 +101,6 @@ public class PlayScreen_DEMO implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("touchdown");
-                spaceShip.setEngineOn(engineIndex, true);
                 return true;
             }
 
@@ -149,7 +125,7 @@ public class PlayScreen_DEMO implements Screen {
 
         // Set up textures & sprites etc -----------------------------------------------------------
         background = new Texture("img/paralax_space2.png");
-        sprite_Spaceship = new Sprite(new Texture("img/spaceship.png"));
+        Sprite sprite_Spaceship = new Sprite(new Texture("img/spaceship.png"));
         Sprite engineSprite = new Sprite(new Texture("img/spaceship_engine.png"));
         engineSprite.setOrigin(SpaceShipEngine.ENGINE_ORIGIN.x, SpaceShipEngine.ENGINE_ORIGIN.y);
 
@@ -167,6 +143,7 @@ public class PlayScreen_DEMO implements Screen {
         //body_Spaceship.
         spaceShip.setBody_baseShip(body_Spaceship);
         // Add engines
+        //TODO do this dynamically based on GameSettings
         //Slider 1 [Bottom left]
         spaceShip.addEngine(new Vector2(-23,-50), engineSprite, 360, 270);  //Bottom left
         createEngineSlider(0, 10, 10);
@@ -180,26 +157,17 @@ public class PlayScreen_DEMO implements Screen {
         spaceShip.addEngine(new Vector2(23, 50),  engineSprite, 90, 180);   //Top right
         createEngineSlider(3,SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20 );
 
+        // Enable stage input ----------------------------------------------------------------------
 
-        // Set up camera ---------------------------------------------------------------------------
-        Gdx.input.setInputProcessor(uiStage);
-
+        debugRenderer.setDrawVelocities(GameSettings.BOX2D_DRAWDEBUG);
+        debugRenderer.setDrawAABBs(GameSettings.BOX2D_DRAWDEBUG);
         /*TODO {1} -----------------------------------------------------------------------*/
-        //FIXME REMOVE
-        controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
-        debugRenderer.setDrawVelocities(true);
-        debugRenderer.setDrawAABBs(true);
-
-        //body_Spaceship.setAngularVelocity(0.5f);
-        //body_Spaceship.setLinearVelocity(0,0.5f);
-
-
     }
 
     @Override
     public void show() {
-        //viewport = new StretchViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera);
-        //viewport.apply();
+        //TODO is there anything we should do here?
+        Gdx.input.setInputProcessor(uiStage);
     }
 
     @Override
@@ -218,30 +186,24 @@ public class PlayScreen_DEMO implements Screen {
 
         spaceShip.setRotation((float) Math.toDegrees(body_Spaceship.getAngle()));
         spaceShip.setPosition(
-                (body_Spaceship.getPosition().x * PIXELS_TO_METERS) - sprite_Spaceship.getWidth() / 2,
-                (body_Spaceship.getPosition().y * PIXELS_TO_METERS) - sprite_Spaceship.getHeight() / 2
+                (body_Spaceship.getPosition().x * PIXELS_TO_METERS) - spaceShip.getWidth() / 2,
+                (body_Spaceship.getPosition().y * PIXELS_TO_METERS) - spaceShip.getHeight() / 2
         );
-
-        //Make camera follow ship
-
-
         spaceShip.draw(game.batch);
 
-        if (rotateCamera){
+        //Make camera follow ship
+        if (GameSettings.CAMERA_FOLLOW_ROTATION){
             game.camera.up.set(0,1,0);
             game.camera.direction.set(0,0,-1);
-            game.camera.rotate(-sprite_Spaceship.getRotation());
+            game.camera.rotate(-spaceShip.getRotation());
         }
-        game.camera.position.set(sprite_Spaceship.getX() + sprite_Spaceship.getWidth()/2, sprite_Spaceship.getY() + sprite_Spaceship.getHeight()/2, 0);
+        if (GameSettings.CAMERA_FOLLOW_POSITION){
+            game.camera.position.set(spaceShip.getOriginWorldpoint().x, spaceShip.getOriginWorldpoint().y, 0);
+        }
         game.camera.update();
-
-        // Draw physics debug overlay
-
 
         //Draw Ui
         game.batch.setProjectionMatrix(uiCamera.combined);
-        //FIXME: Remove
-        //game.batch.draw(controllDebugOverlay, -50,-50);
 
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
@@ -249,7 +211,7 @@ public class PlayScreen_DEMO implements Screen {
         game.batch.end();
 
         //Draw physics debug info
-        if(drawPhysicsDebug){
+        if(GameSettings.BOX2D_DRAWDEBUG){
             debugMatrix = game.camera.combined.cpy().scale(PIXELS_TO_METERS, PIXELS_TO_METERS, 0);
             debugRenderer.render(world, debugMatrix);
         }
