@@ -49,7 +49,7 @@ class SpaceShip {
 
                 if (GameSettings.SPACESHIP_ENABLE_ROTATION) {
                     body_baseShip.applyForce(
-                        force, engine.getOriginWorldpoint().scl(1/PlayScreen_DEMO.PIXELS_TO_METERS), true
+                        force, engine.getOriginWorldpoint().scl(1/GameSettings.BOX2D_PIXELS_TO_METERS), true
                     );
                 } else {
                     body_baseShip.applyForceToCenter(

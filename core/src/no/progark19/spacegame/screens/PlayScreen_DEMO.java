@@ -52,7 +52,6 @@ public class PlayScreen_DEMO implements Screen {
     private SpaceShip spaceShip;
 
     // Box2d values and objects
-    public static final float PIXELS_TO_METERS = 100f;  // Used to scale box2d drawings
     private World world;                                // Simulates physics on bodies
     private Body body_Spaceship;                        // Spaceship world-object
     private Matrix4 debugMatrix;                        // Contains draw-values, like velocity etc.
@@ -68,15 +67,15 @@ public class PlayScreen_DEMO implements Screen {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/PIXELS_TO_METERS,
-                             (sprite.getY() + sprite.getHeight()/2)/PIXELS_TO_METERS);
+        bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS,
+                             (sprite.getY() + sprite.getHeight()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
 
         body = world.createBody(bodyDef);
 
         if (shape == null){
             shape = new PolygonShape();
-            shape.setAsBox(sprite.getWidth()/2  / PIXELS_TO_METERS,
-                           sprite.getHeight()/2 / PIXELS_TO_METERS);
+            shape.setAsBox(sprite.getWidth()/2  / GameSettings.BOX2D_PIXELS_TO_METERS,
+                           sprite.getHeight()/2 / GameSettings.BOX2D_PIXELS_TO_METERS);
         }
 
         FixtureDef fixtureDef = new FixtureDef();
@@ -202,8 +201,8 @@ public class PlayScreen_DEMO implements Screen {
 
         spaceShip.setRotation((float) Math.toDegrees(body_Spaceship.getAngle()));
         spaceShip.setPosition(
-                (body_Spaceship.getPosition().x * PIXELS_TO_METERS) - spaceShip.getWidth() / 2,
-                (body_Spaceship.getPosition().y * PIXELS_TO_METERS) - spaceShip.getHeight() / 2
+                (body_Spaceship.getPosition().x * GameSettings.BOX2D_PIXELS_TO_METERS) - spaceShip.getWidth() / 2,
+                (body_Spaceship.getPosition().y * GameSettings.BOX2D_PIXELS_TO_METERS) - spaceShip.getHeight() / 2
         );
         spaceShip.draw(game.batch);
 
@@ -229,7 +228,10 @@ public class PlayScreen_DEMO implements Screen {
 
         //Draw physics debug info
         if(GameSettings.BOX2D_DRAWDEBUG){
-            debugMatrix = game.camera.combined.cpy().scale(PIXELS_TO_METERS, PIXELS_TO_METERS, 0);
+            debugMatrix = game.camera.combined.cpy().scale(
+                    GameSettings.BOX2D_PIXELS_TO_METERS,
+                    GameSettings.BOX2D_PIXELS_TO_METERS,
+                    0);
             debugRenderer.render(world, debugMatrix);
         }
         /*TODO {1} NOT IN PlayScreen -----------------------------------------------------*/
