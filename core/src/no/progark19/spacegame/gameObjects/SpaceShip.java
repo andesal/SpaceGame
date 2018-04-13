@@ -1,11 +1,8 @@
 package no.progark19.spacegame.gameObjects;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Affine2;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
@@ -23,44 +20,67 @@ class SpaceShip {
     private Body body_baseShip;
     private Array<SpaceShipEngine> engines;
     private final int maxSpeed = 1;
-    private Affine2 affine;
 
     Sprite controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
-
-    public void setBody_baseShip(Body body_baseShip) {
-        this.body_baseShip = body_baseShip;
-    }
 
     public SpaceShip(Sprite baseShipSprite) {
         sprite_baseShip = baseShipSprite;
         engines = new Array<SpaceShipEngine>();
-        affine = new Affine2();
+    }
+
+    public void draw(SpriteBatch batch){
+        int i = 0; //Checks how many engines are on
+        sprite_baseShip.draw(batch);
+        for (SpaceShipEngine engine: engines) {
+            engine.draw(batch);
+            if (engine.engineOn) {
+                i++;
+
+                Vector2 force = new Vector2(GameSettings.ENGINE_MAX_FORCE,0.0f);
+                force.setAngle(engine.getRotation());
+                force.rotate(90);
+
+                //body_baseShip.applyForceToCenter(force,true);
+                //FIXME REMOVE DEBUG
+                controllDebugOverlay.setOriginBasedPosition(engine.getOriginWorldpoint().x, engine.getOriginWorldpoint().y);
+                controllDebugOverlay.setRotation(force.angle());
+                controllDebugOverlay.draw(batch);
+
+
+                body_baseShip.applyForce(
+                        force, engine.getOriginWorldpoint().scl(1/PlayScreen_DEMO.PIXELS_TO_METERS), true
+                );
+
+                if(body_baseShip.getLinearVelocity().len() > maxSpeed){
+                    body_baseShip.getLinearVelocity().setLength(maxSpeed);
+                }
+            }
+        }
+
+        //FIXME Dette burde ikke være her
+        if (GameSettings.SPACESHIP_STABILIZE_ROTATION && i == 0 && Math.abs(body_baseShip.getAngularVelocity()) > 0) {
+            System.out.println(body_baseShip.getAngularVelocity());
+            float newAV = body_baseShip.getAngularVelocity()* GameSettings.SPACESHIP_STABILIZATION_SCALAR;
+            if (Math.abs(newAV) <= 1E-3) {newAV = 0 ;}
+            body_baseShip.setAngularVelocity(newAV);
+        }
+    }
+
+    public void changeEngineAngle (int engineIndex, float anglePercentage){
+        engines.get(engineIndex).setRotationByPercentage(anglePercentage);
+    }
+
+    //Getters and setters --------------------------------------------------------------------------
+    public void setBody_baseShip(Body body_baseShip) {
+        this.body_baseShip = body_baseShip;
     }
 
     public void addEngine(Vector2 relativePosition, Sprite engineSprite, float rotationMin, float rotationMax){
         engines.add(new SpaceShipEngine(relativePosition, engineSprite, rotationMin, rotationMax));
     }
 
-    public void draw(SpriteBatch batch){
-        int i = 0;
-        sprite_baseShip.draw(batch);
-        for (SpaceShipEngine engine: engines) {
-            engine.draw(batch);
-            if (engine.engineOn) {
-                controllDebugOverlay.draw(batch);
-                i++;
-            }
-        }
-        if (GameSettings.SPACESHIP_STABILIZE_ROTATION && i == 0 && Math.abs(body_baseShip.getAngularVelocity()) > 0) {
-            System.out.println(body_baseShip.getAngularVelocity());
-            body_baseShip.setAngularVelocity(body_baseShip.getAngularVelocity()* GameSettings.SPACESHIP_STABILIZATION_SCALAR);
-        }
-    }
-
-    //Getters and setters --------------------------------------------------------------------------
     public void setRotation(float degrees){
         sprite_baseShip.setRotation(degrees);
-        //affine.setToRotation(degrees);
     }
 
     public Vector2 getOriginWorldpoint(){
@@ -89,32 +109,10 @@ class SpaceShip {
             engine.placeRelativeTo(x + sprite_baseShip.getOriginX(),
                                    y + sprite_baseShip.getOriginY());
 
-            //Fixme remove
-            if(engine.engineOn) {
-                Vector2 force = new Vector2(SpaceShipEngine.ENGINE_MAX_FORCE,0.0f);
-                force.setAngle(engine.getRotation());
-                force.rotate(90);
 
-                //body_baseShip.applyForceToCenter(force,true);
-                //FIXME REMOVE DEBUG
-                controllDebugOverlay.setOriginBasedPosition(engine.getOriginWorldpoint().x, engine.getOriginWorldpoint().y);
-                controllDebugOverlay.setRotation(force.angle());
-
-
-                body_baseShip.applyForce(
-                        force, engine.getOriginWorldpoint().scl(1/PlayScreen_DEMO.PIXELS_TO_METERS), true
-                );
-
-                if(body_baseShip.getLinearVelocity().len() > maxSpeed){
-                    body_baseShip.getLinearVelocity().setLength(maxSpeed);
-                }
-            }
         }
     }
 
-    public void changeEngineAngle (int engineIndex, float anglePercentage){
-        engines.get(engineIndex).setRotationByPercentage(anglePercentage);
-    }
 
     public Sprite getsprite_baseShip() {
         return sprite_baseShip;
@@ -131,7 +129,5 @@ class SpaceShip {
     public void setEngineOn(int i, boolean b) {
         engines.get(i).engineOn = b;
     }
-
-
     //----------------------------------------------------------------------------------------------
 }

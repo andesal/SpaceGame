@@ -128,7 +128,7 @@ public class PlayScreen_DEMO implements Screen {
         background = new Texture("img/paralax_space2.png");
         Sprite sprite_Spaceship = new Sprite(new Texture("img/spaceship.png"));
         Sprite engineSprite = new Sprite(new Texture("img/spaceship_engine.png"));
-        engineSprite.setOrigin(SpaceShipEngine.ENGINE_ORIGIN.x, SpaceShipEngine.ENGINE_ORIGIN.y);
+        engineSprite.setOrigin(GameSettings.ENGINE_ORIGIN.x, GameSettings.ENGINE_ORIGIN.y);
 
         // Set up box2d ----------------------------------------------------------------------------
         world = new World(new Vector2(0,0), true);
