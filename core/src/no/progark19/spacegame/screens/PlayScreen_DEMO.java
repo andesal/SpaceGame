@@ -101,6 +101,7 @@ public class PlayScreen_DEMO implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("touchdown");
+                spaceShip.setEngineOn(engineIndex, true);
                 return true;
             }
 

@@ -1,20 +1,24 @@
 package no.progark19.spacegame.gameObjects;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Affine2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.screens.PlayScreen_DEMO;
 
 /**
  * Created by Anders on 10.04.2018.
  */
 
-public class SpaceShip {
+public
+class SpaceShip {
     private Sprite sprite_baseShip;
     private Body body_baseShip;
     private Array<SpaceShipEngine> engines;
@@ -38,12 +42,18 @@ public class SpaceShip {
     }
 
     public void draw(SpriteBatch batch){
+        int i = 0;
         sprite_baseShip.draw(batch);
         for (SpaceShipEngine engine: engines) {
             engine.draw(batch);
             if (engine.engineOn) {
                 controllDebugOverlay.draw(batch);
+                i++;
             }
+        }
+        if (GameSettings.SPACESHIP_STABILIZE_ROTATION && i == 0 && Math.abs(body_baseShip.getAngularVelocity()) > 0) {
+            System.out.println(body_baseShip.getAngularVelocity());
+            body_baseShip.setAngularVelocity(body_baseShip.getAngularVelocity()* GameSettings.SPACESHIP_STABILIZATION_SCALAR);
         }
     }
 
