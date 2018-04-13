@@ -22,11 +22,8 @@ import no.progark19.spacegame.managers.AudioManager;
 public class SoundSystem extends EntitySystem implements EntityListener {
 
     private ImmutableArray<Entity> entities;
-    private Sound theme;
-    private AudioManager audioManager;
 
     public SoundSystem() {
-        audioManager = new AudioManager();
     }
 
     public SoundSystem(int priority) {
@@ -40,12 +37,9 @@ public class SoundSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void update(float deltaTime) {
-        audioManager.update();
         for (Entity entity : entities) {
             PositionComponent pcom = ComponentMappers.pm.get(entity);
-            if (pcom.x > 4000) {
-                audioManager.playSound(audioManager.explosion1, 1, 1, 1,false);
-            }
+
 
         }
     }

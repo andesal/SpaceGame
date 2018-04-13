@@ -46,7 +46,6 @@ public class CollisionSystem extends EntitySystem {
     public void update(float deltaTime) {
         for (Entity entity : spaceship) {
             PositionComponent pos = ComponentMappers.pm.get(entity);
-            System.out.println(pos.x);
         }
     }
 

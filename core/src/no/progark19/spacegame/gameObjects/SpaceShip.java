@@ -47,9 +47,15 @@ class SpaceShip {
                 controllDebugOverlay.draw(batch);
 
 
-                body_baseShip.applyForce(
+                if (GameSettings.SPACESHIP_ENABLE_ROTATION) {
+                    body_baseShip.applyForce(
                         force, engine.getOriginWorldpoint().scl(1/PlayScreen_DEMO.PIXELS_TO_METERS), true
-                );
+                    );
+                } else {
+                    body_baseShip.applyForceToCenter(
+                            force, true
+                    );
+                }
 
                 if(body_baseShip.getLinearVelocity().len() > maxSpeed){
                     body_baseShip.getLinearVelocity().setLength(maxSpeed);

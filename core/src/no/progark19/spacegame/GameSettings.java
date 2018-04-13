@@ -13,6 +13,8 @@ public class GameSettings {
 
     public static final boolean SPACESHIP_STABILIZE_ROTATION = true;
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
+    public static final boolean SPACESHIP_ENABLE_ROTATION = false;
+
 
     public final static Vector2 ENGINE_ORIGIN = new Vector2(9,25);
     public final static float ENGINE_MAX_FORCE = 0.1f;

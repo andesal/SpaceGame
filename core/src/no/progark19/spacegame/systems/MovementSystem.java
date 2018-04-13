@@ -39,6 +39,7 @@ public class MovementSystem extends EntitySystem {
 
     public void update(float deltaTime) {
 
+
     }
 
 }

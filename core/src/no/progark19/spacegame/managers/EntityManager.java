@@ -58,6 +58,7 @@ public class EntityManager {
     }
 
     private void createEntities() {
+
         Entity spaceship = new Entity()
                 .add(new SpriteComponent(new Texture("img/ss.png"), 0.5f))
                 .add(new PositionComponent(SpaceGame.WIDTH / 16, SpaceGame.HEIGHT / 2))
@@ -71,8 +72,8 @@ public class EntityManager {
 
 
         Entity asteroid = new Entity()
-                .add(new SpriteComponent(new Texture("img/placeholder.png"), 1))
-                .add(new PositionComponent(100, 100))
+                .add(new SpriteComponent(new Texture("img/ss.png"), 1))
+                .add(new PositionComponent(300, 400))
                 .add(new VelocityComponent(1))
                 .add(new HealthComponent(100))
                 .add(new ElementComponent(ElementComponent.ELEMENTS.FIRE))

@@ -40,8 +40,6 @@ public class SpaceGame extends Game {
     public PlayScreen playScreen;
     public SettingsScreen settingsScreen;
 
-    public EntityManager entityManager;
-
     public Vector3 translateScreenCoordinates(Vector3 coordinates){
         return camera.unproject(coordinates.add(0, SpaceGame.HEIGHT - 1, 0));
     }

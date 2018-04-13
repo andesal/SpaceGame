@@ -37,7 +37,6 @@ public class ControlSystem extends EntitySystem {
         for (Entity entity : spaceship) {
             PositionComponent position = ComponentMappers.pm.get(entity);
             VelocityComponent velocity = ComponentMappers.vm.get(entity);
-            position.x += 10;
         }
     }
 }
