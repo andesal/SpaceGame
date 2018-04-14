@@ -86,7 +86,7 @@ public class SpawnSystem extends EntitySystem {
             fire = fire == true ? false : true;
             engine.addEntity(entityFactory.createAsteroid(x,y,new Vector2(velX, velY), world, fire));
             numAsteroids++;
-            //System.out.println("added");
+            System.out.println("added");
 
         }
 
@@ -97,7 +97,7 @@ public class SpawnSystem extends EntitySystem {
             if (! spawn.contains(x, y)) {
                 engine.removeEntity(entity);
                 numAsteroids--;
-                //System.out.println("removed");
+                System.out.println("removed");
 
             }
         }

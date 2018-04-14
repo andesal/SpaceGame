@@ -74,6 +74,9 @@ public class EntityFactory {
 
         entity.add(engine.createComponent(PowerupComponent.class));
         entity.add(engine.createComponent(RenderableComponent.class));
+
+        entity.add(engine.createComponent(BodyComponent.class));
+
         return entity;
     }
 

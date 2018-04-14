@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.sun.org.apache.regexp.internal.RE;
 
-import org.w3c.dom.css.Rect;
 
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
@@ -63,16 +61,17 @@ public class CollisionSystem extends EntitySystem {
         this.boundsSpaceship = new Rectangle(spaceshipSprite.getX(), spaceshipSprite.getY(), spaceshipSprite.getWidth(), spaceshipSprite.getHeight()); // TODO should be calculated directly from Spaceship entity
 
         for (Entity entity : asteroids) {
+
             SpriteComponent scom = ComponentMappers.sm.get(entity);
             BodyComponent bcom = ComponentMappers.bm.get(entity);
             Rectangle r = scom.sprite.getBoundingRectangle();
             if (boundsSpaceship.overlaps(r)) {
                 bcom.body.setLinearVelocity(new Vector2(0,0));
-                System.out.println(scom.sprite.getX());
                 getEngine().addEntity(entityFactory.createPowerup(scom.sprite.getX(), scom.sprite.getY(), new Texture("img/ruby.png")));
                 getEngine().removeEntity(entity);
 
             }
+
         }
     }
 
