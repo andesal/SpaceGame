@@ -34,18 +34,18 @@ public class GameSettings {
 
 
     //FIXME move to somewhere else
-    private Body generatePolygon(float x, float y, World world, PolygonSprite polygonSprite) {
+    public static Body generatePolygon(float x, float y, World world, Texture texture, PolygonSprite polygonSprite) {
         Body body;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x / BOX2D_PIXELS_TO_METERS,
-                y / BOX2D_PIXELS_TO_METERS);
+        bodyDef.position.set(x / BOX2D_PIXELS_TO_METERS, y / BOX2D_PIXELS_TO_METERS);
 
         body = world.createBody(bodyDef);
+        //System.out.println(body.getPosition().x);
+        //System.out.println(body.getPosition().y);
 
         PolygonShape shape = new PolygonShape();
-
         float vertexArray[] = {
                 0.0f, 0.3f,
                 0.1f, 0.0f,
@@ -61,12 +61,13 @@ public class GameSettings {
         fixtureDef.density = 0.7f;
         fixtureDef.restitution = 0.5f;
 
+
         body.createFixture(fixtureDef);
         shape.dispose();
 
         short triangles[] = new EarClippingTriangulator().computeTriangles(vertexArray).toArray();
         // use your texture region
-        Texture texture = new Texture("badlogic.jpg");
+        //Texture texture = new Texture("badlogic.jpg");
         TextureRegion textureRegion = new TextureRegion(texture);
         PolygonRegion polygonRegion = new PolygonRegion(textureRegion, vertexArray, triangles);
 

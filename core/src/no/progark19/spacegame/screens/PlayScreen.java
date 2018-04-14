@@ -1,6 +1,7 @@
 package no.progark19.spacegame.screens;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -22,15 +23,15 @@ public class PlayScreen implements Screen {
     private OrthographicCamera camera;
     private AudioManager audioManager;
     private EntityManager entityManager;
-    private Engine engine;
+    private PooledEngine engine;
     public Sound theme;
 
     public PlayScreen(SpaceGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
-        engine = new Engine();
-        entityManager = new EntityManager(engine, game.batch);
+        engine = new PooledEngine();
+        //entityManager = new EntityManager(engine, game.batch);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         game.batch.begin();
         game.batch.draw(new Texture("img/space_sample.png"), 0, 0);
-        entityManager.update();
+        //entityManager.update();
         game.batch.end();
 
 

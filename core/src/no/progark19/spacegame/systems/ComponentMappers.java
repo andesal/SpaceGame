@@ -1,8 +1,10 @@
 package no.progark19.spacegame.systems;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.GravityComponent;
 import no.progark19.spacegame.components.HealthComponent;
@@ -12,6 +14,7 @@ import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.RotationComponent;
 import no.progark19.spacegame.components.SoundComponent;
 import no.progark19.spacegame.components.SpriteComponent;
+import no.progark19.spacegame.components.TextureComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 
 /**
@@ -30,6 +33,7 @@ public class ComponentMappers {
     public static final ComponentMapper<SpriteComponent> sm = ComponentMapper.getFor(SpriteComponent.class);
     public static final ComponentMapper<SoundComponent> som = ComponentMapper.getFor(SoundComponent.class);
     public static final ComponentMapper<RenderableComponent> rem = ComponentMapper.getFor(RenderableComponent.class);
-
+    public static final ComponentMapper<BodyComponent> bm = ComponentMapper.getFor(BodyComponent.class);
+    public static final ComponentMapper<TextureComponent> tm = ComponentMapper.getFor(TextureComponent.class);
 
 }

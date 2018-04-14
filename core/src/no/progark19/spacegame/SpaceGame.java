@@ -58,7 +58,7 @@ public class SpaceGame extends Game {
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
 		lobbyScreen = new LobbyScreen(this);
-		playScreen = new PlayScreen(this);
+		//playScreen = new PlayScreen(this);
 		settingsScreen = new SettingsScreen(this);
 
 		this.setScreen(loadingScreen);
@@ -90,7 +90,7 @@ public class SpaceGame extends Game {
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
 		lobbyScreen.dispose();
-		playScreen.dispose();
+		//playScreen.dispose();
 		settingsScreen.dispose();
 
 	}
