@@ -40,12 +40,16 @@ public class EntityManager {
     private PooledEngine engine;
     private World world;
     private OrthographicCamera camera;
+    private Sprite spaceshipSprite;
+    private EntityFactory entityFactory;
 
-    public EntityManager(PooledEngine engine, World world, SpriteBatch batch, OrthographicCamera camera) {
+    public EntityManager(PooledEngine engine, World world, SpriteBatch batch, OrthographicCamera camera, Sprite sprite) {
         this.camera = camera;
         this.engine = engine;
         this.world = world;
+        this.spaceshipSprite = sprite;
         createEntities();
+        this.entityFactory = new EntityFactory(engine);
 
         ControlSystem cs = new ControlSystem();
         engine.addSystem(cs);
@@ -53,13 +57,13 @@ public class EntityManager {
         RenderSystem rs = new RenderSystem(batch);
         engine.addSystem(rs);
 
-        SpawnSystem ss = new SpawnSystem(engine, camera, new World(new Vector2(0,0), true));
+        SpawnSystem ss = new SpawnSystem(engine, camera, new World(new Vector2(0,0), true), entityFactory);
         engine.addSystem(ss);
 
         MovementSystem ms = new MovementSystem();
         engine.addSystem(ms);
 
-        CollisionSystem cols = new CollisionSystem();
+        CollisionSystem cols = new CollisionSystem(spaceshipSprite,entityFactory );
         engine.addSystem(cols);
 
         SoundSystem sos = new SoundSystem();
@@ -145,6 +149,7 @@ public class EntityManager {
     public void update() {
 
         engine.update(Gdx.graphics.getDeltaTime());
+
     }
 
 }

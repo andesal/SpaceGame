@@ -172,7 +172,7 @@ public class PlayScreen_DEMO implements Screen {
 
         // --------------ANDERS----------------
         engine = new PooledEngine();
-        entityManager = new EntityManager(engine, world, game.batch, game.camera);
+        entityManager = new EntityManager(engine, world, game.batch, game.camera, sprite_Spaceship);
         // --------------ANDERS----------------
     }
 

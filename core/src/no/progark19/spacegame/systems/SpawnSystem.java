@@ -3,6 +3,7 @@ package no.progark19.spacegame.systems;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
@@ -34,6 +35,7 @@ public class SpawnSystem extends EntitySystem {
     private PooledEngine engine;
     private EntityFactory entityFactory;
     private World world;
+    boolean fire = true;
 
     private ImmutableArray<Entity> entities;
     private ImmutableArray<Entity> asteroids;
@@ -53,9 +55,9 @@ public class SpawnSystem extends EntitySystem {
     private ComponentMapper<PowerupComponent> pom = ComponentMapper.getFor(PowerupComponent.class);
     private ComponentMapper<GravityComponent> gm = ComponentMapper.getFor(GravityComponent.class);
 
-    public SpawnSystem(PooledEngine engine, OrthographicCamera camera, World world) {
+    public SpawnSystem(PooledEngine engine, OrthographicCamera camera, World world, EntityFactory entityFactory) {
         this.engine = engine;
-        this.entityFactory = new EntityFactory(engine);
+        this.entityFactory = entityFactory;
         this.world = world;
         this.camera = camera;
     }
@@ -81,9 +83,11 @@ public class SpawnSystem extends EntitySystem {
             int y = calculateSpawnCoordinates().get(1);
             int velX = randomNumber(-200,200);
             int velY = randomNumber(-200,200);
-            engine.addEntity(entityFactory.createAsteroid(x,y,new Vector2(velX, velY), new Texture("img/fireT.png"), world));
+            fire = fire == true ? false : true;
+            engine.addEntity(entityFactory.createAsteroid(x,y,new Vector2(velX, velY), world, fire));
             numAsteroids++;
-            System.out.println("added");
+            //System.out.println("added");
+
         }
 
         for (Entity entity : asteroids) {
@@ -93,7 +97,8 @@ public class SpawnSystem extends EntitySystem {
             if (! spawn.contains(x, y)) {
                 engine.removeEntity(entity);
                 numAsteroids--;
-                System.out.println("removed");
+                //System.out.println("removed");
+
             }
         }
     }

@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Pool;
 
+import java.awt.Rectangle;
+
 /**
  * Created by anderssalvesen on 09.04.2018.
  */
