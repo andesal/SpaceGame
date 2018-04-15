@@ -179,7 +179,7 @@ public class PlayScreen_DEMO implements Screen {
 
         // --------------ANDERS----------------
         engine = new PooledEngine();
-        entityManager = new EntityManager(engine, world, game.batch, game.camera, sprite_Spaceship);
+        //entityManager = new EntityManager(engine, world, game.batch, game.camera, sprite_Spaceship);
         // --------------ANDERS----------------
     }
 
@@ -204,16 +204,8 @@ public class PlayScreen_DEMO implements Screen {
 
         game.batch.begin();
 
-
-
-
-
-
-
-
-
         game.batch.draw(background, 0,0);
-        entityManager.update();
+        engine.update(delta);
         spaceShip.setRotation((float) Math.toDegrees(body_Spaceship.getAngle()));
         spaceShip.setPosition(
                 (body_Spaceship.getPosition().x * GameSettings.BOX2D_PIXELS_TO_METERS) - spaceShip.getWidth() / 2,

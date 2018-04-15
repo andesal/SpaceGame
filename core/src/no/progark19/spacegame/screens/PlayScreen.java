@@ -1,6 +1,5 @@
 package no.progark19.spacegame.screens;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
@@ -21,7 +20,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import no.progark19.spacegame.EntityFactory;
+import javax.xml.soap.Text;
+
+import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.ForceApplierComponent;
@@ -53,6 +54,7 @@ public class PlayScreen implements Screen {
     private PooledEngine engine;
     public Sound theme;
     private EntityFactory entityFactory;
+    private Texture bg;
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
@@ -98,8 +100,11 @@ public class PlayScreen implements Screen {
         this.uiCamera = new OrthographicCamera();
         this.uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
         this.shapeRenderer = new ShapeRenderer();
+        this.bg = new Texture("img/space_sample.png");
 
         debugRenderer = new Box2DDebugRenderer();
+        debugRenderer.setDrawAABBs(true);
+        debugRenderer.setDrawVelocities(true);
         engine = new PooledEngine();
 
         entityManager = new EntityManager();
@@ -107,9 +112,9 @@ public class PlayScreen implements Screen {
 
         //Add engine systems
         engine.addSystem(new ControlSystem());
-        engine.addSystem(new RenderSystem(game.batch));
-        engine.addSystem(new SpawnSystem());
-        engine.addSystem(new MovementSystem());
+        engine.addSystem(new RenderSystem(game.batch, game.camera));
+        engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
+        engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
         engine.addSystem(new CollisionSystem());
         engine.addSystem(new SoundSystem());
         engine.addSystem(new ForceApplierSystem());
@@ -169,7 +174,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
 
         game.batch.begin();
-        game.batch.draw(new Texture("img/space_sample.png"), 0, 0);
+        game.batch.draw(bg, 0, 0);
         //entityManager.update();
         engine.update(delta);
 
@@ -217,6 +222,9 @@ public class PlayScreen implements Screen {
     public void dispose() {
         uiStage.dispose();
         shapeRenderer.dispose();
-
+        bg.dispose();
+        debugRenderer.dispose();
+        shapeRenderer.dispose();
+        theme.dispose();
     }
 }

@@ -5,12 +5,17 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
 import no.progark19.spacegame.components.ForceOnComponent;
 import no.progark19.spacegame.components.ParentComponent;
+import no.progark19.spacegame.components.PositionComponent;
+import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.managers.EntityManager;
 
 /**
@@ -20,13 +25,17 @@ import no.progark19.spacegame.managers.EntityManager;
 public class ForceApplierSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
 
+    Sprite controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
+
+
     @Override
     public void addedToEngine(Engine engine) {
         entities = engine.getEntitiesFor(Family
                 .all(
                         ForceApplierComponent.class,
                         ForceOnComponent.class,
-                        ParentComponent.class)
+                        ParentComponent.class,
+                        RelativePositionComponent.class)
                 .get()
         );
     }
@@ -38,12 +47,29 @@ public class ForceApplierSystem extends EntitySystem{
             ParentComponent parcom = ComponentMappers.PARENT_MAP.get(entity);
             Entity parent = EntityManager.getEntity(parcom.parentID);
             BodyComponent bcom_parent = ComponentMappers.BOD_MAP.get(parent);
-
-            System.out.println(fcom);
+            PositionComponent parposcom = ComponentMappers.POS_MAP.get(parent);
+            RelativePositionComponent relcom = ComponentMappers.RELPOS_MAP.get(entity);
 
             Vector2 forceVector = new Vector2(fcom.force, 0);
-            forceVector.setAngle(fcom.direction);
-            bcom_parent.body.applyForceToCenter(forceVector, true);
+            forceVector.setAngle(fcom.direction + parposcom.rotation);
+
+            Vector2 relPos = new Vector2(relcom.x, relcom.y);
+            Vector2 newRelPos = relPos.cpy().setAngle(relPos.angle() + parposcom.rotation);
+
+            float relX = parposcom.x + newRelPos.x;
+            float relY = parposcom.y + newRelPos.y;
+
+            //FIXME Remove; only for debug
+            controllDebugOverlay.setOriginBasedPosition(relX, relY);
+            controllDebugOverlay.setRotation(forceVector.angle());
+            RenderSystem.forceDraw(controllDebugOverlay);
+            //------------------------------------------------
+
+            //bcom_parent.body.applyForceToCenter(forceVector, true);
+            bcom_parent.body.applyForce(
+                    forceVector,
+                    (new Vector2(relX, relY)).scl(1f/ GameSettings.BOX2D_PIXELS_TO_METERS),
+                    true);
         }
     }
 }

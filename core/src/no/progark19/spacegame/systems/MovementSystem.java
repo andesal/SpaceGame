@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
@@ -22,28 +23,52 @@ import no.progark19.spacegame.managers.EntityManager;
 
 public class MovementSystem extends EntitySystem {
 
-    private ImmutableArray<Entity> asteroids;
-    private ImmutableArray<Entity> spaceship;
-    private ImmutableArray<Entity> projectiles;
+    //private ImmutableArray<Entity> asteroids;
+    //private ImmutableArray<Entity> spaceship;
+    //private ImmutableArray<Entity> projectiles;
+    ImmutableArray<Entity> bodyEntities;
+    ImmutableArray<Entity> nonBodyEntities;
+    private World world;
 
-    public MovementSystem() {}
+    public MovementSystem(World world) {
+        this.world = world;
+    }
 
     public MovementSystem(int priority) {
         super(priority);
     }
 
     public void addedToEngine(Engine engine) {
-        spaceship = engine.getEntitiesFor(Family.all(PositionComponent.class, VelocityComponent.class,
-                HealthComponent.class, RotationComponent.class).exclude(ElementComponent.class).get());
+        bodyEntities = engine.getEntitiesFor(Family
+                .all(
+                        BodyComponent.class,
+                        PositionComponent.class)
+                .get());
 
-        projectiles = engine.getEntitiesFor(Family.all(PositionComponent.class, VelocityComponent.class,
-                ElementComponent.class).exclude(HealthComponent.class).get());
+        nonBodyEntities = engine.getEntitiesFor(Family
+                .all(
+                        VelocityComponent.class,
+                        PositionComponent.class)
+                .get());
+
+        /*
+        projectiles = engine.getEntitiesFor(Family
+                .all(
+                        PositionComponent.class,
+                        VelocityComponent.class,
+                        ElementComponent.class
+                )
+                .exclude(HealthComponent.class)
+                .get());
         asteroids = engine.getEntitiesFor(Family.all(BodyComponent.class, SpriteComponent.class, HealthComponent.class, ElementComponent.class).get());
+        */
 
     }
 
     public void update(float deltaTime) {
-        for (Entity entity : asteroids) {
+        world.step(1f/60f, 6,2);
+
+        /*for (Entity entity : asteroids) {
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
             Body body = bcom.body;
@@ -54,8 +79,16 @@ public class MovementSystem extends EntitySystem {
             scom.sprite.rotate(0.5f);
 
             scom.sprite.setPosition(posX += velX * deltaTime, posY += velY * deltaTime);
+        }*/
+
+        for (Entity entity : bodyEntities){
+            BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
+            PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
+
+            pcom.x = bcom.body.getPosition().x * GameSettings.BOX2D_PIXELS_TO_METERS;
+            pcom.y = bcom.body.getPosition().y * GameSettings.BOX2D_PIXELS_TO_METERS;
+
+            pcom.rotation = (float) Math.toDegrees(bcom.body.getAngle());
         }
-
     }
-
 }

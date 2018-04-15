@@ -33,9 +33,9 @@ public class ControlSystem extends EntitySystem {
     }
 
     public void update(float deltaTime) {
-        for (Entity entity : spaceship) {
+        /*for (Entity entity : spaceship) {
             PositionComponent position = ComponentMappers.POS_MAP.get(entity);
             VelocityComponent velocity = ComponentMappers.VEL_MAP.get(entity);
-        }
+        }*/
     }
 }

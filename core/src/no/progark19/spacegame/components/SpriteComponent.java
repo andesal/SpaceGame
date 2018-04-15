@@ -21,8 +21,8 @@ public class SpriteComponent implements Component, Pool.Poolable {
         sprite.setScale(scale);
     }
 
-        this.sprite = sprite;
     public SpriteComponent(Sprite sprite){
+        this.sprite = sprite;
     }
 
 

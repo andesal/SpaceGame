@@ -38,6 +38,10 @@ public class GameSettings {
     public final static float ENGINE_MAX_FORCE = 0.1f;
     public final static String ENGINE_TEXTURE_PATH = "img/spaceship_engine.png";
 
+
+    public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/fire.png";
+    public final static String ASTEROID_ICE_TEXTURE_PATH = "img/ice.png";
+
     //FIXME move to somewhere else
     public static Body createDynamicBody(Sprite sprite, World world,
                                          Shape shape, float density, float restitution){

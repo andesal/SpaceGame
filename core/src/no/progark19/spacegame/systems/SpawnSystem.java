@@ -1,16 +1,12 @@
 package no.progark19.spacegame.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -28,7 +24,6 @@ import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RotationComponent;
 import no.progark19.spacegame.components.SpriteComponent;
-import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.utils.EntityFactory;
 
 public class SpawnSystem extends EntitySystem {
@@ -48,13 +43,14 @@ public class SpawnSystem extends EntitySystem {
     private Rectangle spawn = new Rectangle();
     private Rectangle notSpawn = new Rectangle();
 
-    private ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
+    /*private ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
     private ComponentMapper<HealthComponent> hm = ComponentMapper.getFor(HealthComponent.class);
     private ComponentMapper<ElementComponent> em = ComponentMapper.getFor(ElementComponent.class);
     private ComponentMapper<RotationComponent> rm = ComponentMapper.getFor(RotationComponent.class);
     private ComponentMapper<PowerupComponent> pom = ComponentMapper.getFor(PowerupComponent.class);
     private ComponentMapper<GravityComponent> gm = ComponentMapper.getFor(GravityComponent.class);
+    */
 
     public SpawnSystem(PooledEngine engine, OrthographicCamera camera, World world, EntityFactory entityFactory) {
         this.engine = engine;
@@ -92,7 +88,7 @@ public class SpawnSystem extends EntitySystem {
         }
 
         for (Entity entity : asteroids) {
-            SpriteComponent scom = ComponentMappers.sm.get(entity);
+            SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
             float x = scom.sprite.getX();
             float y = scom.sprite.getY();
             if (! spawn.contains(x, y)) {

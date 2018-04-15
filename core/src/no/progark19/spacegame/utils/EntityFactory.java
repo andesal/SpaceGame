@@ -17,15 +17,24 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import org.omg.CORBA.Bounds;
 
+import java.lang.reflect.Array;
+
 import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.BoundsComponent;
 import no.progark19.spacegame.components.ElementComponent;
+import no.progark19.spacegame.components.ForceApplierComponent;
 import no.progark19.spacegame.components.HealthComponent;
+import no.progark19.spacegame.components.LeadCameraComponent;
+import no.progark19.spacegame.components.ParentComponent;
+import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.PowerupComponent;
+import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.TextureComponent;
+import no.progark19.spacegame.managers.EntityManager;
 
 /**
  * Created by Anders on 14.04.2018.
@@ -63,9 +72,10 @@ public class EntityFactory {
 
 
         bcom.body = body;
-        entity.add(bcom);
-        entity.add(ecom);
-        entity.add(scom);
+        entity.add(bcom);   //Body Component
+        entity.add(ecom);   //Element Component
+        entity.add(scom);   //Sprite Component
+        entity.add(new PositionComponent(x, y));
         entity.add(engine.createComponent(HealthComponent.class));
         entity.add(engine.createComponent(RenderableComponent.class));
         return entity;
@@ -86,5 +96,38 @@ public class EntityFactory {
         return entity;
     }
 
+    public Entity createBaseSpaceShip(World physicsWorld, Texture texture){
+        float posx = SpaceGame.WIDTH/2;
+        float posy = SpaceGame.HEIGHT/2;
+
+        Sprite sprite = new Sprite(texture);
+        sprite.setOriginBasedPosition(posx, posy);
+
+        Body body = GameSettings.createDynamicBody(
+                sprite, physicsWorld, null,
+                GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION
+        );
+
+        return engine.createEntity()
+                .add(new PositionComponent(posx, posy))
+                .add(new SpriteComponent(sprite))
+                .add(new BodyComponent(body))
+                .add(new RenderableComponent())
+                .add(new LeadCameraComponent());
+    }
+
+    public Entity createShipEngine(float relx, float rely, float relRot, Entity parent, Texture texture){
+        Sprite engineSprite = new Sprite(texture);
+
+        engineSprite.setOrigin(GameSettings.ENGINE_ORIGIN.x, GameSettings.ENGINE_ORIGIN.y);
+        engineSprite.setRotation(relRot);
+
+        return engine.createEntity()
+                .add(new RelativePositionComponent(relx, rely, relRot))
+                .add(new SpriteComponent(engineSprite))
+                .add(new ParentComponent(EntityManager.getEntityID(parent)))
+                .add(new RenderableComponent())
+                .add(new ForceApplierComponent(GameSettings.ENGINE_MAX_FORCE));
+    }
 
 }

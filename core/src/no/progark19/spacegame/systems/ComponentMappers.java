@@ -28,6 +28,8 @@ public class ComponentMappers {
 
     public static final ComponentMapper<ElementComponent> ELEMENT_MAP = ComponentMapper.getFor(ElementComponent.class);
 
+    public static final ComponentMapper<ForceApplierComponent> FORCE_MAP = ComponentMapper.getFor(ForceApplierComponent.class);
+
     public static final ComponentMapper<GravityComponent> GRAV_MAP = ComponentMapper.getFor(GravityComponent.class);
 
     public static final ComponentMapper<HealthComponent> HEALTH_MAP = ComponentMapper.getFor(HealthComponent.class);
@@ -49,7 +51,5 @@ public class ComponentMappers {
     public static final ComponentMapper<SpriteComponent> SPRITE_MAP = ComponentMapper.getFor(SpriteComponent.class);
 
     public static final ComponentMapper<VelocityComponent> VEL_MAP = ComponentMapper.getFor(VelocityComponent.class);
-
-    public static final ComponentMapper<ForceApplierComponent> FORCE_MAP = ComponentMapper.getFor(ForceApplierComponent.class);
 
 }

@@ -42,115 +42,12 @@ import no.progark19.spacegame.utils.EntityFactory;
 public class EntityManager implements EntityListener{
     private int entityID = 0;
 
-    private Engine engine;
-
     private static HashMap<Integer, Entity> integerEntityMap = new HashMap<Integer, Entity>();
     private static HashMap<Entity, Integer> entityIntegerMap = new HashMap<Entity, Integer>();
 
     public EntityManager() {
     }
 
-    public EntityManager(Engine e, SpriteBatch batch) {
-        engine = e;
-
-        ControlSystem cs = new ControlSystem();
-        engine.addSystem(cs);
-
-        RenderSystem rs = new RenderSystem(batch);
-        engine.addSystem(rs);
-
-        SpawnSystem ss = new SpawnSystem(engine, camera, world, entityFactory);
-        engine.addSystem(ss);
-
-        MovementSystem ms = new MovementSystem();
-        engine.addSystem(ms);
-
-        CollisionSystem cols = new CollisionSystem(spaceshipSprite,entityFactory);
-        engine.addSystem(cols);
-
-        SoundSystem sos = new SoundSystem();
-        engine.addSystem(sos);
-
-
-    }
-
-    private void createEntities() {
-
-        EntityFactory ef = new EntityFactory(engine);
-        World world = new World(new Vector2(0,0), true);
-
-
-        //Entity entity = ef.createAsteroid(300, 400, new Vector2(100,100), new Texture("img/fireT.png"), world);
-
-        //engine.addEntity(entity);
-
-        /*
-        Entity e = new Entity();
-        SpriteComponent scom = engine.createComponent(SpriteComponent.class);
-        scom.sprite = new Sprite(new Texture("img/ss.png"));
-        e.add(scom);
-        PositionComponent p = engine.createComponent(PositionComponent.class);
-        e.add(p);
-
-        p.x = 300; p.y = 400;
-        e.add(engine.createComponent(RenderableComponent.class));
-        engine.addEntity(e);
-
-        Entity asteroid = new Entity()
-                .add(new SpriteComponent(new Texture("img/ss.png"), 1))
-                .add(new PositionComponent(300, 400))
-                .add(new VelocityComponent(1))
-                .add(new HealthComponent(100))
-                .add(new ElementComponent(ElementComponent.ELEMENTS.FIRE))
-                .add(new RotationComponent(10))
-                .add(new SoundComponent());
-        engine.addEntity(asteroid);
-
-        Entity obstacle = new Entity()
-                .add(new SpriteComponent(new Texture("img/placeholder.png"), 1))
-                .add(new PositionComponent(200, 200))
-                .add(new GravityComponent(10))
-                .add(new RotationComponent(10))
-                .add(new SoundComponent());
-
-        engine.addEntity(obstacle);
-
-        Entity collectable = new Entity()
-                .add(new SpriteComponent(new Texture("img/placeholder.png"), 1))
-                .add(new PositionComponent(300, 300))
-                .add(new PowerupComponent(PowerupComponent.TYPE.HEALTH, 100))
-                .add(new SoundComponent());
-
-        engine.addEntity(collectable);
-
-
-        Entity motor = new Entity() //x2 or x 4,  Rotation nessecary??
-                .add(new SpriteComponent(new Texture("img/placeholder.png"), 1))
-                .add(new VelocityComponent(10))
-                .add(new RotationComponent(1))
-                .add(new SoundComponent());
-        engine.addEntity(motor);
-
-        Entity projectile = new Entity() // Rotation nessecary??
-                .add(new SpriteComponent(new Texture("img/placeholder.png"), 1))
-                .add(new PositionComponent(400, 400))
-                .add(new ElementComponent(ElementComponent.ELEMENTS.FIRE))
-                .add(new VelocityComponent(1))
-                .add(new SoundComponent());
-        engine.addEntity(projectile);
-
-
-        Entity turret = new Entity()
-                .add(new SpriteComponent(new Texture("img/placeholder.png"), 1))
-                .add(new RotationComponent(10))
-                .add(new SoundComponent());
-        engine.addEntity(turret);
-        */
-    }
-
-    public void update() {
-        engine.update(Gdx.graphics.getDeltaTime());
-    }
     @Override
     public void entityAdded(Entity entity) {
         integerEntityMap.put(entityID, entity);

@@ -42,9 +42,9 @@ public class CollisionSystem extends EntitySystem {
     }
 
     public void update(float deltaTime) {
-        for (Entity entity : spaceship) {
+        /*for (Entity entity : spaceship) {
             PositionComponent pos = ComponentMappers.POS_MAP.get(entity);
-        }
+        }*/
     }
 
 }
