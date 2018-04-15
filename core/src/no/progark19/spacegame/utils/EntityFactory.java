@@ -59,7 +59,7 @@ public class EntityFactory {
         ecom.element = fire ? ELEMENTS.FIRE : ELEMENTS.ICE;
 
         SpriteComponent scom = engine.createComponent(SpriteComponent.class);
-        Texture texture = fire ? new Texture("img/fire.png") : new Texture("img/ice.png");
+        Texture texture = fire ? new Texture(GameSettings.ASTEROID_FIRE_TEXTURE_PATH) : new Texture(GameSettings.ASTEROID_ICE_TEXTURE_PATH);
         scom.sprite = new Sprite(texture);
         scom.sprite.setPosition(x, y);
 

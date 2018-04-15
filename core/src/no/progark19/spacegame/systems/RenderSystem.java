@@ -67,12 +67,6 @@ public class RenderSystem extends EntitySystem {
                 float relX = pcom.x + newRelPos.x;
                 float relY = pcom.y + newRelPos.y;
 
-                /*
-
-                relativePosition.setAngle(degrees + relativeAngle);
-                rotation = ((engineRotation % 360) + (degrees % 360));
-                */
-
                 float relRot = relcom.rotation + pcom.rotation;
 
                 scom.sprite.setOriginBasedPosition(relX, relY);
