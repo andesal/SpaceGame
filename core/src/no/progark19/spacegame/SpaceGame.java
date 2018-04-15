@@ -5,11 +5,15 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.progark19.spacegame.managers.EntityManager;
+
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -27,8 +31,9 @@ public class SpaceGame extends Game {
     public static final int WIDTH = 480;
     public static final int HEIGHT = 720;
 
-    public OrthographicCamera camera;
-    public SpriteBatch batch;
+	public OrthographicCamera camera;
+	public SpriteBatch batch;
+	ParticleEffect pe;
 
 	//public BitmapFont font24;
 	public AssetManager assets;
@@ -39,28 +44,28 @@ public class SpaceGame extends Game {
     public MainMenuScreen mainMenuScreen;
     public LobbyScreen lobbyScreen;
     //public PlayScreen playScreen;
-    //public SettingsScreen settingsScreen;
+    public SettingsScreen settingsScreen;
 
-    public Vector3 translateScreenCoordinates(Vector3 coordinates){
-        return camera.unproject(coordinates.add(0, SpaceGame.HEIGHT - 1, 0));
-    }
+	public Vector3 translateScreenCoordinates(Vector3 coordinates){
+		return camera.unproject(coordinates.add(0, SpaceGame.HEIGHT - 1, 0));
+	}
 
-    public Skin getSkin(){
-        return skin;
-    }
+	public Skin getSkin(){
+		return skin;
+	}
 
-    @Override
-    public void create() {
-        assets = new AssetManager();
-        camera = new OrthographicCamera();
-        //camera.setToOrtho(false, WIDTH, HEIGHT);
-        batch = new SpriteBatch();
+	@Override
+	public void create() {
+		assets = new AssetManager();
+		camera = new OrthographicCamera();
+		//camera.setToOrtho(false, WIDTH, HEIGHT);
+		batch = new SpriteBatch();
 
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
 		lobbyScreen = new LobbyScreen(this);
 		//playScreen = new PlayScreen(this);
-		//settingsScreen = new SettingsScreen(this);
+		settingsScreen = new SettingsScreen(this);
 
 		this.setScreen(loadingScreen);
 
@@ -89,10 +94,10 @@ public class SpaceGame extends Game {
 		assets.dispose();
 
 		loadingScreen.dispose();
-		//mainMenuScreen.dispose();
-		//lobbyScreen.dispose();
+		mainMenuScreen.dispose();
+		lobbyScreen.dispose();
 		//playScreen.dispose();
-		//settingsScreen.dispose();
+		settingsScreen.dispose();
 
 	}
 

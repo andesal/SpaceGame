@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.lang.reflect.Array;
@@ -38,15 +39,46 @@ public class GameSettings {
     public final static String ENGINE_TEXTURE_PATH = "img/spaceship_engine.png";
 
     //FIXME move to somewhere else
-    public static Body generatePolygon(float x, float y, World world, PolygonSprite polygonSprite) {
+    public static Body createDynamicBody(Sprite sprite, World world,
+                                         Shape shape, float density, float restitution){
         Body body;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x / BOX2D_PIXELS_TO_METERS,
-                y / BOX2D_PIXELS_TO_METERS);
+        bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS,
+                (sprite.getY() + sprite.getHeight()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
 
         body = world.createBody(bodyDef);
+
+        if (shape == null){
+            shape = new PolygonShape();
+            ((PolygonShape)shape).setAsBox(sprite.getWidth()/2  / GameSettings.BOX2D_PIXELS_TO_METERS,
+                    sprite.getHeight()/2 / GameSettings.BOX2D_PIXELS_TO_METERS);
+        }
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = density;
+        fixtureDef.restitution = restitution;
+
+        body.createFixture(fixtureDef);
+
+        shape.dispose();
+
+        return body;
+    }
+
+
+    public static Body generatePolygon(float x, float y, World world, Texture texture, PolygonSprite polygonSprite) {
+        Body body;
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(x / BOX2D_PIXELS_TO_METERS, y / BOX2D_PIXELS_TO_METERS);
+
+        body = world.createBody(bodyDef);
+        //System.out.println(body.getPosition().x);
+        //System.out.println(body.getPosition().y);
 
         PolygonShape shape = new PolygonShape();
 
@@ -70,42 +102,12 @@ public class GameSettings {
 
         short triangles[] = new EarClippingTriangulator().computeTriangles(vertexArray).toArray();
         // use your texture region
-        Texture texture = new Texture("badlogic.jpg");
+        //Texture texture = new Texture("badlogic.jpg");
         TextureRegion textureRegion = new TextureRegion(texture);
         PolygonRegion polygonRegion = new PolygonRegion(textureRegion, vertexArray, triangles);
 
         polygonSprite = new PolygonSprite(polygonRegion);
         polygonSprite.setOrigin(0, 0);
-
-        return body;
-    }
-
-    //FIXME move to somewhere else
-    public static Body createDynamicBody(Sprite sprite, World world,
-                                   PolygonShape shape, float density, float restitution){
-        Body body;
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS,
-                (sprite.getY() + sprite.getHeight()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
-
-        body = world.createBody(bodyDef);
-
-        if (shape == null){
-            shape = new PolygonShape();
-            shape.setAsBox(sprite.getWidth()/2  / GameSettings.BOX2D_PIXELS_TO_METERS,
-                    sprite.getHeight()/2 / GameSettings.BOX2D_PIXELS_TO_METERS);
-        }
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = density;
-        fixtureDef.restitution = restitution;
-
-        body.createFixture(fixtureDef);
-
-        shape.dispose();
 
         return body;
     }

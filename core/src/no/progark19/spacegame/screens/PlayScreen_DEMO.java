@@ -1,12 +1,15 @@
 package no.progark19.spacegame.screens;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -14,7 +17,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -28,8 +36,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.gameObjects.SpaceShip;
-import no.progark19.spacegame.gameObjects.SpaceShipEngine;
-import no.progark19.spacegame.gameObjects.Square;
 import no.progark19.spacegame.managers.EntityManager;
 
 /**
@@ -41,9 +47,10 @@ public class PlayScreen_DEMO implements Screen {
     private Stage stage;
     private ShapeRenderer shapeRenderer;
 
-    public EntityManager entityManager;
-    private Engine engine;
+    public ParticleEffect pe;
 
+    public EntityManager entityManager;
+    private PooledEngine engine;
     // Textures
     private Texture background;
 
@@ -130,7 +137,7 @@ public class PlayScreen_DEMO implements Screen {
         uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
 
         // Set up textures & sprites etc -----------------------------------------------------------
-        //background = new Texture("img/paralax_space2.png");
+        background = new Texture("img/paralax_space2.png");
         Sprite sprite_Spaceship = new Sprite(new Texture("img/spaceship.png"));
         Sprite engineSprite = new Sprite(new Texture("img/spaceship_engine.png"));
         engineSprite.setOrigin(GameSettings.ENGINE_ORIGIN.x, GameSettings.ENGINE_ORIGIN.y);
@@ -171,8 +178,8 @@ public class PlayScreen_DEMO implements Screen {
 
 
         // --------------ANDERS----------------
-        engine = new Engine();
-        entityManager = new EntityManager(engine, game.batch);
+        engine = new PooledEngine();
+        entityManager = new EntityManager(engine, world, game.batch, game.camera, sprite_Spaceship);
         // --------------ANDERS----------------
     }
 
@@ -180,6 +187,8 @@ public class PlayScreen_DEMO implements Screen {
     public void show() {
         //TODO is there anything we should do here?
         Gdx.input.setInputProcessor(uiStage);
+        createContactListener();
+
     }
 
     @Override
@@ -194,10 +203,17 @@ public class PlayScreen_DEMO implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
 
         game.batch.begin();
+
+
+
+
+
+
+
+
+
+        game.batch.draw(background, 0,0);
         entityManager.update();
-
-        //game.batch.draw(background, 0,0);
-
         spaceShip.setRotation((float) Math.toDegrees(body_Spaceship.getAngle()));
         spaceShip.setPosition(
                 (body_Spaceship.getPosition().x * GameSettings.BOX2D_PIXELS_TO_METERS) - spaceShip.getWidth() / 2,
@@ -210,12 +226,12 @@ public class PlayScreen_DEMO implements Screen {
             game.camera.up.set(0,1,0);
             game.camera.direction.set(0,0,-1);
             game.camera.rotate(-spaceShip.getRotation());
+
         }
         if (GameSettings.CAMERA_FOLLOW_POSITION){
             game.camera.position.set(spaceShip.getOriginWorldpoint().x, spaceShip.getOriginWorldpoint().y, 0);
         }
         game.camera.update();
-
         //Draw Ui
         game.batch.setProjectionMatrix(uiCamera.combined);
 
@@ -234,7 +250,38 @@ public class PlayScreen_DEMO implements Screen {
             debugRenderer.render(world, debugMatrix);
         }
         /*TODO {1} NOT IN PlayScreen -----------------------------------------------------*/
-        System.out.println("X: " + spaceShip.getX() + ", Y: " + spaceShip.getY());
+        //System.out.println("X: " + spaceShip.getX() + ", Y: " + spaceShip.getY());
+    }
+
+    private void createContactListener() {
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+                Gdx.app.log("beginContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+                fixtureA.getBody().setLinearVelocity(new Vector2(0,0));
+                fixtureB.getBody().setLinearVelocity(new Vector2(0,0));
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
     }
 
     @Override
