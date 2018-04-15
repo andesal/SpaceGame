@@ -16,4 +16,8 @@ public class SpriteComponent implements Component {
         sprite.setScale(scale);
     }
 
+    public SpriteComponent(Sprite sprite){
+        this.sprite = sprite;
+    }
+
 }

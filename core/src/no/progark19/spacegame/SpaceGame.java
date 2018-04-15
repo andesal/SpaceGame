@@ -34,11 +34,12 @@ public class SpaceGame extends Game {
 	public AssetManager assets;
 	private Skin skin;
 
-    public LoadingScreen loadingScreen;
+    //FIXME trur disse er unødvendig
+	public LoadingScreen loadingScreen;
     public MainMenuScreen mainMenuScreen;
     public LobbyScreen lobbyScreen;
-    public PlayScreen playScreen;
-    public SettingsScreen settingsScreen;
+    //public PlayScreen playScreen;
+    //public SettingsScreen settingsScreen;
 
     public Vector3 translateScreenCoordinates(Vector3 coordinates){
         return camera.unproject(coordinates.add(0, SpaceGame.HEIGHT - 1, 0));
@@ -58,8 +59,8 @@ public class SpaceGame extends Game {
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
 		lobbyScreen = new LobbyScreen(this);
-		playScreen = new PlayScreen(this);
-		settingsScreen = new SettingsScreen(this);
+		//playScreen = new PlayScreen(this);
+		//settingsScreen = new SettingsScreen(this);
 
 		this.setScreen(loadingScreen);
 
@@ -88,10 +89,10 @@ public class SpaceGame extends Game {
 		assets.dispose();
 
 		loadingScreen.dispose();
-		mainMenuScreen.dispose();
-		lobbyScreen.dispose();
-		playScreen.dispose();
-		settingsScreen.dispose();
+		//mainMenuScreen.dispose();
+		//lobbyScreen.dispose();
+		//playScreen.dispose();
+		//settingsScreen.dispose();
 
 	}
 

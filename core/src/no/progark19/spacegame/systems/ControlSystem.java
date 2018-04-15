@@ -1,6 +1,5 @@
 package no.progark19.spacegame.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -35,8 +34,8 @@ public class ControlSystem extends EntitySystem {
 
     public void update(float deltaTime) {
         for (Entity entity : spaceship) {
-            PositionComponent position = ComponentMappers.pm.get(entity);
-            VelocityComponent velocity = ComponentMappers.vm.get(entity);
+            PositionComponent position = ComponentMappers.POS_MAP.get(entity);
+            VelocityComponent velocity = ComponentMappers.VEL_MAP.get(entity);
         }
     }
 }

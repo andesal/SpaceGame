@@ -1,6 +1,5 @@
 package no.progark19.spacegame.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -11,7 +10,6 @@ import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.GravityComponent;
 import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.PositionComponent;
-import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RotationComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 
@@ -45,7 +43,7 @@ public class CollisionSystem extends EntitySystem {
 
     public void update(float deltaTime) {
         for (Entity entity : spaceship) {
-            PositionComponent pos = ComponentMappers.pm.get(entity);
+            PositionComponent pos = ComponentMappers.POS_MAP.get(entity);
         }
     }
 

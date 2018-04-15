@@ -1,22 +1,15 @@
 package no.progark19.spacegame.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-
-import javax.sound.sampled.SourceDataLine;
 
 import no.progark19.spacegame.components.PositionComponent;
-import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SoundComponent;
-import no.progark19.spacegame.managers.AudioManager;
 
 
 public class SoundSystem extends EntitySystem implements EntityListener {
@@ -38,7 +31,7 @@ public class SoundSystem extends EntitySystem implements EntityListener {
     @Override
     public void update(float deltaTime) {
         for (Entity entity : entities) {
-            PositionComponent pcom = ComponentMappers.pm.get(entity);
+            PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
 
 
         }

@@ -2,12 +2,14 @@ package no.progark19.spacegame.managers;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.ElementComponent;
@@ -28,9 +30,16 @@ import no.progark19.spacegame.systems.SoundSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
 
 
-public class EntityManager {
+public class EntityManager implements EntityListener{
+    private int entityID = 0;
 
     private Engine engine;
+
+    private static HashMap<Integer, Entity> integerEntityMap = new HashMap<Integer, Entity>();
+    private static HashMap<Entity, Integer> entityIntegerMap = new HashMap<Entity, Integer>();
+
+    public EntityManager() {
+    }
 
     public EntityManager(Engine e, SpriteBatch batch) {
         engine = e;
@@ -125,6 +134,28 @@ public class EntityManager {
 
     public void update() {
         engine.update(Gdx.graphics.getDeltaTime());
+    }
+
+    @Override
+    public void entityAdded(Entity entity) {
+        integerEntityMap.put(entityID, entity);
+        entityIntegerMap.put(entity, entityID);
+        entityID ++;
+        System.out.println("Entity added");
+    }
+
+    @Override
+    public void entityRemoved(Entity entity) {
+        integerEntityMap.remove(entityIntegerMap.remove(entity));
+        System.out.println("Entity removed");
+    }
+
+    public static Entity getEntity(int id){
+        return integerEntityMap.get(id);
+    }
+
+    public static int getEntityID(Entity entity){
+        return entityIntegerMap.get(entity);
     }
 
 }

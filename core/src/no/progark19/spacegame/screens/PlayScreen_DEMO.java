@@ -164,7 +164,6 @@ public class PlayScreen_DEMO implements Screen {
         createEngineSlider(3,SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20 );
 
         // Enable stage input ----------------------------------------------------------------------
-
         debugRenderer.setDrawVelocities(GameSettings.BOX2D_DRAWDEBUG);
         debugRenderer.setDrawAABBs(GameSettings.BOX2D_DRAWDEBUG);
         /*TODO {1} -----------------------------------------------------------------------*/

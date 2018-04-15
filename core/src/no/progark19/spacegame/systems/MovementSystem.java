@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.PositionComponent;
@@ -15,7 +16,8 @@ import no.progark19.spacegame.components.VelocityComponent;
 
 // Handles the movement of movable objects in the game world
 
-public class MovementSystem extends EntitySystem {
+public class
+MovementSystem extends EntitySystem {
 
     private ImmutableArray<Entity> asteroids;
     private ImmutableArray<Entity> spaceship;
@@ -38,8 +40,7 @@ public class MovementSystem extends EntitySystem {
     }
 
     public void update(float deltaTime) {
-
-
+        GameSettings.BOX2D_PHYSICSWORLD.step(1f/60f, 6,2);
     }
 
 }
