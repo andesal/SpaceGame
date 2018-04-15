@@ -9,6 +9,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
@@ -31,6 +32,10 @@ public class RenderSystem extends EntitySystem {
         for (Entity entity : entities) {
             BodyComponent bcom = ComponentMappers.bm.get(entity);
             SpriteComponent scom = ComponentMappers.sm.get(entity);
+            scom.sprite.setOriginBasedPosition(
+                    (bcom.body.getPosition().x * GameSettings.BOX2D_PIXELS_TO_METERS),
+                    (bcom.body.getPosition().y * GameSettings.BOX2D_PIXELS_TO_METERS)
+            );
             scom.sprite.draw(batch);
         }
     }

@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import org.omg.CORBA.Bounds;
@@ -52,7 +55,10 @@ public class EntityFactory {
         scom.sprite.setPosition(x, y);
 
         BodyComponent bcom = engine.createComponent(BodyComponent.class);
-        Body body = GameSettings.generatePolygon(x, y, world, texture, null); //polygonsprite parameter not used in method.
+        //Body body = GameSettings.generatePolygon(x, y, world, texture, null); //polygonsprite parameter not used in method.
+        CircleShape shape = new CircleShape();
+        shape.setRadius((scom.sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
+        Body body = GameSettings.createDynamicBody(scom.sprite, world, shape,0.5f,0.5f);
         body.setLinearVelocity(velocity);
 
 

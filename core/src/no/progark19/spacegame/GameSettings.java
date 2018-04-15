@@ -3,6 +3,7 @@ package no.progark19.spacegame;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Vector2;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.lang.reflect.Array;
@@ -34,6 +36,36 @@ public class GameSettings {
 
 
     //FIXME move to somewhere else
+    public static Body createDynamicBody(Sprite sprite, World world,
+                                         Shape shape, float density, float restitution){
+        Body body;
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS,
+                (sprite.getY() + sprite.getHeight()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
+
+        body = world.createBody(bodyDef);
+
+        if (shape == null){
+            shape = new PolygonShape();
+            ((PolygonShape)shape).setAsBox(sprite.getWidth()/2  / GameSettings.BOX2D_PIXELS_TO_METERS,
+                    sprite.getHeight()/2 / GameSettings.BOX2D_PIXELS_TO_METERS);
+        }
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = density;
+        fixtureDef.restitution = restitution;
+
+        body.createFixture(fixtureDef);
+
+        shape.dispose();
+
+        return body;
+    }
+
+
     public static Body generatePolygon(float x, float y, World world, Texture texture, PolygonSprite polygonSprite) {
         Body body;
 

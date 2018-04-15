@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,6 +33,7 @@ import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
 import no.progark19.spacegame.systems.SoundSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
+import no.progark19.spacegame.utils.Assets;
 import no.progark19.spacegame.utils.EntityFactory;
 
 
@@ -51,19 +53,21 @@ public class EntityManager {
         createEntities();
         this.entityFactory = new EntityFactory(engine);
 
+
+
         ControlSystem cs = new ControlSystem();
         engine.addSystem(cs);
 
         RenderSystem rs = new RenderSystem(batch);
         engine.addSystem(rs);
 
-        SpawnSystem ss = new SpawnSystem(engine, camera, new World(new Vector2(0,0), true), entityFactory);
+        SpawnSystem ss = new SpawnSystem(engine, camera, world, entityFactory);
         engine.addSystem(ss);
 
         MovementSystem ms = new MovementSystem();
         engine.addSystem(ms);
 
-        CollisionSystem cols = new CollisionSystem(spaceshipSprite,entityFactory );
+        CollisionSystem cols = new CollisionSystem(spaceshipSprite,entityFactory);
         engine.addSystem(cols);
 
         SoundSystem sos = new SoundSystem();

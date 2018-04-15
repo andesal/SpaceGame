@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.GravityComponent;
@@ -75,18 +76,18 @@ public class SpawnSystem extends EntitySystem {
 
     public void update(float deltaTime) {
         // TODO Calculate angle + velocity of added asteroids to move towards spaceship projected location
+        Random r = new Random();
         notSpawn = new Rectangle(camera.position.x - 720, camera.position.y - 1080, 1440, 2160);
         spawn = new Rectangle(notSpawn.x - 480, notSpawn.y - 720, 2400, 3600);
 
         while (numAsteroids < 30) {
-            int x = calculateSpawnCoordinates().get(0);
-            int y = calculateSpawnCoordinates().get(1);
-            int velX = randomNumber(-200,200);
-            int velY = randomNumber(-200,200);
+            int x = calculateSpawnCoordinates(r).get(0);
+            int y = calculateSpawnCoordinates(r).get(1);
+            float velX = randomNumber(r, -200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
+            float velY = randomNumber(r, -200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
             fire = fire == true ? false : true;
             engine.addEntity(entityFactory.createAsteroid(x,y,new Vector2(velX, velY), world, fire));
             numAsteroids++;
-            System.out.println("added");
 
         }
 
@@ -97,29 +98,26 @@ public class SpawnSystem extends EntitySystem {
             if (! spawn.contains(x, y)) {
                 engine.removeEntity(entity);
                 numAsteroids--;
-                System.out.println("removed");
 
             }
         }
     }
 
 
-    private ArrayList<Integer> calculateSpawnCoordinates() {
-        int minX = randomNumber((int) spawn.x, (int) notSpawn.x);
-        int maxX = randomNumber((int) (notSpawn.x + notSpawn.getWidth()), (int) (spawn.x + spawn.getWidth()));
-        int minY = randomNumber((int) spawn.y, (int) notSpawn.y);
-        int maxY = randomNumber((int) (notSpawn.y + notSpawn.getHeight()), (int) (spawn.y + spawn.getHeight()));
+    private ArrayList<Integer> calculateSpawnCoordinates(Random r) {
+        int LeftX = randomNumber(r, (int) spawn.x, (int) notSpawn.x);
+        int RightX = randomNumber(r, (int) (notSpawn.x + notSpawn.getWidth()), (int) (spawn.x + spawn.getWidth()));
+        int bottomY = randomNumber(r, (int) spawn.y, (int) notSpawn.y);
+        int topY = randomNumber(r, (int) (notSpawn.y + notSpawn.getHeight()), (int) (spawn.y + spawn.getHeight()));
 
-        Random r = new Random();
-        int x = r.nextBoolean() ? minX : maxX;
-        int y = r.nextBoolean() ? minY : maxY;
+        int x = r.nextBoolean() ? LeftX : RightX;
+        int y = r.nextBoolean() ? bottomY : topY;
 
         return new ArrayList<Integer>(Arrays.asList(x, y));
     }
 
-    private int randomNumber(int min, int max) {
-        Random r = new Random();
-        return r.nextInt(max - min) + min;
+    private int randomNumber(Random random, int min, int max) {
+        return random.nextInt(max - min) + min;
     }
 
 

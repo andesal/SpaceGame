@@ -9,15 +9,13 @@ import com.badlogic.gdx.utils.Pool;
 
 public class PowerupComponent implements Component, Pool.Poolable{
 
-    public static enum TYPE {
-        HEALTH, FUEL, WEAPON;
+    private String type;
+
+    public PowerupComponent() {}
+
+    public void setType(String type) {
+
     }
-
-
-    public PowerupComponent() {
-
-    }
-
 
     @Override
     public void reset() {

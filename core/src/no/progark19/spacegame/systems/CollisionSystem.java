@@ -6,12 +6,14 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 
+import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.GravityComponent;
@@ -40,6 +42,7 @@ public class CollisionSystem extends EntitySystem {
     public CollisionSystem(Sprite sprite, EntityFactory entityFactory){
         this.spaceshipSprite = sprite;
         this.entityFactory = entityFactory;
+
     }
 
     public CollisionSystem(int priority) {
@@ -64,13 +67,7 @@ public class CollisionSystem extends EntitySystem {
 
             SpriteComponent scom = ComponentMappers.sm.get(entity);
             BodyComponent bcom = ComponentMappers.bm.get(entity);
-            Rectangle r = scom.sprite.getBoundingRectangle();
-            if (boundsSpaceship.overlaps(r)) {
-                bcom.body.setLinearVelocity(new Vector2(0,0));
-                getEngine().addEntity(entityFactory.createPowerup(scom.sprite.getX(), scom.sprite.getY(), new Texture("img/ruby.png")));
-                getEngine().removeEntity(entity);
 
-            }
 
         }
     }
