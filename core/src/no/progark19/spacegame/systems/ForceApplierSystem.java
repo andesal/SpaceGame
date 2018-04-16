@@ -25,8 +25,12 @@ import no.progark19.spacegame.managers.EntityManager;
 public class ForceApplierSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
 
-    Sprite controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
+    private Sprite controllDebugForceArrow;
 
+    public ForceApplierSystem() {
+        this.controllDebugForceArrow  = new Sprite(new Texture(GameSettings.DEBUG_FORCEARROW_TEXTURE_PATH));
+        this.controllDebugForceArrow.setOrigin(GameSettings.DEBUG_FORCEARROW_ORIGIN.x, GameSettings.DEBUG_FORCEARROW_ORIGIN.y);
+    }
 
     @Override
     public void addedToEngine(Engine engine) {
@@ -60,18 +64,22 @@ public class ForceApplierSystem extends EntitySystem{
             float relY = parposcom.y + newRelPos.y;
 
             //FIXME Remove; only for debug
-            controllDebugOverlay.setOriginBasedPosition(relX, relY);
-            controllDebugOverlay.setRotation(forceVector.angle());
-            RenderSystem.forceDraw(controllDebugOverlay);
+            controllDebugForceArrow.setOriginBasedPosition(relX, relY);
+            controllDebugForceArrow.setRotation(forceVector.angle());
+            RenderSystem.forceDraw(controllDebugForceArrow);
             //------------------------------------------------
 
             //bcom_parent.body.applyForceToCenter(forceVector, true);
-            bcom_parent.body.applyForce(
-                    forceVector,
-                    (new Vector2(relX, relY)).scl(1f/ GameSettings.BOX2D_PIXELS_TO_METERS),
-                    true);
-
+            if(GameSettings.SPACESHIP_ENABLE_ROTATION){
+                bcom_parent.body.applyForce(
+                        forceVector,
+                        (new Vector2(relX, relY)).scl(1f/ GameSettings.BOX2D_PIXELS_TO_METERS),
+                        true);
+            } else {
+                bcom_parent.body.applyForceToCenter(
+                        forceVector,
+                        true);
+            }
         }
-
     }
 }

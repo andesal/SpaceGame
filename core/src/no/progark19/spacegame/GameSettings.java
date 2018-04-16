@@ -39,9 +39,11 @@ public class GameSettings {
     public final static String ENGINE_TEXTURE_PATH = "img/spaceship_engine.png";
     public final static String BACKGROUND_PATH = "img/background.png";
 
+    public final static String DEBUG_FORCEARROW_TEXTURE_PATH = "img/debug_forcearrow.png";
+    public final static Vector2 DEBUG_FORCEARROW_ORIGIN = new Vector2(56.5f, 51.5f);
 
-    public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/fire.png";
-    public final static String ASTEROID_ICE_TEXTURE_PATH = "img/ice.png";
+    public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
+    public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
 
     //FIXME move to somewhere else
     public static Body createDynamicBody(Sprite sprite, World world,
