@@ -25,8 +25,7 @@ public class RenderSystem extends EntitySystem {
     private static SpriteBatch batch;
     private OrthographicCamera camera;
     private ImmutableArray<Entity> cameraFocusEntity;
-    public static Texture bg = new Texture("img/bg1.jpg");
-
+    public static Texture bg = new Texture(GameSettings.BACKGROUND_PATH);
     private int bgX = 0;
     private int bgY = 0;
 
@@ -53,30 +52,10 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-        batch.draw(bg, bgX, bgY);
 
-        batch.draw(bg, bgX- bg.getWidth(), bgY);
-        batch.draw(bg, bgX+ bg.getWidth(), bgY);
-
-        batch.draw(bg, bgX -bg.getWidth(), bgY + bg.getHeight());
-        batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getHeight());
-
-        batch.draw(bg, bgX, bgY + bg.getHeight());
-        batch.draw(bg, bgX, bgY - bg.getHeight());
-
-        batch.draw(bg, bgX - bg.getWidth(), bgY - bg.getHeight());
-        batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getWidth());
-
-
-
-
-        //batch.draw(bg, bgX - bg.getWidth(), bgY);
-        //batch.draw(bg, bgX - bg.getWidth(), bgY);
-
-        //batch.draw(bg, bgX -bg.getWidth(), bgY - bg.getHeight());
-        //batch.draw(bg, bgX, bgY - bg.getHeight());
+        drawBackground();
         updateBackgroundCoordinates();
-        System.out.println("CAM: " + camera.position.x + " : " + bgX);
+
         for (Entity entity : entities) {
             //FIXME Kanskje fjerne positioncomponent og kun bruke sprites?
             PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
@@ -126,26 +105,31 @@ public class RenderSystem extends EntitySystem {
         };
     }
 
+    private void drawBackground() {
+        batch.draw(bg, bgX, bgY);
+        batch.draw(bg, bgX - bg.getWidth(), bgY);
+        batch.draw(bg, bgX + bg.getWidth(), bgY);
+
+        batch.draw(bg, bgX, bgY - bg.getHeight());
+        batch.draw(bg, bgX - bg.getWidth(), bgY - bg.getHeight());
+        batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getHeight());
+
+        batch.draw(bg, bgX, bgY + bg.getHeight());
+        batch.draw(bg, bgX - bg.getWidth(), bgY + bg.getHeight());
+        batch.draw(bg, bgX + bg.getWidth(), bgY + bg.getHeight());
+    }
+
     private void updateBackgroundCoordinates() {
         if (camera.position.x > bgX + bg.getWidth()) {
             bgX += bg.getWidth();
-            System.out.println("plus X");
-        }
-
-        if (camera.position.x < bgX) {
+        } else if (camera.position.x < bgX) {
             bgX -= bg.getWidth();
-            System.out.println("minus X");
-
         }
 
         if (camera.position.y > (bgY + bg.getHeight())) {
             bgY += bg.getHeight();
-            System.out.println("plus Y");
-
         } else if (camera.position.y < bgY) {
             bgY -= bg.getHeight();
-            System.out.println("minus Y");
-
         }
     }
 }

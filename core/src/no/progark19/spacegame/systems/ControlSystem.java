@@ -17,7 +17,7 @@ import no.progark19.spacegame.components.VelocityComponent;
 public class ControlSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ImmutableArray<Entity> spaceship;
-    //private ImmutableArray<Entity> turret;
+    private ImmutableArray<Entity> turret;
 
     public ControlSystem() {}
 

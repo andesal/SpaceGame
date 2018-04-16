@@ -37,6 +37,7 @@ public class GameSettings {
     public final static Vector2 ENGINE_ORIGIN = new Vector2(9,25);
     public final static float ENGINE_MAX_FORCE = 0.1f;
     public final static String ENGINE_TEXTURE_PATH = "img/spaceship_engine.png";
+    public final static String BACKGROUND_PATH = "img/background.png";
 
 
     public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/fire.png";

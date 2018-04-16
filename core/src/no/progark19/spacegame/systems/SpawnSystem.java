@@ -38,7 +38,7 @@ public class SpawnSystem extends EntitySystem {
     private ImmutableArray<Entity> obstacles;
     private ImmutableArray<Entity> collectables;
     private OrthographicCamera camera;
-    private int numAsteroids = 30;
+    private int numAsteroids = 0;
 
     private Rectangle spawn = new Rectangle();
     private Rectangle notSpawn = new Rectangle();
