@@ -65,11 +65,13 @@ public class ForceApplierSystem extends EntitySystem{
             RenderSystem.forceDraw(controllDebugOverlay);
             //------------------------------------------------
 
-            //bcom_parent.body.applyForceToCenter(forceVector, true);
-            bcom_parent.body.applyForce(
+            bcom_parent.body.applyForceToCenter(forceVector, true);
+            /*bcom_parent.body.applyForce(
                     forceVector,
                     (new Vector2(relX, relY)).scl(1f/ GameSettings.BOX2D_PIXELS_TO_METERS),
                     true);
+            */
         }
+
     }
 }

@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import javax.xml.soap.Text;
 
+import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
@@ -55,6 +58,11 @@ public class PlayScreen implements Screen {
     public Sound theme;
     private EntityFactory entityFactory;
     private Texture bg;
+    private int bgX = 0;
+    private int bgY = 0;
+
+    private Rectangle rectangle;
+
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
@@ -100,8 +108,6 @@ public class PlayScreen implements Screen {
         this.uiCamera = new OrthographicCamera();
         this.uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
         this.shapeRenderer = new ShapeRenderer();
-        this.bg = new Texture("img/space_sample.png");
-
         debugRenderer = new Box2DDebugRenderer();
         debugRenderer.setDrawAABBs(true);
         debugRenderer.setDrawVelocities(true);
@@ -174,10 +180,8 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
 
         game.batch.begin();
-        game.batch.draw(bg, 0, 0);
         //entityManager.update();
         engine.update(delta);
-
         //Draw Ui
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
@@ -195,8 +199,9 @@ public class PlayScreen implements Screen {
                     0);
             debugRenderer.render(GameSettings.BOX2D_PHYSICSWORLD, debugMatrix);
         }
-
     }
+
+
 
     @Override
     public void resize(int width, int height) {

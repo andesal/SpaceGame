@@ -53,13 +53,13 @@ public class EntityManager implements EntityListener{
         integerEntityMap.put(entityID, entity);
         entityIntegerMap.put(entity, entityID);
         entityID ++;
-        System.out.println("Entity added");
+        //System.out.println("Entity added");
     }
 
     @Override
     public void entityRemoved(Entity entity) {
         integerEntityMap.remove(entityIntegerMap.remove(entity));
-        System.out.println("Entity removed");
+        //System.out.println("Entity removed");
     }
 
     public static Entity getEntity(int id){
