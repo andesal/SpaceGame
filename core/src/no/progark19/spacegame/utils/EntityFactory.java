@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.sun.org.apache.regexp.internal.RE;
 
 import org.omg.CORBA.Bounds;
 
@@ -35,6 +36,8 @@ import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.TextureComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.screens.PlayScreen;
+import no.progark19.spacegame.systems.RenderSystem;
 
 /**
  * Created by Anders on 14.04.2018.
@@ -97,8 +100,10 @@ public class EntityFactory {
     }
 
     public Entity createBaseSpaceShip(World physicsWorld, Texture texture){
-        float posx = SpaceGame.WIDTH/2;
-        float posy = SpaceGame.HEIGHT/2;
+        //float posx = SpaceGame.WIDTH/2;
+        //float posy = SpaceGame.HEIGHT/2;
+        float posx = RenderSystem.bg.getWidth()/2;
+        float posy = RenderSystem.bg.getHeight()/2;
 
         Sprite sprite = new Sprite(texture);
         sprite.setOriginBasedPosition(posx, posy);

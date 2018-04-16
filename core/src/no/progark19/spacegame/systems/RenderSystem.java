@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -22,12 +23,17 @@ import no.progark19.spacegame.managers.EntityManager;
 public class RenderSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private static SpriteBatch batch;
-    private OrthographicCamera cam;
+    private OrthographicCamera camera;
     private ImmutableArray<Entity> cameraFocusEntity;
+    public static Texture bg = new Texture("img/bg1.jpg");
 
-    public RenderSystem(SpriteBatch batch, OrthographicCamera cam) {
+    private int bgX = 0;
+    private int bgY = 0;
+
+
+    public RenderSystem(SpriteBatch batch, OrthographicCamera camera) {
         this.batch = batch;
-        this.cam = cam;
+        this.camera = camera;
     }
 
     @Override
@@ -47,10 +53,35 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
+        batch.draw(bg, bgX, bgY);
+
+        batch.draw(bg, bgX- bg.getWidth(), bgY);
+        batch.draw(bg, bgX+ bg.getWidth(), bgY);
+
+        batch.draw(bg, bgX -bg.getWidth(), bgY + bg.getHeight());
+        batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getHeight());
+
+        batch.draw(bg, bgX, bgY + bg.getHeight());
+        batch.draw(bg, bgX, bgY - bg.getHeight());
+
+        batch.draw(bg, bgX - bg.getWidth(), bgY - bg.getHeight());
+        batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getWidth());
+
+
+
+
+        //batch.draw(bg, bgX - bg.getWidth(), bgY);
+        //batch.draw(bg, bgX - bg.getWidth(), bgY);
+
+        //batch.draw(bg, bgX -bg.getWidth(), bgY - bg.getHeight());
+        //batch.draw(bg, bgX, bgY - bg.getHeight());
+        updateBackgroundCoordinates();
+        System.out.println("CAM: " + camera.position.x + " : " + bgX);
         for (Entity entity : entities) {
             //FIXME Kanskje fjerne positioncomponent og kun bruke sprites?
             PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
+
 
             if (pcom != null) {
                 scom.sprite.setOriginBasedPosition(pcom.x,pcom.y);
@@ -77,14 +108,37 @@ public class RenderSystem extends EntitySystem {
         if (GameSettings.CAMERA_FOLLOW_POSITION){
 
             PositionComponent pcom = ComponentMappers.POS_MAP.get(cameraFocusEntity.get(0));
-            cam.position.set(pcom.x, pcom.y, 0);
+            camera.position.set(pcom.x, pcom.y, 0);
 
             if (GameSettings.CAMERA_FOLLOW_ROTATION){
-                cam.up.set(0,1,0);
-                cam.direction.set(0,0,-1);
-                cam.rotate(-pcom.rotation);
+                camera.up.set(0,1,0);
+                camera.direction.set(0,0,-1);
+                camera.rotate(-pcom.rotation);
             }
-            cam.update();
+            camera.update();
+
+        };
+    }
+
+    private void updateBackgroundCoordinates() {
+        if (camera.position.x > bgX + bg.getWidth()) {
+            bgX += bg.getWidth();
+            System.out.println("plus X");
+        }
+
+        if (camera.position.x < bgX) {
+            bgX -= bg.getWidth();
+            System.out.println("minus X");
+
+        }
+
+        if (camera.position.y > (bgY + bg.getHeight())) {
+            bgY += bg.getHeight();
+            System.out.println("plus Y");
+
+        } else if (camera.position.y < bgY) {
+            bgY -= bg.getHeight();
+            System.out.println("minus Y");
 
         }
     }
