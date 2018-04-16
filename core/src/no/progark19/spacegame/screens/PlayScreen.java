@@ -105,6 +105,7 @@ public class PlayScreen implements Screen {
     //----------------------------------------------------------------------------------------------
     public PlayScreen(SpaceGame game){
         this.game = game;
+        game.camera.setToOrtho(false, SpaceGame.WIDTH*1.5f, SpaceGame.HEIGHT*1.5f);
         this.uiCamera = new OrthographicCamera();
         this.uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
         this.shapeRenderer = new ShapeRenderer();
@@ -162,8 +163,6 @@ public class PlayScreen implements Screen {
         uiStage.addActor(
                 createEngineSlider(engineEntity4, SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20,90,180)
         );
-
-
     }
 
     @Override
