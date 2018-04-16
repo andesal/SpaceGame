@@ -70,10 +70,16 @@ public class ForceApplierSystem extends EntitySystem{
             //------------------------------------------------
 
             //bcom_parent.body.applyForceToCenter(forceVector, true);
-            bcom_parent.body.applyForce(
-                    forceVector,
-                    (new Vector2(relX, relY)).scl(1f/ GameSettings.BOX2D_PIXELS_TO_METERS),
-                    true);
+            if(GameSettings.SPACESHIP_ENABLE_ROTATION){
+                bcom_parent.body.applyForce(
+                        forceVector,
+                        (new Vector2(relX, relY)).scl(1f/ GameSettings.BOX2D_PIXELS_TO_METERS),
+                        true);
+            } else {
+                bcom_parent.body.applyForceToCenter(
+                        forceVector,
+                        true);
+            }
         }
     }
 }

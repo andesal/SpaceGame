@@ -29,7 +29,7 @@ public class GameSettings {
 
     public static final boolean SPACESHIP_STABILIZE_ROTATION = true;
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
-    public static final float SPACESHIP_DENSITY = 0.5f;
+    public static final float SPACESHIP_DENSITY = 1f;
 
     public static final float SPACESHIP_RESTITUTION = 0.5f;
     public static final boolean SPACESHIP_ENABLE_ROTATION = false;
