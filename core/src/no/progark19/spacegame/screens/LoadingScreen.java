@@ -42,6 +42,7 @@ public class LoadingScreen implements Screen{
         progress = MathUtils.lerp(progress, game.assets.getProgress(), .1f);
         if (game.assets.update() && progress >= game.assets.getProgress() - .001f) {
                 game.setScreen(new MainMenuScreen(game));
+            //game.setScreen(new PlayScreen_DEMO(game));
         }
     }
 

@@ -6,17 +6,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import no.progark19.spacegame.gameObjects.SpaceShip;
 import no.progark19.spacegame.screens.LoadingScreen;
 import no.progark19.spacegame.screens.LobbyScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
 import no.progark19.spacegame.screens.PlayScreen;
 import no.progark19.spacegame.screens.SettingsScreen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 
 public class SpaceGame extends Game {
@@ -25,10 +28,11 @@ public class SpaceGame extends Game {
 	public static final int HEIGHT = 720;
 
 	public OrthographicCamera camera;
-	private SpriteBatch batch;
+	public SpriteBatch batch;
 
 	public BitmapFont font24;
 	public AssetManager assets;
+	private Skin skin;
 
 	public LoadingScreen loadingScreen;
 	public MainMenuScreen mainMenuScreen;
@@ -37,20 +41,21 @@ public class SpaceGame extends Game {
 	public SettingsScreen settingsScreen;
 
     public Vector3 translateScreenCoordinates(Vector3 coordinates){
-        Gdx.app.log("Translation","Screen Coordinates" + coordinates.x + "," + coordinates.y);
-        Vector3 worldCoordinates = camera.unproject(coordinates);
-        Gdx.app.log("Translation","Screen Coordinates" + worldCoordinates.x + "," + worldCoordinates.y);
-        return worldCoordinates;
+        return camera.unproject(coordinates.add(0, SpaceGame.HEIGHT - 1, 0));
+    }
+
+    public Skin getSkin(){
+        return skin;
     }
 
 	@Override
 	public void create() {
 		assets = new AssetManager();
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, WIDTH, HEIGHT);
+		//camera.setToOrtho(false, WIDTH, HEIGHT);
 		batch = new SpriteBatch();
 
-		initFonts();
+        initFonts();
 
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
@@ -59,11 +64,14 @@ public class SpaceGame extends Game {
 		settingsScreen = new SettingsScreen(this);
 
 		this.setScreen(loadingScreen);
-	}
+
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+    }
 
 	@Override
 	public void render() {
 		super.render();
+		//FIXME tror det er bedre å bruke interrupts istedenfor å polle? [AndersRahu]
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
 			Gdx.app.exit();
 		}
@@ -80,7 +88,6 @@ public class SpaceGame extends Game {
 		batch.dispose();
 
 		assets.dispose();
-
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
 		lobbyScreen.dispose();
@@ -89,11 +96,7 @@ public class SpaceGame extends Game {
 
 	}
 
-	public SpriteBatch getBatch() {
-		return this.batch;
-	}
-
-	private void initFonts(){
+	private void initFonts() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
@@ -101,4 +104,5 @@ public class SpaceGame extends Game {
 		params.color = Color.BLACK;
 		font24 = generator.generateFont(params);
 	}
+
 }
