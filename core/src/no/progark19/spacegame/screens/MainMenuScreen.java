@@ -35,6 +35,7 @@ public class MainMenuScreen implements Screen {
     private final SpaceGame game;
 
     private Stage stage;
+    private Skin skin2;
     private Skin skin;
 
     private TextButton buttonPlay, buttonExit, buttonOptions;
@@ -57,10 +58,11 @@ public class MainMenuScreen implements Screen {
     public void show() {
         System.out.println("MAIN MENU");
         Gdx.input.setInputProcessor(stage);
-        //stage.clear();
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-        //game.setScreen(new PlayScreen_DEMO(game));
+        stage.clear();
+
+        this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
+        this.skin2.add("default-font", game.font24);
+        this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
 
         this.skin = new Skin();
         this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
@@ -115,7 +117,7 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initButtons(){
-        buttonPlay = new TextButton("Start Game", skin, "default");
+        buttonPlay = new TextButton("Start Game", skin2, "default");
         buttonPlay.setPosition(110, 330);
         buttonPlay.setSize(280, 60);
         buttonPlay.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
@@ -126,7 +128,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        buttonOptions = new TextButton("Options", skin, "default");
+        buttonOptions = new TextButton("Options", skin2, "default");
         buttonOptions.setPosition(110, 260);
         buttonOptions.setSize(280, 60);
         buttonOptions.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
@@ -137,7 +139,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        buttonExit = new TextButton("Exit", skin, "default");
+        buttonExit = new TextButton("Exit", skin2, "default");
         buttonExit.setPosition(110, 120);
         buttonExit.setSize(280, 60);
         buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));

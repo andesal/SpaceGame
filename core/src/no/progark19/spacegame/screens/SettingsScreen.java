@@ -6,11 +6,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import no.progark19.spacegame.SpaceGame;
@@ -26,9 +33,17 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 public class SettingsScreen implements Screen {
 
     private final SpaceGame game;
-    private Skin skin;
+    private Skin skin1;
+    private Skin skin2;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
+    private Table table;
+
+    // Todo: Implement global sound
+    float volume = 0.5f;
+    long soundId = 0;
+
+    boolean clicked = false;
 
     public SettingsScreen(SpaceGame game){
         this.game = game;
@@ -42,9 +57,13 @@ public class SettingsScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         stage.clear();
 
-        this.skin = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
-        this.skin.add("default-font", game.font24);
-        this.skin.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
+        this.skin1 = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        this.skin1.add("default-font", game.font24);
+        this.skin1.addRegions(new TextureAtlas("ui/uiskin.atlas"));
+
+        this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
+        this.skin2.add("default-font", game.font24);
+        this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
 
         initSettingsBtt();
     }
@@ -86,21 +105,33 @@ public class SettingsScreen implements Screen {
     }
 
     private void initSettingsBtt(){
-        TextButton soundBtt, comBtt, buttonExit;
 
-        soundBtt = new TextButton("Sound", skin);
-        soundBtt.setPosition(110, 340);
-        soundBtt.setSize(280, 60);
-        soundBtt.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        soundBtt.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Todo: Make sound on / off toggle
-                }
+        final TextButton comBtt, buttonExit;
+
+        final Slider volume = new Slider(1, 100, 1, false, skin2);
+        volume.setValue(1);
+        final Label volumeValue = new Label("1.0", skin2);
+        Table table = new Table();
+        final Slider pan = new Slider(-1f, 1f, 0.1f, false, skin2);
+        pan.setValue(0);
+        final Label panValue = new Label("0.0", skin2);
+
+        volume.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                //sound.setVolume(soundId, volume.getValue());
+                volumeValue.setText("" + volume.getValue());
+            }
         });
 
-        comBtt = new TextButton("Network usage", skin, "default");
-        comBtt.setPosition(110, 270);
+        pan.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                //sound.setPan(soundId, pan.getValue(), volume.getValue());
+                panValue.setText("" + pan.getValue());
+            }
+        });
+
+        comBtt = new TextButton("Network usage", skin2, "default");
+        comBtt.setPosition(110, 170);
         comBtt.setSize(280,60);
         comBtt.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
         comBtt.addListener(new ClickListener() {
@@ -110,7 +141,7 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        buttonExit = new TextButton("Main Menu", skin, "default");
+        buttonExit = new TextButton("Main Menu", skin2, "default");
         buttonExit.setPosition(110, 100);
         buttonExit.setSize(280, 60);
         buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
@@ -121,10 +152,17 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        stage.addActor(soundBtt);
+        table.setFillParent(true);
+        table.padTop(50);
+        table.add(new Label("Volume", skin2));
+        table.add(volume);
+        table.add(volumeValue);
+
+        stage.addActor(table);
         stage.addActor(comBtt);
         stage.addActor(buttonExit);
 
     }
+
 
 }
