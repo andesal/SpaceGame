@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -107,14 +108,19 @@ public class SettingsScreen implements Screen {
     private void initSettingsBtt(){
 
         final TextButton comBtt, buttonExit;
+        final CheckBox wifi_check = new CheckBox("WiFi", skin2);
+        final CheckBox bt_check = new CheckBox("Bluetooth", skin2);
+        ButtonGroup comGroup = new ButtonGroup(wifi_check, bt_check);
+        comGroup.setMaxCheckCount(1);
+        comGroup.setMinCheckCount(1);
 
         final Slider volume = new Slider(1, 100, 1, false, skin2);
-        volume.setValue(1);
-        final Label volumeValue = new Label("1.0", skin2);
+        volume.setValue(100);
+        final Label volumeValue = new Label("100", skin2);
         Table table = new Table();
-        final Slider pan = new Slider(-1f, 1f, 0.1f, false, skin2);
-        pan.setValue(0);
-        final Label panValue = new Label("0.0", skin2);
+        final Slider pan = new Slider(-1, 100, 1, false, skin2);
+        pan.setValue(50);
+        final Label panValue = new Label("50", skin2);
 
         volume.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
@@ -127,6 +133,23 @@ public class SettingsScreen implements Screen {
             public void changed (ChangeEvent event, Actor actor) {
                 //sound.setPan(soundId, pan.getValue(), volume.getValue());
                 panValue.setText("" + pan.getValue());
+            }
+        });
+
+        wifi_check.setChecked(true);
+        bt_check.setChecked(false);
+
+        wifi_check.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.graphics.setContinuousRendering(wifi_check.isChecked());
+            }
+        });
+
+        bt_check.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.graphics.setContinuousRendering(bt_check.isChecked());
             }
         });
 
@@ -152,17 +175,22 @@ public class SettingsScreen implements Screen {
             }
         });
 
+        table.setWidth(stage.getWidth());
+        table.align(Align.center | Align.top);
         table.setFillParent(true);
-        table.padTop(50);
+
+        table.padTop(250);
         table.add(new Label("Volume", skin2));
         table.add(volume);
         table.add(volumeValue);
 
+        wifi_check.setPosition(110, 520);
+        bt_check.setPosition(110, 500);
+
+        stage.addActor(wifi_check);
+        stage.addActor(bt_check);
         stage.addActor(table);
-        stage.addActor(comBtt);
+        //stage.addActor(comBtt);
         stage.addActor(buttonExit);
-
     }
-
-
 }
