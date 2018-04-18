@@ -21,7 +21,7 @@ class SpaceShip {
     private Array<SpaceShipEngine> engines;
     private final int maxSpeed = 1;
 
-    Sprite controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
+    //Sprite controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
 
     public SpaceShip(Sprite baseShipSprite) {
         sprite_baseShip = baseShipSprite;
@@ -42,9 +42,9 @@ class SpaceShip {
 
                 //body_baseShip.applyForceToCenter(force,true);
                 //FIXME REMOVE DEBUG
-                controllDebugOverlay.setOriginBasedPosition(engine.getOriginWorldpoint().x, engine.getOriginWorldpoint().y);
-                controllDebugOverlay.setRotation(force.angle());
-                controllDebugOverlay.draw(batch);
+                //controllDebugOverlay.setOriginBasedPosition(engine.getOriginWorldpoint().x, engine.getOriginWorldpoint().y);
+                //controllDebugOverlay.setRotation(force.angle());
+                //controllDebugOverlay.draw(batch);
 
 
                 if (GameSettings.SPACESHIP_ENABLE_ROTATION) {
