@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Json;
  */
 
 public interface P2pConnector {
+    void setThisDeviceName(String name);
 
     void discoverPeers();
 
@@ -15,6 +16,8 @@ public interface P2pConnector {
     void addReceivedDataListener(ReceivedDataListener listener);
 
     void sendData(Json data);
+
+    void sendData(String data);
 
     String getOtherPeerName();
 }

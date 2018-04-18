@@ -8,4 +8,6 @@ import com.badlogic.gdx.utils.Json;
 
 public interface ReceivedDataListener {
     void onReceive(Json data);
+
+    void onReceive(String data);
 }

@@ -40,11 +40,10 @@ public class AndroidP2pConnector implements P2pConnector {
     private static final Strategy STRATEGY = Strategy.P2P_POINT_TO_POINT;
 
     private ConnectionsClient connectionsClient;
-
-    private String deviceName;
+    private String deviceName = "Henry";
 
     private String otherPlayerEndpointId;
-    private String otherPLayerName;
+    private String otherPLayerName = "null";
 
     private Json otherPlayerInput;
     private Json userPlayerInput;
@@ -56,6 +55,13 @@ public class AndroidP2pConnector implements P2pConnector {
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
             Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+
+            Log.d(TAG, "onPayloadReceived: Recieved payload!");
+
+            for (ReceivedDataListener dListener: dataListeners){
+                //noinspection ConstantConditions
+                dListener.onReceive(new String(payload.asBytes()));
+            }
         }
 
         @Override
@@ -119,6 +125,7 @@ public class AndroidP2pConnector implements P2pConnector {
     };
 
     public AndroidP2pConnector(AndroidLauncher androidLauncher) {
+
         this.launcher = androidLauncher;
         connectionsClient = Nearby.getConnectionsClient(launcher);
 
@@ -140,6 +147,11 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     @Override
+    public void setThisDeviceName(String name) {
+        deviceName = name;
+    }
+
+    @Override
     public void discoverPeers() {
         startAdvertising();
         startDiscovery();
@@ -152,7 +164,14 @@ public class AndroidP2pConnector implements P2pConnector {
 
     @Override
     public void sendData(Json data) {
+        String jsonString = data.toString();
 
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(jsonString.getBytes()));
+    }
+
+    @Override
+    public void sendData(String data) {
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(data.getBytes()));
     }
 
     @Override
