@@ -30,7 +30,6 @@ import no.progark19.spacegame.screens.SettingsScreen;
 
 
 public class SpaceGame extends Game {
-    //public static final String TITLE = "SpaceGame";
     public static final int WIDTH = 480;
     public static final int HEIGHT = 720;
 
@@ -69,7 +68,7 @@ public class SpaceGame extends Game {
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
 		lobbyScreen = new LobbyScreen(this);
-		playScreen = new PlayScreen(this);
+//		playScreen = new PlayScreen(this);
 		settingsScreen = new SettingsScreen(this);
 
 		this.setScreen(loadingScreen);
@@ -91,7 +90,6 @@ public class SpaceGame extends Game {
         super.resize(width, height);
     }
 
-
 	@Override
 	public void dispose() {
 		batch.dispose();
@@ -101,7 +99,7 @@ public class SpaceGame extends Game {
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
 		lobbyScreen.dispose();
-		playScreen.dispose();
+		//playScreen.dispose();
 		settingsScreen.dispose();
 
 	}
@@ -113,7 +111,6 @@ public class SpaceGame extends Game {
 	private void initFonts(){
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
 		params.size = 24;
 		params.color = Color.BLACK;
 		font24 = generator.generateFont(params);

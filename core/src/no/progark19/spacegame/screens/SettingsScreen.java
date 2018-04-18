@@ -30,7 +30,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 
-// TODO implement: Lyd av/på, bluetooth/wifi toggle,
+// Todo: implement: Lyd av/på, bluetooth/wifi toggle,
 public class SettingsScreen implements Screen {
 
     private final SpaceGame game;
@@ -41,7 +41,7 @@ public class SettingsScreen implements Screen {
     private Table table;
 
     // Todo: Implement global sound
-    float volume = 0.5f;
+    float volume = 0;
     long soundId = 0;
 
     boolean clicked = false;
@@ -62,9 +62,9 @@ public class SettingsScreen implements Screen {
         this.skin1.add("default-font", game.font24);
         this.skin1.addRegions(new TextureAtlas("ui/uiskin.atlas"));
 
-        this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
+        this.skin2 = new Skin(Gdx.files.internal("ui/sgxui/sgx-ui.json"));
         this.skin2.add("default-font", game.font24);
-        this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
+        this.skin2.addRegions(new TextureAtlas("ui/sgxui/sgx-ui.atlas"));
 
         initSettingsBtt();
     }
@@ -117,6 +117,11 @@ public class SettingsScreen implements Screen {
         final Slider volume = new Slider(1, 100, 1, false, skin2);
         volume.setValue(100);
         final Label volumeValue = new Label("100", skin2);
+
+        final Slider effVolume = new Slider(1, 100, 1, false, skin2);
+        effVolume.setValue(100);
+        final Label effVolumeValue = new Label("100", skin2);
+
         Table table = new Table();
         final Slider pan = new Slider(-1, 100, 1, false, skin2);
         pan.setValue(50);
@@ -126,6 +131,13 @@ public class SettingsScreen implements Screen {
             public void changed (ChangeEvent event, Actor actor) {
                 //sound.setVolume(soundId, volume.getValue());
                 volumeValue.setText("" + volume.getValue());
+            }
+        });
+
+        effVolume.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                //sound.setVolume(soundId, volume.getValue());
+                effVolumeValue.setText("" + effVolume.getValue());
             }
         });
 
@@ -180,9 +192,15 @@ public class SettingsScreen implements Screen {
         table.setFillParent(true);
 
         table.padTop(250);
-        table.add(new Label("Volume", skin2));
+        table.add(new Label("Music volume ", skin2));
         table.add(volume);
         table.add(volumeValue);
+        table.padBottom(20);
+        table.row();
+        table.add(new Label("Effects volume ", skin2));
+        table.add(effVolume);
+        table.add(effVolumeValue);
+
 
         wifi_check.setPosition(110, 520);
         bt_check.setPosition(110, 500);
