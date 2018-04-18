@@ -101,6 +101,8 @@ public class SpaceGame extends Game {
 		//playScreen.dispose();
 		settingsScreen.dispose();
 
+
+
 	}
 
 }

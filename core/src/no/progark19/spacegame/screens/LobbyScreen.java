@@ -42,6 +42,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private long thisPlayerSeed;
     private long otherPlayerSeed;
     private boolean seedMessageSent = false;
+    private boolean seedDecided = false;
     private Random random = new Random();
 
     private ClickListener readListener = new ClickListener() {
@@ -99,6 +100,9 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     @Override
     public void render(float delta) {
         //TODO clean up method
+        if(seedDecided){
+            game.setScreen(new PlayScreen(game));
+        }
 
         Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -174,7 +178,6 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
 
         stage.act();
         stage.draw();
-        game.setScreen(new PlayScreen_DEMO(game));
     }
 
     @Override
@@ -216,10 +219,11 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
                 game.p2pConnector.removeReceivedDataListener(this);
                 otherPlayerSeed = (Long) data.getValue();
 
+                GameSettings.isLeftPlayer = otherPlayerSeed > thisPlayerSeed;
+
                 GameSettings.setRandomSeed(otherPlayerSeed + thisPlayerSeed);
 
-                game.setScreen(new PlayScreen(game));
-
+                seedDecided = true;
                 break;
             default:
                 System.out.println("NOT LEGAL JSON TAG");

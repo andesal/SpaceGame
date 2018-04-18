@@ -53,7 +53,7 @@ public class AndroidLauncher extends AndroidApplication {
         }
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new SpaceGame(connector), config);
+        initialize(new SpaceGame(connector), config);
 	}
 
     @Override

@@ -1,5 +1,6 @@
 package no.progark19.spacegame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
@@ -22,6 +23,8 @@ import java.util.Random;
  */
 
 public class GameSettings {
+    public static boolean isLeftPlayer = false;
+
     public static final boolean CAMERA_FOLLOW_POSITION = true;
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
     public static final boolean BOX2D_DRAWDEBUG = true;
@@ -46,10 +49,14 @@ public class GameSettings {
     public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
     public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
 
+    //public static String gameFrameRate
+
     private static Random mainRandom;
 
     public static void setRandomSeed(long seed){
+        System.out.println("GotSeed:" + seed);
         mainRandom = new Random(seed);
+
     }
 
     public static Random getMainRandom(){

@@ -64,6 +64,7 @@ public class AndroidP2pConnector implements P2pConnector {
 
             for (ReceivedDataListener dListener: dataListeners){
                 //noinspection ConstantConditions
+                System.out.println(json.prettyPrint(message));
                 dListener.onReceive(json.fromJson(JsonPayload.class, message));
             }
         }
@@ -75,6 +76,7 @@ public class AndroidP2pConnector implements P2pConnector {
             if (pltUpdate.getStatus() == Status.SUCCESS){
                 Log.d(TAG, "onPayloadTransferUpdate: Finished download");
             }
+
         }
     };
 
@@ -125,6 +127,7 @@ public class AndroidP2pConnector implements P2pConnector {
         public void onDisconnected(@NonNull String s) {
             Log.d(TAG, "onDisconnected: Disconnected from other player");
             Toast.makeText(launcher, "You got separated", Toast.LENGTH_SHORT).show();
+
         }
     };
 
@@ -132,7 +135,6 @@ public class AndroidP2pConnector implements P2pConnector {
 
         this.launcher = androidLauncher;
         connectionsClient = Nearby.getConnectionsClient(launcher);
-
     }
 
     private void startDiscovery() {
