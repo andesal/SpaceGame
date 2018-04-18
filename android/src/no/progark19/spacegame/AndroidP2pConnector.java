@@ -25,6 +25,7 @@ import java.util.List;
 
 import no.progark19.spacegame.interfaces.P2pConnector;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.utils.json.JsonPayload;
 
 /**
  * Created by Anders on 17.04.2018.
@@ -58,9 +59,12 @@ public class AndroidP2pConnector implements P2pConnector {
 
             Log.d(TAG, "onPayloadReceived: Recieved payload!");
 
+            String message = new String(payload.asBytes());
+            Json json = new Json();
+
             for (ReceivedDataListener dListener: dataListeners){
                 //noinspection ConstantConditions
-                dListener.onReceive(new String(payload.asBytes()));
+                dListener.onReceive(json.fromJson(JsonPayload.class, message));
             }
         }
 
@@ -163,8 +167,13 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     @Override
-    public void sendData(Json data) {
-        String jsonString = data.toString();
+    public void removeReceivedDataListener(ReceivedDataListener listener) {
+        dataListeners.remove(listener);
+    }
+
+    @Override
+    public void sendData(JsonPayload data) {
+        String jsonString = (new Json()).toJson(data, JsonPayload.class);
 
         connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(jsonString.getBytes()));
     }

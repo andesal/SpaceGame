@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.lang.reflect.Array;
+import java.util.Random;
 
 /**
  * Created by Anders on 12.04.2018.
@@ -44,6 +45,20 @@ public class GameSettings {
 
     public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
     public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
+
+    private static Random mainRandom;
+
+    public static void setRandomSeed(long seed){
+        mainRandom = new Random(seed);
+    }
+
+    public static Random getMainRandom(){
+        if (mainRandom == null) {
+            throw new IllegalStateException("mainRandom not yet set!");
+        } else {
+            return mainRandom;
+        }
+    }
 
     //FIXME move to somewhere else
     public static Body createDynamicBody(Sprite sprite, World world,

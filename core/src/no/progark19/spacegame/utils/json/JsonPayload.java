@@ -5,14 +5,14 @@ package no.progark19.spacegame.utils.json;
  */
 
 public class JsonPayload {
-    private String TAG;
+    private int TAG;
     private Object value;
 
-    public String getTAG() {
+    public int getTAG() {
         return TAG;
     }
 
-    public void setTAG(String TAG) {
+    public void setTAG(int TAG) {
         this.TAG = TAG;
     }
 
