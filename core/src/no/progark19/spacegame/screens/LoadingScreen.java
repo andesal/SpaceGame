@@ -15,14 +15,11 @@ import no.progark19.spacegame.SpaceGame;
 public class LoadingScreen implements Screen{
 
     private final SpaceGame game;
-
     private ShapeRenderer shapeRenderer;
-
     private float progress;
 
     public LoadingScreen(final SpaceGame game){
         this.game = game;
-
         this.shapeRenderer = new ShapeRenderer();
     }
 
@@ -32,7 +29,7 @@ public class LoadingScreen implements Screen{
 
     @Override
     public void show() {
-        System.out.println("GAME: LOADING"); // For debug purposessses
+        System.out.println("LOADING"); // For debug purposessses
         shapeRenderer.setProjectionMatrix(game.camera.combined);
         this.progress = 0f;
         queueAssets();
@@ -41,11 +38,10 @@ public class LoadingScreen implements Screen{
     private void update(float delta) {
         progress = MathUtils.lerp(progress, game.assets.getProgress(), .1f);
         if (game.assets.update() && progress >= game.assets.getProgress() - .001f) {
-                //game.setScreen(new MainMenuScreen(game));
-            game.setScreen(new LobbyScreen(game));
+            game.setScreen(new MainMenuScreen(game));
+//            game.setScreen(new PlayScreen(game));
         }
     }
-
 
     @Override
     public void render(float delta) {
@@ -88,6 +84,5 @@ public class LoadingScreen implements Screen{
     @Override
     public void dispose() {
         shapeRenderer.dispose();
-
     }
 }

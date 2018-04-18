@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -69,6 +72,8 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     private Texture bg;
     private int bgX = 0;
     private int bgY = 0;
+    private Skin skin2;
+    private Skin skin;
 
     private Rectangle rectangle;
 
@@ -221,6 +226,16 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     public void show() {
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
+
+        this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
+        this.skin2.add("default-font", game.font24);
+        this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
+
+        this.skin = new Skin();
+        this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
+        this.skin.add("default-font", game.font24);
+        this.skin.load(Gdx.files.internal("ui/uiskin.json"));
+
         game.p2pConnector.addReceivedDataListener(this);
     }
 
@@ -242,6 +257,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
 
+        //TODO This was supposed to print the FPS, but doesnt!
         font.setColor(Color.WHITE);
         font.getData().setScale(4);
         layout.setText(font, String.valueOf(Gdx.graphics.getFramesPerSecond()));
