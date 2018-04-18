@@ -1,16 +1,25 @@
 package no.progark19.spacegame;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.progark19.spacegame.interfaces.P2pConnector;
+import no.progark19.spacegame.managers.EntityManager;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import no.progark19.spacegame.screens.LoadingScreen;
@@ -19,7 +28,6 @@ import no.progark19.spacegame.screens.SettingsScreen;
 
 
 public class SpaceGame extends Game {
-    //public static final String TITLE = "SpaceGame";
     public static final int WIDTH = 480;
     public static final int HEIGHT = 720;
 
@@ -27,16 +35,16 @@ public class SpaceGame extends Game {
 	public SpriteBatch batch;
 	ParticleEffect pe;
 
-	//public BitmapFont font24;
+	public BitmapFont font24;
 	public AssetManager assets;
 	private Skin skin;
 
     //FIXME trur disse er unødvendig
 	public LoadingScreen loadingScreen;
-    public MainMenuScreen mainMenuScreen;
-    //public LobbyScreen lobbyScreen;
-    //public PlayScreen playScreen;
-    public SettingsScreen settingsScreen;
+	public MainMenuScreen mainMenuScreen;
+	public LobbyScreen lobbyScreen;
+	public PlayScreen playScreen;
+	public SettingsScreen settingsScreen;
 
     public P2pConnector p2pConnector;
 
@@ -63,10 +71,12 @@ public class SpaceGame extends Game {
 		//camera.setToOrtho(false, WIDTH, HEIGHT);
 		batch = new SpriteBatch();
 
+		initFonts();
+
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
-		//lobbyScreen = new LobbyScreen(this);
-		//playScreen = new PlayScreen(this);
+		lobbyScreen = new LobbyScreen(this);
+//		playScreen = new PlayScreen(this);
 		settingsScreen = new SettingsScreen(this);
 
 		this.setScreen(loadingScreen);
@@ -88,7 +98,6 @@ public class SpaceGame extends Game {
         super.resize(width, height);
     }
 
-
 	@Override
 	public void dispose() {
 		batch.dispose();
@@ -97,10 +106,21 @@ public class SpaceGame extends Game {
 
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
-		//lobbyScreen.dispose();
+		lobbyScreen.dispose();
 		//playScreen.dispose();
 		settingsScreen.dispose();
 
 	}
 
+	public SpriteBatch getBatch() {
+		return this.batch;
+	}
+
+	private void initFonts(){
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		params.size = 24;
+		params.color = Color.BLACK;
+		font24 = generator.generateFont(params);
+	}
 }
