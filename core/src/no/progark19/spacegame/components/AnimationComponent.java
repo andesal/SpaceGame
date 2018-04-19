@@ -1,9 +1,12 @@
 package no.progark19.spacegame.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+
+import no.progark19.spacegame.systems.AnimationSystem;
 
 /**
  * Created by anderssalvesen on 15.04.2018.
@@ -22,7 +25,13 @@ public class AnimationComponent implements Component, Pool.Poolable{
     public int frameHeight;
     private boolean dirRight;
 
+    public Animation animation;
 
+    public AnimationComponent(Animation animation) {
+        this.animation = animation;
+    }
+
+    /*
     public AnimationComponent (TextureRegion region, int rows, int cols, float cycleTime, boolean direction) {
         this.region = region;
         this.dirRight = direction;
@@ -43,6 +52,7 @@ public class AnimationComponent implements Component, Pool.Poolable{
         maxFrameTime = cycleTime / frameCount;
         frame = 0;
     }
+    */
 
     public TextureRegion getCurrentFrame() {
         return frames.get(frame);

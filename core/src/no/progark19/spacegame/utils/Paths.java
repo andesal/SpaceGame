@@ -17,10 +17,13 @@ public class Paths {
     public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
     public final static String FIRE_PROJECTILE_TEXTURE_PATH = "atlasLib/f.png";
     public final static String ICE_PROJECTILE_TEXTURE_PATH = "img/ice_region.png";
-
+    public final static String FIRE_BULLET_TEXTURE_PATH = "img/fire_bullet.png";
+    public final static String ICE_BULLET_TEXTURE_PATH = "img/ice_bullet.png";
 
     //TextureAtlas
     public final static String FIRE_EXPLOSION_ATLAS = "atlasLib/fire_explosion.atlas";
+    public final static String FIRE_EXPLOSION_2_ATLAS = "atlasLib/fire_explosion_2.atlas";
+
     public final static String ICE_EXPLOSION_ATLAS = "atlasLib/ice.atlas";
     public final static String SKIN_1_ATLAS = "ui/uiskin.atlas";
     public final static String SKIN_2_ATLAS = "ui/uiskin.atlas";

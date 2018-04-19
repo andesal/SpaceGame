@@ -38,26 +38,11 @@ import no.progark19.spacegame.utils.EntityFactory;
 
 public class AnimationSystem extends EntitySystem {
 
-    private Entity fireballTest;
-    private SpriteBatch batch;
-    private PooledEngine engine;
-    private World world;
-    private OrthographicCamera camera;
-
-    public Animation largeFireExplosion;// = createAnimation(game.as, 1/255f);
-    public Animation largeIceExplosion; //= createAnimation(GameSettings.ICE_EXPLOSION, 1/149f);
     private SpaceGame game;
     private ImmutableArray<Entity> entities;
 
-    public AnimationSystem(EntityFactory entityFactory, SpriteBatch batch, PooledEngine engine, World world, OrthographicCamera camera, SpaceGame game) {
-        this.engine = engine;
-        this.world = world;
-        //fireballTest = entityFactory.createProjectile(1000, 1100, new Vector2(0,0), true, false);
-        //engine.addEntity(fireballTest);
+    public AnimationSystem(SpaceGame game) {
         this.game = game;
-        this.batch = batch;
-        this.camera = camera;
-
 
     }
 
@@ -66,7 +51,7 @@ public class AnimationSystem extends EntitySystem {
 
     }
 
-    public void update(float deltaTime) {
+    public void update(float deltaTime) { /*
         for (Entity entity : entities) {
             AnimationComponent acom = ComponentMappers.ANI_MAP.get(entity);
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
@@ -81,16 +66,10 @@ public class AnimationSystem extends EntitySystem {
             scom.sprite.setRegion(acom.getCurrentFrame());
 
             }
+            */
         }
 
-    public static Animation createAnimation(TextureAtlas atlas, float frameDuration) {
-        com.badlogic.gdx.utils.Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
-        TextureAtlas.AtlasRegion[] frames = new TextureAtlas.AtlasRegion[regions.size];
-        for(int i = 0; i < frames.length; i++) {
-            frames[i] = atlas.findRegion("explosion" + String.format(Locale.getDefault(), "%04d", Integer.parseInt(String.valueOf(i))));
-        }
-        return new Animation<TextureRegion>(frameDuration, frames);
-    }
+
 
     }
 

@@ -9,6 +9,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
@@ -22,13 +25,15 @@ import no.progark19.spacegame.managers.EntityManager;
 // Handles the movement of movable objects in the game world
 
 public class MovementSystem extends EntitySystem {
-
     //private ImmutableArray<Entity> asteroids;
     //private ImmutableArray<Entity> spaceship;
     //private ImmutableArray<Entity> projectiles;
     ImmutableArray<Entity> bodyEntities;
     ImmutableArray<Entity> nonBodyEntities;
     private World world;
+
+
+    boolean y = true;
 
     public MovementSystem(World world) {
         this.world = world;
@@ -66,6 +71,23 @@ public class MovementSystem extends EntitySystem {
     }
 
     public void update(float deltaTime) {
+
+
+
+        Iterator<Entity> i = EntityManager.flaggedForRemoval.iterator();
+
+        if(!world.isLocked()) {
+            while(i.hasNext()) {
+                Entity entity = i.next();
+                Body b = ComponentMappers.BOD_MAP.get(entity).body;
+
+                getEngine().removeEntity(entity);
+                world.destroyBody(b);
+                i.remove();
+            }
+        }
+
+
         world.step(1f/60f, 6,2);
 
         /*for (Entity entity : asteroids) {

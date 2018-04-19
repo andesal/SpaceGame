@@ -19,13 +19,18 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.ArrayList;
+
 import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
@@ -36,52 +41,36 @@ import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.VelocityComponent;
+import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.EntityFactory;
 
 /**
  * Created by anderssalvesen on 17.04.2018.
  */
 
-public class CollisionSystem extends EntitySystem implements ContactListener, EntityListener {
+public class CollisionSystem extends EntitySystem implements ContactListener {
 
     private ImmutableArray<Entity> bullets;
     private ImmutableArray<Entity> asteroids;
     private ImmutableArray<Entity> spaceship;
 
-    private ParticleEffect particleEffect;
-
+    private SpaceGame game;
     private World world;
-    private SpriteBatch batch;
+    private EntityFactory entityFactory;
 
 
-    public CollisionSystem(World world, SpriteBatch batch) {
+    public CollisionSystem(SpaceGame game, World world, EntityFactory entityFactory) {
+        this.game = game;
         this.world = world;
-        this.batch = batch;
+        this.entityFactory = entityFactory;
         world.setContactListener(this);
-        //textureAtlas = GameSettings.LARGE_EXPLOSION;
-
-        /*region1 = new TextureAtlas.AtlasRegion("")
-        region2 = textureAtlas.findRegion("atlases/explosion2.png");
-        region3 = textureAtlas.findRegion("atlases/explosion3.png");
-        region4 = textureAtlas.findRegion("atlases/explosion4.png");
-        region5 = textureAtlas.findRegion("atlases/explosion5.png");
-        region6 = textureAtlas.findRegion("atlases/explosion6.png");
-        textureAtlas.addRegion("1", region1);
-        textureAtlas.addRegion("2", region2);
-        textureAtlas.addRegion("3", region3);
-        textureAtlas.addRegion("4", region4);
-        textureAtlas.addRegion("5", region5);
-        textureAtlas.addRegion("6", region6);
-        */
-        //particleEffect.loadTextureAtlases(Gdx.files.internal("atlases/explosion.atlas"), Gdx.files.internal("atlases"));
-        //particleEffect.loadTextureAtlases(Gdx.files.internal("atlases/explosion.atlas"), textureAtlas);
-
 
     }
 
     public void addedToEngine(Engine engine) {
         bullets = engine.getEntitiesFor(Family.all(
-                AnimationComponent.class,
-                ElementComponent.class).get());
+                ElementComponent.class, SpriteComponent.class, RenderableComponent.class)
+                .exclude(BodyComponent.class).get());
         asteroids = engine.getEntitiesFor(Family.all(
                 BodyComponent.class,
                 ElementComponent.class).get());
@@ -91,7 +80,6 @@ public class CollisionSystem extends EntitySystem implements ContactListener, En
     }
 
     public void update(float deltaTime) {
-
         for (Entity bullet : bullets) {
             SpriteComponent scomBullet = ComponentMappers.SPRITE_MAP.get(bullet);
 
@@ -109,7 +97,9 @@ public class CollisionSystem extends EntitySystem implements ContactListener, En
                     }
                     if (hcom.health == 0) {
                         BodyComponent bcom = ComponentMappers.BOD_MAP.get(asteroid);
-                        world.destroyBody(bcom.body);
+                        EntityManager.flaggedForRemoval.add(asteroid);
+
+
                         //TODO kick out enity OR REUSE...
 
                     }
@@ -121,26 +111,45 @@ public class CollisionSystem extends EntitySystem implements ContactListener, En
 
     @Override
     public void beginContact(Contact contact) {
-        float x = contact.getWorldManifold().getPoints()[0].x;
-        float y = contact.getWorldManifold().getPoints()[0].y;
-        short a = contact.getFixtureA().getFilterData().categoryBits;
-        short b = contact.getFixtureB().getFilterData().categoryBits;
-        System.out.println(x + " " + y);
-        System.out.println(a);
-        System.out.println(b);
-        if (a == GameSettings.FIRE_ASTEROID_TAG && b == GameSettings.FIRE_ASTEROID_TAG) {
-            System.out.println("Fire collided");
-        }
-        if (a == GameSettings.ICE_ASTEROID_TAG && b == GameSettings.ICE_ASTEROID_TAG) {
-            System.out.println("Ice collided");
-        }
-        if ((a == GameSettings.FIRE_ASTEROID_TAG && b == GameSettings.ICE_ASTEROID_TAG) || (a == GameSettings.ICE_ASTEROID_TAG && b == GameSettings.FIRE_ASTEROID_TAG)) {
-            System.out.println("Fire and ice collided");
-        }
+        Fixture fa = contact.getFixtureA();
+        Fixture fb = contact.getFixtureB();
+        short a = fa.getFilterData().categoryBits;
+        short b = fb.getFilterData().categoryBits;
+
         if ((a == GameSettings.SPACESHIP_TAG && (b == GameSettings.ICE_ASTEROID_TAG || b == GameSettings.FIRE_ASTEROID_TAG))
                 || (b == GameSettings.SPACESHIP_TAG && (a == GameSettings.ICE_ASTEROID_TAG || a == GameSettings.FIRE_ASTEROID_TAG))) {
-            System.out.println("Spaceship ");
+            System.out.println("D ");
+            return;
         }
+        Entity entityA = (Entity) fa.getBody().getUserData();
+        Entity entityB = (Entity) fb.getBody().getUserData();
+
+        SpriteComponent scomA = ComponentMappers.SPRITE_MAP.get(entityA);
+        SpriteComponent scomB = ComponentMappers.SPRITE_MAP.get(entityB);
+
+        float xA = scomA.sprite.getX(); float xB = scomB.sprite.getX();
+        float yA = scomA.sprite.getY(); float yB = scomB.sprite.getY();
+
+        //Collision happens reasonably close, trigger explosion
+        if (GameSettings.screenBounds.contains(xA, yA) || GameSettings.screenBounds.contains(xB, yB)) {
+            EntityManager.flaggedForRemoval.add(entityA);
+            EntityManager.flaggedForRemoval.add(entityB);
+        }
+
+        if (a == GameSettings.FIRE_ASTEROID_TAG && b == GameSettings.FIRE_ASTEROID_TAG) {
+            System.out.println("FIRE FIRE");
+        }
+        if (a == GameSettings.ICE_ASTEROID_TAG && b == GameSettings.ICE_ASTEROID_TAG) {
+
+            System.out.println("ICE ICE");
+
+        }
+        if ((a == GameSettings.FIRE_ASTEROID_TAG && b == GameSettings.ICE_ASTEROID_TAG) || (a == GameSettings.ICE_ASTEROID_TAG && b == GameSettings.FIRE_ASTEROID_TAG)) {
+            System.out.println("ICE FIRE");
+
+        }
+
+
     }
 
     @Override
@@ -157,18 +166,6 @@ public class CollisionSystem extends EntitySystem implements ContactListener, En
 
     }
 
-    @Override
-    public void entityAdded(Entity entity) {
-
-    }
-
-    @Override
-    public void entityRemoved(Entity entity) {
-
-    }
 
 
-    public void dispose() {
-        batch.dispose();
-    }
 }

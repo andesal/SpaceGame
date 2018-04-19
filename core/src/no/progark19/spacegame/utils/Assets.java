@@ -24,12 +24,15 @@ public class Assets {
         manager.load(Paths.BACKGROUND_TEXTURE_PATH, Texture.class);
         manager.load(Paths.ASTEROID_FIRE_TEXTURE_PATH, Texture.class);
         manager.load(Paths.ASTEROID_ICE_TEXTURE_PATH, Texture.class);
-        manager.load(Paths.ICE_PROJECTILE_TEXTURE_PATH, Texture.class);
-        manager.load(Paths.FIRE_PROJECTILE_TEXTURE_PATH, Texture.class);
+        //manager.load(Paths.ICE_PROJECTILE_TEXTURE_PATH, Texture.class);
+        //manager.load(Paths.FIRE_PROJECTILE_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.FIRE_BULLET_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.ICE_BULLET_TEXTURE_PATH, Texture.class);
+
     }
 
     public void loadTextureAtlases() {
-        manager.load(Paths.FIRE_EXPLOSION_ATLAS, TextureAtlas.class);
+        manager.load(Paths.FIRE_EXPLOSION_2_ATLAS, TextureAtlas.class);
         manager.load(Paths.ICE_EXPLOSION_ATLAS, TextureAtlas.class);
 
     }

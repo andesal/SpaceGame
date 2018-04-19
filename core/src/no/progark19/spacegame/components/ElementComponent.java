@@ -8,8 +8,8 @@ public class ElementComponent implements Component, Pool.Poolable {
 
     public Enum element;
 
-    public ElementComponent() {
-
+    public ElementComponent(Enum element) {
+        this.element = element;
     }
 
 
