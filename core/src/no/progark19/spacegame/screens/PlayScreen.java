@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,9 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import javax.xml.soap.Text;
-
-import no.progark19.spacegame.components.SpriteComponent;
+import no.progark19.spacegame.systems.AnimationSystem;
+import no.progark19.spacegame.systems.CollisionSystem;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
@@ -33,7 +31,6 @@ import no.progark19.spacegame.components.ForceOnComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.managers.AudioManager;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.systems.CollisionSystem;
 import no.progark19.spacegame.systems.ComponentMappers;
 import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
@@ -105,7 +102,7 @@ public class PlayScreen implements Screen {
     //----------------------------------------------------------------------------------------------
     public PlayScreen(SpaceGame game){
         this.game = game;
-        game.camera.setToOrtho(false, SpaceGame.WIDTH*1.5f, SpaceGame.HEIGHT*1.5f);
+        game.camera.setToOrtho(false, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         this.uiCamera = new OrthographicCamera();
         this.uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
         this.shapeRenderer = new ShapeRenderer();
@@ -118,13 +115,14 @@ public class PlayScreen implements Screen {
         entityFactory = new EntityFactory(engine);
 
         //Add engine systems
-        engine.addSystem(new ControlSystem());
-        engine.addSystem(new RenderSystem(game.batch, game.camera));
+        engine.addSystem(new ControlSystem(game.camera, entityFactory, engine));
+        engine.addSystem(new RenderSystem(game.batch, game.camera, shapeRenderer, game));
         engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
-        engine.addSystem(new CollisionSystem());
         engine.addSystem(new SoundSystem());
         engine.addSystem(new ForceApplierSystem());
+        engine.addSystem(new AnimationSystem(entityFactory, game.batch, engine, GameSettings.BOX2D_PHYSICSWORLD, game.camera, game));
+        engine.addSystem(new CollisionSystem(GameSettings.BOX2D_PHYSICSWORLD, game.batch));
         engine.addEntityListener(entityManager);
 
         //Create entities

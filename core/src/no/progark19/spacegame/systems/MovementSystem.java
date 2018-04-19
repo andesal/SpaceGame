@@ -48,7 +48,7 @@ public class MovementSystem extends EntitySystem {
         nonBodyEntities = engine.getEntitiesFor(Family
                 .all(
                         VelocityComponent.class,
-                        PositionComponent.class)
+                        SpriteComponent.class)
                 .get());
 
         /*
@@ -89,6 +89,19 @@ public class MovementSystem extends EntitySystem {
             pcom.y = bcom.body.getPosition().y * GameSettings.BOX2D_PIXELS_TO_METERS;
 
             pcom.rotation = (float) Math.toDegrees(bcom.body.getAngle());
+        }
+
+        for (Entity entity : nonBodyEntities){
+            VelocityComponent vcom = ComponentMappers.VEL_MAP.get(entity);
+            SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
+
+            float x = scom.sprite.getX() + vcom.velocity.x;
+            float y = scom.sprite.getY() + vcom.velocity.y;
+
+            scom.sprite.setPosition(x, y);
+
+
+            //pcom.rotation = (float) Math.toDegrees(bcom.body.getAngle());
         }
     }
 }

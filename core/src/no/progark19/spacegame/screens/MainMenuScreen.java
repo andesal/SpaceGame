@@ -84,9 +84,9 @@ public class MainMenuScreen implements Screen {
         //game.setScreen(new PlayScreen_DEMO(game));
 
         //this.skin = new Skin();
-        //this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
+        //this.skin.addRegions(game.assetManager.get("ui/uiskin.atlas", TextureAtlas.class));
         //this.skin.add("default-font", game.font24);
-        //this.skin.load(Gdx.files.internal("ui/uiskin.json"));
+        //this.skin.loadTextureAtlases(Gdx.files.internal("ui/uiskin.json"));
 
         //initButtons();
     }

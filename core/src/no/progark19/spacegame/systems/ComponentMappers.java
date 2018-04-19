@@ -3,6 +3,7 @@ package no.progark19.spacegame.systems;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
@@ -23,6 +24,8 @@ import no.progark19.spacegame.components.VelocityComponent;
  */
 
 public class ComponentMappers {
+
+    public static final ComponentMapper<AnimationComponent> ANI_MAP = ComponentMapper.getFor(AnimationComponent.class);
 
     public static final ComponentMapper<BodyComponent> BOD_MAP = ComponentMapper.getFor(BodyComponent.class);
 
