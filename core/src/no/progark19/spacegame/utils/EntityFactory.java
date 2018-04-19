@@ -15,9 +15,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import org.omg.CORBA.Bounds;
-
-import java.lang.reflect.Array;
 
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
