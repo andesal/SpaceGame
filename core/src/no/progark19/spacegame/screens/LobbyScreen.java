@@ -5,15 +5,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -38,10 +42,15 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private GlyphLayout layout;
     private boolean onSupportedDevice;
 
+    private static final int LOGO_WIDTH = 260;
+    private static final int LOGO_HEIGHT = 70;
+    private static final int LOGO_Y = 570;
+
     private Stage stage;
 
     private ShapeRenderer shapeRenderer;
 
+    private Texture background, logo;
     // Dark network magics
     private String latestData = "";
     private String thisName = SpaceNameGenerator.generate();
@@ -83,6 +92,9 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
 
+        background = new Texture("img/menu_bg_darkblue_plain.jpg");
+        logo = new Texture("textImg/LOBBY_TEXT.png");
+
         onSupportedDevice = Gdx.app.getType() == Application.ApplicationType.Android;
         //FIXME REMOVE
         onSupportedDevice = true;
@@ -114,28 +126,30 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
         if(seedDecided){
             game.setScreen(new PlayScreen(game));
         }
-
-        Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.setProjectionMatrix(game.camera.combined);
 
+
+
+        stage.getBatch().begin();
+        //stage.getBatch().draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
+        stage.getBatch().draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
+        stage.getBatch().end();
         game.batch.begin();
+        //font.setColor(Color.BLACK);
+        //font.getData().setScale(4);
+        //layout.setText(font, "LOBBY");
 
-        font.setColor(Color.BLACK);
-        font.getData().setScale(4);
-        layout.setText(font, "LOBBY");
-
-        font.draw(game.batch, layout,
-                SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT - layout.height*0.5f
-        );
-
+        //font.draw(game.batch, layout,
+        //        SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT - layout.height*0.5f
+        //);
 
         font.getData().setScale(2);
         font.setColor(Color.FIREBRICK);
         layout.setText(font, "Your name is: \n" + thisName);
-
         font.draw(game.batch, layout,
-                SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT - layout.height*1.5f
+                SpaceGame.WIDTH/2 - layout.width/2, 500
         );
 
 
@@ -288,10 +302,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
         });
 
 
-
         stage.addActor(buttonInitiate);
         stage.addActor(buttonExit);
-
-
     }
 }
