@@ -25,6 +25,7 @@ import java.util.List;
 
 import no.progark19.spacegame.interfaces.P2pConnector;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.utils.json.JsonPayload;
 
 /**
  * Created by Anders on 17.04.2018.
@@ -40,11 +41,10 @@ public class AndroidP2pConnector implements P2pConnector {
     private static final Strategy STRATEGY = Strategy.P2P_POINT_TO_POINT;
 
     private ConnectionsClient connectionsClient;
-
-    private String deviceName;
+    private String deviceName = "Henry";
 
     private String otherPlayerEndpointId;
-    private String otherPLayerName;
+    private String otherPLayerName = "null";
 
     private Json otherPlayerInput;
     private Json userPlayerInput;
@@ -56,6 +56,17 @@ public class AndroidP2pConnector implements P2pConnector {
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
             Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+
+            Log.d(TAG, "onPayloadReceived: Recieved payload!");
+
+            String message = new String(payload.asBytes());
+            Json json = new Json();
+
+            for (ReceivedDataListener dListener: dataListeners){
+                //noinspection ConstantConditions
+                System.out.println(json.prettyPrint(message));
+                dListener.onReceive(json.fromJson(JsonPayload.class, message));
+            }
         }
 
         @Override
@@ -65,6 +76,7 @@ public class AndroidP2pConnector implements P2pConnector {
             if (pltUpdate.getStatus() == Status.SUCCESS){
                 Log.d(TAG, "onPayloadTransferUpdate: Finished download");
             }
+
         }
     };
 
@@ -115,13 +127,14 @@ public class AndroidP2pConnector implements P2pConnector {
         public void onDisconnected(@NonNull String s) {
             Log.d(TAG, "onDisconnected: Disconnected from other player");
             Toast.makeText(launcher, "You got separated", Toast.LENGTH_SHORT).show();
+
         }
     };
 
     public AndroidP2pConnector(AndroidLauncher androidLauncher) {
+
         this.launcher = androidLauncher;
         connectionsClient = Nearby.getConnectionsClient(launcher);
-
     }
 
     private void startDiscovery() {
@@ -140,6 +153,11 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     @Override
+    public void setThisDeviceName(String name) {
+        deviceName = name;
+    }
+
+    @Override
     public void discoverPeers() {
         startAdvertising();
         startDiscovery();
@@ -151,8 +169,20 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     @Override
-    public void sendData(Json data) {
+    public void removeReceivedDataListener(ReceivedDataListener listener) {
+        dataListeners.remove(listener);
+    }
 
+    @Override
+    public void sendData(JsonPayload data) {
+        String jsonString = (new Json()).toJson(data, JsonPayload.class);
+
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(jsonString.getBytes()));
+    }
+
+    @Override
+    public void sendData(String data) {
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(data.getBytes()));
     }
 
     @Override

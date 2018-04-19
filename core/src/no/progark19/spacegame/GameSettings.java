@@ -1,5 +1,6 @@
 package no.progark19.spacegame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
@@ -15,12 +16,15 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.lang.reflect.Array;
+import java.util.Random;
 
 /**
  * Created by Anders on 12.04.2018.
  */
 
 public class GameSettings {
+    public static boolean isLeftPlayer = false;
+
     public static final boolean CAMERA_FOLLOW_POSITION = true;
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
     public static final boolean BOX2D_DRAWDEBUG = true;
@@ -44,6 +48,24 @@ public class GameSettings {
 
     public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
     public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
+
+    //public static String gameFrameRate
+
+    private static Random mainRandom;
+
+    public static void setRandomSeed(long seed){
+        System.out.println("GotSeed:" + seed);
+        mainRandom = new Random(seed);
+
+    }
+
+    public static Random getMainRandom(){
+        if (mainRandom == null) {
+            throw new IllegalStateException("mainRandom not yet set!");
+        } else {
+            return mainRandom;
+        }
+    }
 
     //FIXME move to somewhere else
     public static Body createDynamicBody(Sprite sprite, World world,
