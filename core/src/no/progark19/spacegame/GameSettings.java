@@ -45,6 +45,13 @@ public class GameSettings {
     public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
     public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
 
+    // Skins
+    public final static String UISKIN1_JSON_PATH = "ui/uiskin.json";
+    public final static String UISKIN1_ATLAS_PATH = "ui/uiskon.atlas";
+    public final static String UISKIN2_JSON_PATH = "ui/sgxui/sgx-ui.json";
+    public final static String UISKIN2_ATLAS_PATH = "ui/sgxui/sgx-ui.atlas";
+
+
     //FIXME move to somewhere else
     public static Body createDynamicBody(Sprite sprite, World world,
                                          Shape shape, float density, float restitution){

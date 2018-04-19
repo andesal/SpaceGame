@@ -26,6 +26,7 @@ import no.progark19.spacegame.screens.LobbyScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
 import no.progark19.spacegame.screens.PlayScreen;
 import no.progark19.spacegame.screens.SettingsScreen;
+import no.progark19.spacegame.utils.Assets;
 
 
 public class SpaceGame extends Game {
@@ -91,6 +92,7 @@ public class SpaceGame extends Game {
 		batch.dispose();
 
 		assets.dispose();
+
 
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
