@@ -40,8 +40,8 @@ public class SpaceGame extends Game {
     //FIXME trur disse er unødvendig
 	public LoadingScreen loadingScreen;
 	public MainMenuScreen mainMenuScreen;
-	public LobbyScreen lobbyScreen;
-	public PlayScreen playScreen;
+	//public LobbyScreen lobbyScreen;
+	//public PlayScreen playScreen;
 	public SettingsScreen settingsScreen;
 
     public P2pConnector p2pConnector;
@@ -71,8 +71,8 @@ public class SpaceGame extends Game {
 
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
-		lobbyScreen = new LobbyScreen(this);
-//		playScreen = new PlayScreen(this);
+		//lobbyScreen = new LobbyScreen(this);
+        //playScreen = new PlayScreen(this);
 		settingsScreen = new SettingsScreen(this);
 
 		this.setScreen(loadingScreen);
@@ -102,7 +102,7 @@ public class SpaceGame extends Game {
 
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
-		lobbyScreen.dispose();
+		//lobbyScreen.dispose();
 		//playScreen.dispose();
 		settingsScreen.dispose();
 
