@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;

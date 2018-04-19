@@ -48,14 +48,16 @@ import no.progark19.spacegame.systems.RenderSystem;
 
 public class EntityFactory {
 
+    private SpaceGame game;
     private PooledEngine engine;
     public enum ELEMENTS {
         FIRE, ICE, SPECIAL
     }
 
-    public EntityFactory(PooledEngine engine) {
-            this.engine = engine;
-        }
+    public EntityFactory(SpaceGame game, PooledEngine engine) {
+        this.game = game;
+        this.engine = engine;
+    }
 
     // TODO Trenger vi elementComponent?
     public Entity createAsteroid(float x, float y, Vector2 velocity, World world, boolean fire) {
@@ -65,7 +67,13 @@ public class EntityFactory {
         ecom.element = fire ? ELEMENTS.FIRE : ELEMENTS.ICE;
 
         SpriteComponent scom = engine.createComponent(SpriteComponent.class);
-        Texture texture = fire ? new Texture(GameSettings.ASTEROID_FIRE_TEXTURE_PATH) : new Texture(GameSettings.ASTEROID_ICE_TEXTURE_PATH);
+
+        Texture texture;
+        if (fire) {
+            texture = game.assetManager.get(Paths.ASTEROID_FIRE_TEXTURE_PATH, Texture.class);
+        } else {
+            texture = game.assetManager.get(Paths.ASTEROID_ICE_TEXTURE_PATH, Texture.class);
+        }
         scom.sprite = new Sprite(texture);
         scom.sprite.setPosition(x, y);
 
@@ -143,11 +151,6 @@ public class EntityFactory {
                     .add(new HealthComponent());
         }
 
-
-
-
-    }
-
     public Entity createShipEngine(float relx, float rely, float relRot, Entity parent, Texture texture){
         Sprite engineSprite = new Sprite(texture);
 
@@ -169,7 +172,12 @@ public class EntityFactory {
         ElementComponent ecom = engine.createComponent(ElementComponent.class);
         ecom.element = fire ? ELEMENTS.FIRE : ELEMENTS.ICE;
 
-        Texture texture = fire ? new Texture(GameSettings.FIRE_PROJECTILE_REGION) : new Texture(GameSettings.ICE_PROJECTILE_REGION);
+        Texture texture;
+        if (fire) {
+            texture = game.assetManager.get(Paths.FIRE_PROJECTILE_TEXTURE_PATH, Texture.class);
+        } else {
+            texture = game.assetManager.get(Paths.ICE_PROJECTILE_TEXTURE_PATH, Texture.class);
+        }
         TextureRegion region = new TextureRegion(texture);
         AnimationComponent acom = new AnimationComponent(region, 2,3, 0.5f, flip);
         TextureRegion regionFrame = acom.getCurrentFrame();

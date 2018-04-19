@@ -30,10 +30,12 @@ import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.util.HashMap;
 import java.util.Queue;
+import java.util.Random;
 
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.systems.AnimationSystem;
 import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.utils.EntityFactory;
@@ -50,6 +52,9 @@ import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
+import no.progark19.spacegame.systems.SoundSystem;
+import no.progark19.spacegame.systems.SpawnSystem;
+import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.JsonPayloadTags;
@@ -169,7 +174,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine = new PooledEngine();
 
         entityManager = new EntityManager();
-        entityFactory = new EntityFactory(engine);
+        entityFactory = new EntityFactory(game, engine);
 
         //Add engine systems
         engine.addSystem(new ControlSystem(game.camera, entityFactory, engine));
@@ -183,12 +188,12 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
         if (GameSettings.isPhysicsResponsible) {
             engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
-            engine.addSystem(new ForceApplierSystem());
+            engine.addSystem(new ForceApplierSystem(game));
         }
 
         //Create entities
-        Texture shipTexture = new Texture(GameSettings.SPACESHIP_TEXTURE_PATH);
-        Texture engineTexture = new Texture(GameSettings.ENGINE_TEXTURE_PATH);
+        Texture shipTexture = game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
+        Texture engineTexture = game.assetManager.get(Paths.ENGINE_TEXTURE_PATH, Texture.class);
 
         Entity shipEntity = entityFactory.createBaseSpaceShip(
                 GameSettings.BOX2D_PHYSICSWORLD, shipTexture
@@ -238,6 +243,8 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         Gdx.input.setInputProcessor(uiStage);
 
         game.p2pConnector.addReceivedDataListener(this);
+        //TODO COMMENT OUT THIS
+        GameSettings.setRandomSeed((new Random()).nextLong());
     }
 
     @Override
@@ -256,7 +263,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         game.batch.setProjectionMatrix(uiCamera.combined);
 
 
-        //TODO This was supposed to print the FPS, but doesnt!
         font.setColor(Color.WHITE);
         font.getData().setScale(4);
         layout.setText(font, String.valueOf(Gdx.graphics.getFramesPerSecond()));
@@ -377,21 +383,19 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         /*int TAG = data.getTAG();
         HashMap<String, Object> values;
         int entityID;
-        float rotation;
-        float posX;
-        float posY;
-        Entity entity;
+        Entity engineEntity;
+
         switch (TAG){
             case JsonPayloadTags.ENGINE_ROTATION_UPDATE:
                 values = (HashMap<String, Object>) data.getValue();
                 entityID = (Integer) values.get(JsonPayloadTags.ENGINE_UPDATE_ENGINEID);
-                rotation = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION);
+                float rotation = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION);
                 float forceDir = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION);
 
-                entity = EntityManager.getEntity(entityID);
+                engineEntity = EntityManager.getEntity(entityID);
 
-                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(entity);
-                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(entity);
+                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
+                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
 
 
                 relposcom.rotation = rotation;
@@ -404,11 +408,11 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 entityID = (Integer) values.get(JsonPayloadTags.ENGINE_UPDATE_ENGINEID);
                 boolean isOn = (Boolean) values.get(JsonPayloadTags.ENGINE_ON_UPDATE_ISON);
 
-                entity = EntityManager.getEntity(entityID);
+                engineEntity = EntityManager.getEntity(entityID);
                 if (isOn) {
-                    entity.add(new ForceOnComponent());
+                    engineEntity.add(new ForceOnComponent());
                 } else {
-                    entity.remove(ForceOnComponent.class);
+                    engineEntity.remove(ForceOnComponent.class);
                 }
 
                 break;

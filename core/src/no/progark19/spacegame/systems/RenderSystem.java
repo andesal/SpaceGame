@@ -36,16 +36,15 @@ import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.Paths;
 
 public class RenderSystem extends EntitySystem {
     private ImmutableArray<Entity> spaceshipEntities;
     private static SpriteBatch batch;
     private OrthographicCamera camera;
     private ImmutableArray<Entity> cameraFocusEntity;
-    public static Texture bg = new Texture(GameSettings.BACKGROUND_PATH);
     private int bgX = 0;
     private int bgY = 0;
-    private TextureAtlas textureAtlas;
     public Animation animation;
     public Animation animation2;
     private float elapsedTime = 0;
@@ -61,8 +60,8 @@ public class RenderSystem extends EntitySystem {
         this.renderer = renderer;
         this.game = game;
 
-        animation = AnimationSystem.createAnimation(game.assetManager.get(GameSettings.ICE_EXPLOSION, TextureAtlas.class), 1/149f);
-        animation2 = AnimationSystem.createAnimation(game.assetManager.get(GameSettings.FIRE_EXPLOSION, TextureAtlas.class), 1/255f);
+        animation = AnimationSystem.createAnimation(game.assetManager.get(Paths.FIRE_EXPLOSION_ATLAS, TextureAtlas.class), 1/149f);
+        animation2 = AnimationSystem.createAnimation(game.assetManager.get(Paths.ICE_EXPLOSION_ATLAS, TextureAtlas.class), 1/255f);
     }
 
     @Override
@@ -87,13 +86,6 @@ public class RenderSystem extends EntitySystem {
         drawBackground();
 
         updateBackgroundCoordinates();
-
-
-
-
-
-
-
 
         for (Entity entity : spaceshipEntities) {
             //FIXME Kanskje fjerne positioncomponent og kun bruke sprites?
@@ -161,6 +153,7 @@ public class RenderSystem extends EntitySystem {
     }
 
     private void drawBackground() {
+        Texture bg = game.assetManager.get(Paths.BACKGROUND_TEXTURE_PATH, Texture.class);
         batch.draw(bg, bgX, bgY);
         batch.draw(bg, bgX - bg.getWidth(), bgY);
         batch.draw(bg, bgX + bg.getWidth(), bgY);
@@ -175,16 +168,19 @@ public class RenderSystem extends EntitySystem {
     }
 
     private void updateBackgroundCoordinates() {
-        if (camera.position.x > bgX + bg.getWidth()) {
-            bgX += bg.getWidth();
+        Texture texture = game.assetManager.get(Paths.BACKGROUND_TEXTURE_PATH);
+        int width = texture.getWidth();
+        int height = texture.getHeight();
+        if (camera.position.x > bgX + width) {
+            bgX += width;
         } else if (camera.position.x < bgX) {
-            bgX -= bg.getWidth();
+            bgX -= height;
         }
 
-        if (camera.position.y > (bgY + bg.getHeight())) {
-            bgY += bg.getHeight();
+        if (camera.position.y > (bgY + height)) {
+            bgY += height;
         } else if (camera.position.y < bgY) {
-            bgY -= bg.getHeight();
+            bgY -= height;
         }
     }
 

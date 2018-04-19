@@ -69,6 +69,9 @@ public class SpaceGame extends Game {
 		assets = new Assets();
 		assetManager = assets.manager;
 		assets.loadTextureAtlases();
+		assets.loadDebugThings();
+		assets.loadTextures();
+		assets.loadSkins();
 		while (! assetManager.update()) {
 			System.out.println("LOADING" + assetManager.getProgress());
 		}
