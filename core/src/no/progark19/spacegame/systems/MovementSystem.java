@@ -10,6 +10,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
@@ -31,8 +34,11 @@ public class MovementSystem extends EntitySystem {
     ImmutableArray<Entity> nonBodyEntities;
     private World world;
 
-    public MovementSystem() {
-        this.world = GameSettings.BOX2D_PHYSICSWORLD;
+
+    boolean y = true;
+
+    public MovementSystem(World world) {
+        this.world = world;
     }
 
     /*
@@ -69,7 +75,37 @@ public class MovementSystem extends EntitySystem {
     }
 
     public void update(float deltaTime) {
-        world.step(1/60f, 6,2);
+
+
+
+        Iterator<Entity> i = EntityManager.flaggedForRemoval.iterator();
+
+        if(!world.isLocked()) {
+            while(i.hasNext()) {
+                Entity entity = i.next();
+                Body b = ComponentMappers.BOD_MAP.get(entity).body;
+
+                getEngine().removeEntity(entity);
+                world.destroyBody(b);
+                i.remove();
+            }
+        }
+
+
+        world.step(1f/60f, 6,2);
+
+        /*for (Entity entity : asteroids) {
+            BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
+            SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
+            Body body = bcom.body;
+            float posX = scom.sprite.getX();
+            float posY = scom.sprite.getY();
+            float velX = body.getLinearVelocity().x;
+            float velY = body.getLinearVelocity().y;
+            scom.sprite.rotate(0.5f);
+
+            scom.sprite.setPosition(posX += velX * deltaTime, posY += velY * deltaTime);
+        }*/
 
         for (Entity entity : bodyEntities){
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);

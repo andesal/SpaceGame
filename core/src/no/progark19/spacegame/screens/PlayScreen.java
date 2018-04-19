@@ -173,17 +173,17 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         debugRenderer.setDrawVelocities(true);
         engine = new PooledEngine();
 
-        entityManager = new EntityManager();
         entityFactory = new EntityFactory(game, engine);
+        entityManager = new EntityManager(engine, entityFactory);
 
         //Add engine systems
-        engine.addSystem(new ControlSystem(game.camera, entityFactory, engine));
-        engine.addSystem(new RenderSystem(game.batch, game.camera, shapeRenderer, game));
-        engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
+        engine.addSystem(new ControlSystem(game, entityFactory));
+        engine.addSystem(new RenderSystem(game));
+        engine.addSystem(new SpawnSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
         engine.addSystem(new SoundSystem());
-        engine.addSystem(new AnimationSystem(entityFactory, game.batch, engine, GameSettings.BOX2D_PHYSICSWORLD, game.camera, game));
-        engine.addSystem(new CollisionSystem(GameSettings.BOX2D_PHYSICSWORLD, game.batch));
+        engine.addSystem(new AnimationSystem(game));
+        engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addEntityListener(entityManager);
 
         if (GameSettings.isPhysicsResponsible) {

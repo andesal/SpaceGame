@@ -1,11 +1,14 @@
 package no.progark19.spacegame;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -39,7 +43,7 @@ public class GameSettings {
 
     public final static Vector2 DEBUG_FORCEARROW_ORIGIN = new Vector2(56.5f, 51.5f);
 
-
+    public static boolean sweep;
     public final static float PROJECTILE_SCALE = 0.05f;
 
 
@@ -47,10 +51,10 @@ public class GameSettings {
     public final static short SPACESHIP_TAG = 0x0002;
     public final static short FIRE_ASTEROID_TAG = 0x0004;
     public final static short ICE_ASTEROID_TAG = 0x0008;
-
-
+    public final static short BULLET_TAG = 0x016;
 
     public final static int MAX_ASTEROIDS = 30;
+    public static Rectangle screenBounds = new Rectangle(-240, 720, 960, 960); //starting bounding box
 
 
     //public static String gameFrameRate
@@ -63,7 +67,6 @@ public class GameSettings {
     public static void setRandomSeed(long seed){
         System.out.println("GotSeed:" + seed);
         mainRandom = new Random(seed);
-
     }
 
     public static Random getMainRandom(){
@@ -78,7 +81,6 @@ public class GameSettings {
     public static Body createDynamicBody(Sprite sprite, World world,
                                          Shape shape, float density, float restitution, short filterID){
         Body body;
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS,
@@ -98,9 +100,7 @@ public class GameSettings {
         fixtureDef.restitution = restitution;
         fixtureDef.filter.categoryBits = filterID;
         body.createFixture(fixtureDef);
-
         shape.dispose();
-
         return body;
     }
 
@@ -148,4 +148,18 @@ public class GameSettings {
 
         return body;
     }
+
+
+    public static Animation createAnimation(TextureAtlas atlas, float frameDuration) {
+        com.badlogic.gdx.utils.Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
+        TextureAtlas.AtlasRegion[] frames = new TextureAtlas.AtlasRegion[regions.size];
+        for(int i = 0; i < frames.length; i++) {
+            frames[i] = atlas.findRegion("explosion" + String.format(Locale.getDefault(), "%04d", Integer.parseInt(String.valueOf(i))));
+        }
+        return new Animation<TextureRegion>(frameDuration, frames);
+    }
+
+
+
+
 }
