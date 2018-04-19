@@ -1,12 +1,9 @@
 package no.progark19.spacegame;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Vector2;
@@ -17,12 +14,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import java.lang.reflect.Array;
 import java.util.Random;
 
-/**
- * Created by Anders on 12.04.2018.
- */
 
 public class GameSettings {
     public static boolean isLeftPlayer = false;
@@ -38,30 +31,21 @@ public class GameSettings {
     public static final float SPACESHIP_DENSITY = 0.5f;
     public static final float SPACESHIP_RESTITUTION = 0.5f;
     public static final boolean SPACESHIP_ENABLE_ROTATION = false;
-    public final static String SPACESHIP_TEXTURE_PATH = "img/spaceship.png";
     public final static Vector2 ENGINE_ORIGIN = new Vector2(9,25);
     public final static float ENGINE_MAX_FORCE = 0.1f;
-    public final static String ENGINE_TEXTURE_PATH = "img/spaceship_engine.png";
-    public final static String BACKGROUND_PATH = "img/background.png";
 
-    public final static String DEBUG_FORCEARROW_TEXTURE_PATH = "img/debug_forcearrow.png";
     public final static Vector2 DEBUG_FORCEARROW_ORIGIN = new Vector2(56.5f, 51.5f);
 
-    public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
-    public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
 
     public final static float PROJECTILE_SCALE = 0.05f;
-    public final static String FIRE_PROJECTILE_REGION = "atlasLib/f.png";
-    public final static String ICE_PROJECTILE_REGION = "img/ice_region.png";
+
 
     //Tags for collision filtering
     public final static short SPACESHIP_TAG = 0x0002;
     public final static short FIRE_ASTEROID_TAG = 0x0004;
     public final static short ICE_ASTEROID_TAG = 0x0008;
 
-    //ANIMATION ATLASES:
-    public final static String FIRE_EXPLOSION = "atlasLib/fire_explosion.atlas";
-    public final static String ICE_EXPLOSION = "atlasLib/ice.atlas";
+
 
     public final static int MAX_ASTEROIDS = 30;
 

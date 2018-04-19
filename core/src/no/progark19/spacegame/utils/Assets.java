@@ -14,15 +14,23 @@ public class Assets {
 
     public AssetManager manager = new AssetManager();
 
+    public void loadDebugThings() {
+        manager.load(Paths.DEBUG_FORCEARROW_TEXTURE_PATH, Texture.class);
+    }
 
-    public String fireAsteroidString = GameSettings.FIRE_EXPLOSION;
-    private String iceAsteroidString = GameSettings.ICE_EXPLOSION;
-
-
+    public void loadTextures() {
+        manager.load(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.ENGINE_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.BACKGROUND_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.ASTEROID_FIRE_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.ASTEROID_ICE_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.ICE_PROJECTILE_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.FIRE_PROJECTILE_TEXTURE_PATH, Texture.class);
+    }
 
     public void loadTextureAtlases() {
-        manager.load(fireAsteroidString, TextureAtlas.class);
-        manager.load(iceAsteroidString, TextureAtlas.class);
+        manager.load(Paths.FIRE_EXPLOSION_ATLAS, TextureAtlas.class);
+        manager.load(Paths.ICE_EXPLOSION_ATLAS, TextureAtlas.class);
 
     }
 
@@ -38,9 +46,7 @@ public class Assets {
 
     }
 
-    public void loadTextures() {
 
-    }
 
 
 

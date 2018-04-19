@@ -92,8 +92,8 @@ public class SpawnSystem extends EntitySystem {
         //TODO This while on game start (IF game.started (boolean in settings). If new asteroids is needed, re-use entity (Remove & add renderable component and re-calculate coordinates, reset health etc)
         //TODO if asteroid explodes (collision system), update pos, health etc.
         while (numAsteroids < GameSettings.MAX_ASTEROIDS) {
-            int x = calculateSpawnCoordinates(r).get(0);
-            int y = calculateSpawnCoordinates(r).get(1);
+            int x = calculateSpawnCoordinates().get(0);
+            int y = calculateSpawnCoordinates().get(1);
             float velX = randomNumber(r, -200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
             float velY = randomNumber(r, -200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
             fire = !fire;
@@ -118,19 +118,20 @@ public class SpawnSystem extends EntitySystem {
 
 
     private ArrayList<Integer> calculateSpawnCoordinates() {
-        int LeftX = randomNumber((int) spawn.x, (int) notSpawn.x);
-        int RightX = randomNumber((int) (notSpawn.x + notSpawn.getWidth()), (int) (spawn.x + spawn.getWidth()));
-        int bottomY = randomNumber((int) spawn.y, (int) notSpawn.y);
-        int topY = randomNumber((int) (notSpawn.y + notSpawn.getHeight()), (int) (spawn.y + spawn.getHeight()));
+        Random r = GameSettings.getMainRandom();
+        int LeftX = randomNumber(r, (int) spawn.x, (int) notSpawn.x);
+        int RightX = randomNumber(r, (int) (notSpawn.x + notSpawn.getWidth()), (int) (spawn.x + spawn.getWidth()));
+        int bottomY = randomNumber(r ,(int) spawn.y, (int) notSpawn.y);
+        int topY = randomNumber(r, (int) (notSpawn.y + notSpawn.getHeight()), (int) (spawn.y + spawn.getHeight()));
 
-        int x = GameSettings.getMainRandom().nextBoolean() ? LeftX : RightX;
-        int y = GameSettings.getMainRandom().nextBoolean() ? bottomY : topY;
+        int x = r.nextBoolean() ? LeftX : RightX;
+        int y = r.nextBoolean() ? bottomY : topY;
 
         return new ArrayList<Integer>(Arrays.asList(x, y));
     }
 
-    private int randomNumber(int min, int max) {
-        return GameSettings.getMainRandom().nextInt(max - min) + min;
+    private int randomNumber(Random random, int min, int max) {
+        return random.nextInt(max - min) + min;
     }
 
 

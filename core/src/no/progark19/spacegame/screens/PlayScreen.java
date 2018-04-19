@@ -1,6 +1,5 @@
 package no.progark19.spacegame.screens;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
@@ -28,6 +27,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import no.progark19.spacegame.systems.AnimationSystem;
 import no.progark19.spacegame.systems.CollisionSystem;
 import java.util.HashMap;
+import java.util.Random;
 
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.utils.EntityFactory;
@@ -45,6 +45,7 @@ import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
 import no.progark19.spacegame.systems.SoundSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
+import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.JsonPayloadTags;
 
@@ -160,7 +161,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine = new PooledEngine();
 
         entityManager = new EntityManager();
-        entityFactory = new EntityFactory(engine);
+        entityFactory = new EntityFactory(game, engine);
 
         //Add engine systems
         engine.addSystem(new ControlSystem(game.camera, entityFactory, engine));
@@ -168,14 +169,14 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
         engine.addSystem(new SoundSystem());
-        engine.addSystem(new ForceApplierSystem());
+        engine.addSystem(new ForceApplierSystem(game));
         engine.addSystem(new AnimationSystem(entityFactory, game.batch, engine, GameSettings.BOX2D_PHYSICSWORLD, game.camera, game));
         engine.addSystem(new CollisionSystem(GameSettings.BOX2D_PHYSICSWORLD, game.batch));
         engine.addEntityListener(entityManager);
 
         //Create entities
-        Texture shipTexture = new Texture(GameSettings.SPACESHIP_TEXTURE_PATH);
-        Texture engineTexture = new Texture(GameSettings.ENGINE_TEXTURE_PATH);
+        Texture shipTexture = game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
+        Texture engineTexture = game.assetManager.get(Paths.ENGINE_TEXTURE_PATH, Texture.class);
 
         Entity shipEntity = entityFactory.createBaseSpaceShip(
                 GameSettings.BOX2D_PHYSICSWORLD, shipTexture
@@ -224,6 +225,8 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
         game.p2pConnector.addReceivedDataListener(this);
+        //TODO COMMENT OUT THIS
+        GameSettings.setRandomSeed((new Random()).nextLong());
     }
 
     @Override

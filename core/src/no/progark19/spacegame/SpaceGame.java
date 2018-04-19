@@ -25,7 +25,6 @@ public class SpaceGame extends Game {
 
 	public OrthographicCamera camera;
 	public SpriteBatch batch;
-	ParticleEffect pe;
 
 	//public BitmapFont font24;
 	public AssetManager assetManager;
@@ -63,6 +62,9 @@ public class SpaceGame extends Game {
 		assets = new Assets();
 		assetManager = assets.manager;
 		assets.loadTextureAtlases();
+		assets.loadDebugThings();
+		assets.loadTextures();
+		assets.loadSkins();
 		while (! assetManager.update()) {
 			System.out.println("LOADING");
 		}
