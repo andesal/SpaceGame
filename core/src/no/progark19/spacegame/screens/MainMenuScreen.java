@@ -28,9 +28,9 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 public class MainMenuScreen implements Screen {
 
-    private static final int LOGO_WIDTH = 400;
-    private static final int LOGO_HEIGHT = 250;
-    private static final int LOGO_Y = 400;
+    private static final int LOGO_WIDTH = 260;
+    private static final int LOGO_HEIGHT = 150;
+    private static final int LOGO_Y = 500;
 
     private final SpaceGame game;
 
@@ -51,7 +51,7 @@ public class MainMenuScreen implements Screen {
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
         background = new Texture("img/menu_bg_darkblue_plain.jpg");
-        logo = new Texture("textImg/logo.png");
+        logo = new Texture("textImg/SPACE_GAME_TEXT_V.png");
     }
 
     @Override
@@ -62,6 +62,7 @@ public class MainMenuScreen implements Screen {
 
         this.skin2 = new Skin(Gdx.files.internal("ui/sgxui/sgx-ui.json"));
         this.skin2.addRegions(new TextureAtlas("ui/sgxui/sgx-ui.atlas"));
+
 
         this.skin = new Skin();
         this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
@@ -115,6 +116,9 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initButtons(){
+
+        TextButton buttonPlay, buttonExit, buttonOptions;
+
         buttonPlay = new TextButton("Start Game", skin2, "default");
         buttonPlay.setPosition(110, 330);
         buttonPlay.setSize(280, 60);
@@ -126,7 +130,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        buttonOptions = new TextButton("Options", skin2, "default");
+        buttonOptions = new TextButton("Settings", skin2, "default");
         buttonOptions.setPosition(110, 260);
         buttonOptions.setSize(280, 60);
         buttonOptions.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));

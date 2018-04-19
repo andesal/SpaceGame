@@ -3,6 +3,7 @@ package no.progark19.spacegame.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
@@ -33,12 +34,18 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 // Todo: implement: Lyd av/på, bluetooth/wifi toggle,
 public class SettingsScreen implements Screen {
 
+    private static final int LOGO_WIDTH = 260;
+    private static final int LOGO_HEIGHT = 70;
+    private static final int LOGO_Y = 570;
+
     private final SpaceGame game;
     private Skin skin1;
     private Skin skin2;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
     private Table table;
+
+    private Texture background, logo;
 
     // Todo: Implement global sound
     float volume = 0;
@@ -50,6 +57,7 @@ public class SettingsScreen implements Screen {
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
+        logo = new Texture("textImg/SETTINGS_TEXT.png");
     }
 
     @Override
@@ -71,9 +79,12 @@ public class SettingsScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.begin();
+        stage.getBatch().begin();
 
-        game.batch.end();
+        stage.getBatch().draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
+
+
+        stage.getBatch().end();
         stage.draw();
     }
 
