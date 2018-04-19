@@ -50,6 +50,13 @@ public class GameSettings {
     public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
     public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
 
+    // Skins
+    public final static String UISKIN1_JSON_PATH = "ui/uiskin.json";
+    public final static String UISKIN1_ATLAS_PATH = "ui/uiskon.atlas";
+    public final static String UISKIN2_JSON_PATH = "ui/sgxui/sgx-ui.json";
+    public final static String UISKIN2_ATLAS_PATH = "ui/sgxui/sgx-ui.atlas";
+
+
     public final static float PROJECTILE_SCALE = 0.05f;
     public final static String FIRE_PROJECTILE_REGION = "atlasLib/f.png";
     public final static String ICE_PROJECTILE_REGION = "img/ice_region.png";
@@ -91,6 +98,7 @@ public class GameSettings {
     public static Body createDynamicBody(Sprite sprite, World world,
                                          Shape shape, float density, float restitution, short filterID){
         Body body;
+
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS,
@@ -110,7 +118,9 @@ public class GameSettings {
         fixtureDef.restitution = restitution;
         fixtureDef.filter.categoryBits = filterID;
         body.createFixture(fixtureDef);
+
         shape.dispose();
+
         return body;
     }
 
