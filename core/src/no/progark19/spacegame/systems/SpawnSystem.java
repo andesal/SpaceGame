@@ -41,7 +41,7 @@ public class SpawnSystem extends EntitySystem {
 
     private Rectangle spawn = new Rectangle();
     private Rectangle notSpawn = new Rectangle();
-
+    boolean yeah = true;
     /*private ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
     private ComponentMapper<HealthComponent> hm = ComponentMapper.getFor(HealthComponent.class);
@@ -56,6 +56,11 @@ public class SpawnSystem extends EntitySystem {
         this.entityFactory = entityFactory;
         this.world = world;
         this.camera = camera;
+        //------------Testing projectile-----------------
+        //engine.addEntity(entityFactory.createAsteroid(camera.position.x + 100 ,camera.position.y + 300 ,new Vector2(0, -1), world, true));
+        //engine.addEntity(entityFactory.createAsteroid(camera.position.x + 100 ,camera.position.y,new Vector2(0, 0), world, true));
+        //engine.addEntity(entityFactory.createAsteroid(camera.position.x - 200 ,camera.position.y -100,new Vector2(0, 0), world, true));
+        //-----------------------------------------------
     }
 
 
@@ -70,16 +75,24 @@ public class SpawnSystem extends EntitySystem {
     }
 
     public void update(float deltaTime) {
-        // TODO Calculate angle + velocity of added asteroids to move towards spaceship projected location
+        if (yeah) {
+            engine.addEntity(entityFactory.createAsteroid(camera.position.x - 200 ,camera.position.y +100,new Vector2(0, 0), world, true));
+            System.out.println("xx: " + (camera.position.x -200) + " : " + "yy: " + (camera.position.y +100));
+
+            yeah = false;
+        }
+        Random r = new Random();
         notSpawn = new Rectangle(camera.position.x - 720, camera.position.y - 1080, 1440, 2160);
         spawn = new Rectangle(notSpawn.x - 480, notSpawn.y - 720, 2400, 3600);
 
-        while (numAsteroids < 30) {
+        //TODO This while on game start (IF game.started (boolean in settings). If new asteroids is needed, re-use entity (Remove & add renderable component and re-calculate coordinates, reset health etc)
+        //TODO if asteroid explodes (collision system), update pos, health etc.
+        while (numAsteroids < GameSettings.MAX_ASTEROIDS) {
             int x = calculateSpawnCoordinates().get(0);
             int y = calculateSpawnCoordinates().get(1);
             float velX = randomNumber(-200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
             float velY = randomNumber(-200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
-            fire = fire == true ? false : true;
+            fire = !fire;
             engine.addEntity(entityFactory.createAsteroid(x,y,new Vector2(velX, velY), world, fire));
             numAsteroids++;
 
@@ -87,9 +100,11 @@ public class SpawnSystem extends EntitySystem {
 
         for (Entity entity : asteroids) {
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
-            float x = scom.sprite.getX();
-            float y = scom.sprite.getY();
+            BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
+            float x = scom.sprite.getX() + scom.sprite.getOriginX();
+            float y = scom.sprite.getY() + scom.sprite.getOriginY();
             if (! spawn.contains(x, y)) {
+                world.destroyBody(bcom.body);
                 engine.removeEntity(entity);
                 numAsteroids--;
 

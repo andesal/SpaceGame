@@ -1,6 +1,5 @@
 package no.progark19.spacegame;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -24,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import no.progark19.spacegame.screens.LoadingScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
 import no.progark19.spacegame.screens.SettingsScreen;
+import no.progark19.spacegame.utils.Assets;
 
 
 public class SpaceGame extends Game {
@@ -32,9 +32,11 @@ public class SpaceGame extends Game {
 
 	public OrthographicCamera camera;
 	public SpriteBatch batch;
-	ParticleEffect pe;
 
-	public AssetManager assets;
+	//public BitmapFont font24;
+	public AssetManager assetManager;
+	public Assets assets;
+
 	private Skin skin;
 
     //FIXME trur disse er unødvendig
@@ -64,7 +66,12 @@ public class SpaceGame extends Game {
 
 	@Override
 	public void create() {
-		assets = new AssetManager();
+		assets = new Assets();
+		assetManager = assets.manager;
+		assets.loadTextureAtlases();
+		while (! assetManager.update()) {
+			System.out.println("LOADING" + assetManager.getProgress());
+		}
 		camera = new OrthographicCamera();
 		//camera.setToOrtho(false, WIDTH, HEIGHT);
 		batch = new SpriteBatch();
@@ -98,8 +105,7 @@ public class SpaceGame extends Game {
 	public void dispose() {
 		batch.dispose();
 
-		assets.dispose();
-
+		assetManager.dispose();
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
 		//lobbyScreen.dispose();

@@ -68,11 +68,6 @@ public class MovementSystem extends EntitySystem {
 
     }
 
-    /*public void updateInter() {
-
-    }*/
-
-    @Override
     public void update(float deltaTime) {
         world.step(1/60f, 6,2);
 

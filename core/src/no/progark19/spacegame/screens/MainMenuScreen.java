@@ -28,6 +28,12 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 public class MainMenuScreen implements Screen {
 
+    private static final int EXIT_BUTTON_WIDTH = 200;
+    private static final int EXIT_BUTTON_HEIGHT = 100;
+    private static final int PLAY_BUTTON_WIDTH = 300;
+    private static final int PLAY_BUTTON_HEIGHT = 120;
+    private static final int EXIT_BUTTON_Y = 120;
+    private static final int PLAY_BUTTON_Y = 360;
     private static final int LOGO_WIDTH = 400;
     private static final int LOGO_HEIGHT = 250;
     private static final int LOGO_Y = 400;

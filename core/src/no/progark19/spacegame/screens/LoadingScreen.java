@@ -23,8 +23,10 @@ public class LoadingScreen implements Screen{
         this.shapeRenderer = new ShapeRenderer();
     }
 
+    //TODO move to assetManager/Assetsmanager
     private void queueAssets(){
-        game.assets.load("ui/uiskin.atlas", TextureAtlas.class);
+        game.assetManager.load("ui/uiskin.atlas", TextureAtlas.class);
+
     }
 
     @Override
@@ -36,12 +38,13 @@ public class LoadingScreen implements Screen{
     }
 
     private void update(float delta) {
-        progress = MathUtils.lerp(progress, game.assets.getProgress(), .1f);
-        if (game.assets.update() && progress >= game.assets.getProgress() - .001f) {
-            game.setScreen(new MainMenuScreen(game));
-//            game.setScreen(new PlayScreen(game));
+        progress = MathUtils.lerp(progress, game.assetManager.getProgress(), .1f);
+        if (game.assetManager.update() && progress >= game.assetManager.getProgress() - .001f) {
+                //game.setScreen(new MainMenuScreen(game));
+            game.setScreen(new PlayScreen(game));
         }
     }
+
 
     @Override
     public void render(float delta) {
@@ -84,5 +87,6 @@ public class LoadingScreen implements Screen{
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+
     }
 }

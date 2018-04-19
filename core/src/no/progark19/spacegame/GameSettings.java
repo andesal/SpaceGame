@@ -2,9 +2,11 @@ package no.progark19.spacegame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Vector2;
@@ -34,9 +36,8 @@ public class GameSettings {
     public static final boolean SPACESHIP_STABILIZE_ROTATION = true;
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
     public static final float SPACESHIP_DENSITY = 0.5f;
-
     public static final float SPACESHIP_RESTITUTION = 0.5f;
-    public static final boolean SPACESHIP_ENABLE_ROTATION = false;
+    public static final boolean SPACESHIP_ENABLE_ROTATION = true;
     public final static String SPACESHIP_TEXTURE_PATH = "img/spaceship.png";
     public final static Vector2 ENGINE_ORIGIN = new Vector2(9,25);
     public final static float ENGINE_MAX_FORCE = 0.1f;
@@ -48,6 +49,22 @@ public class GameSettings {
 
     public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
     public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
+
+    public final static float PROJECTILE_SCALE = 0.05f;
+    public final static String FIRE_PROJECTILE_REGION = "atlasLib/f.png";
+    public final static String ICE_PROJECTILE_REGION = "img/ice_region.png";
+
+    //Tags for collision filtering
+    public final static short SPACESHIP_TAG = 0x0002;
+    public final static short FIRE_ASTEROID_TAG = 0x0004;
+    public final static short ICE_ASTEROID_TAG = 0x0008;
+
+    //ANIMATION ATLASES:
+    public final static String FIRE_EXPLOSION = "atlasLib/fire_explosion.atlas";
+    public final static String ICE_EXPLOSION = "atlasLib/ice.atlas";
+
+    public final static int MAX_ASTEROIDS = 30;
+
 
     //public static String gameFrameRate
     public final static int WORLDSYNC_MAXSTATES = 5;
@@ -72,9 +89,8 @@ public class GameSettings {
 
     //FIXME move to somewhere else
     public static Body createDynamicBody(Sprite sprite, World world,
-                                         Shape shape, float density, float restitution){
+                                         Shape shape, float density, float restitution, short filterID){
         Body body;
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS,
@@ -92,16 +108,14 @@ public class GameSettings {
         fixtureDef.shape = shape;
         fixtureDef.density = density;
         fixtureDef.restitution = restitution;
-
+        fixtureDef.filter.categoryBits = filterID;
         body.createFixture(fixtureDef);
-
         shape.dispose();
-
         return body;
     }
 
 
-    public static Body generatePolygon(float x, float y, World world, Texture texture, PolygonSprite polygonSprite) {
+    public static Body generatePolygon(float x, float y, World world, Texture texture, PolygonSprite polygonSprite, short filterID) {
         Body body;
 
         BodyDef bodyDef = new BodyDef();
@@ -128,6 +142,7 @@ public class GameSettings {
         fixtureDef.shape = shape;
         fixtureDef.density = 0.7f;
         fixtureDef.restitution = 0.5f;
+        fixtureDef.filter.categoryBits = filterID;
 
         body.createFixture(fixtureDef);
         shape.dispose();

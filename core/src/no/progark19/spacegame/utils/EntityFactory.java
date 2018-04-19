@@ -4,15 +4,26 @@ package no.progark19.spacegame.utils;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import org.omg.CORBA.Bounds;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.SpaceGame;
+import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
@@ -24,6 +35,8 @@ import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
+import no.progark19.spacegame.components.TextureComponent;
+import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.components.SynchronizedComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
@@ -61,7 +74,9 @@ public class EntityFactory {
             //Body body = GameSettings.generatePolygon(x, y, world, texture, null); //polygonsprite parameter not used in method.
             CircleShape shape = new CircleShape();
             shape.setRadius((scom.sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
-            Body body = GameSettings.createDynamicBody(scom.sprite, world, shape,0.5f,0.5f);
+            short tag = fire ? GameSettings.FIRE_ASTEROID_TAG : GameSettings.ICE_ASTEROID_TAG;
+
+            Body body = GameSettings.createDynamicBody(scom.sprite, world, shape,0.5f,0.5f, tag);
             body.setLinearVelocity(velocity);
             bcom.body = body;
             entity.add(bcom);   //Body Component
@@ -106,25 +121,26 @@ public class EntityFactory {
         Sprite sprite = new Sprite(texture);
         sprite.setOriginBasedPosition(posx, posy);
 
-        Body body = GameSettings.createDynamicBody(
-                sprite, physicsWorld, null,
-                GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION
-        );
         if (GameSettings.isPhysicsResponsible){
+            Body body = GameSettings.createDynamicBody(sprite, physicsWorld, null,
+                    GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION,
+                    GameSettings.SPACESHIP_TAG);
             return engine.createEntity()
                     .add(new SynchronizedComponent())
                     .add(new PositionComponent(posx, posy))
                     .add(new SpriteComponent(sprite))
                     .add(new BodyComponent(body))
                     .add(new RenderableComponent())
-                    .add(new LeadCameraComponent());
+                    .add(new LeadCameraComponent())
+                    .add(new HealthComponent());
         } else {
             return engine.createEntity()
                     .add(new PositionComponent(posx, posy))
                     .add(new SpriteComponent(sprite))
                     .add(new RenderableComponent())
                     .add(new LeadCameraComponent())
-                    .add(new VelocityComponent());
+                    .add(new VelocityComponent())
+                    .add(new HealthComponent());
         }
 
 
@@ -145,4 +161,33 @@ public class EntityFactory {
                 .add(new RenderableComponent())
                 .add(new ForceApplierComponent(GameSettings.ENGINE_MAX_FORCE));
     }
+
+    public Entity createProjectile(float x, float y, Vector2 velocity, boolean fire, boolean flip, float rotation) {
+        //TODO ROTATION NOT WORKING
+        Entity entity = new Entity();
+
+        ElementComponent ecom = engine.createComponent(ElementComponent.class);
+        ecom.element = fire ? ELEMENTS.FIRE : ELEMENTS.ICE;
+
+        Texture texture = fire ? new Texture(GameSettings.FIRE_PROJECTILE_REGION) : new Texture(GameSettings.ICE_PROJECTILE_REGION);
+        TextureRegion region = new TextureRegion(texture);
+        AnimationComponent acom = new AnimationComponent(region, 2,3, 0.5f, flip);
+        TextureRegion regionFrame = acom.getCurrentFrame();
+        Texture frame = regionFrame.getTexture();
+
+        SpriteComponent scom = new SpriteComponent(new Sprite(frame));
+        scom.sprite.setRegion(acom.getCurrentFrame());
+        if (flip) {
+            scom.sprite.setPosition(x,y);
+        } else {
+            scom.sprite.setPosition(x,y);
+        }
+        VelocityComponent vcom = new VelocityComponent(velocity);
+
+        entity.add(ecom).add(acom).add(scom).add(vcom);
+        return entity;
+    }
+
+
+
 }

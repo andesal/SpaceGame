@@ -44,7 +44,9 @@ import no.progark19.spacegame.components.ForceOnComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.managers.AudioManager;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.systems.CollisionSystem;
 import no.progark19.spacegame.systems.ComponentMappers;
+import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
@@ -75,10 +77,9 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     private Texture bg;
     private int bgX = 0;
     private int bgY = 0;
-    //private Skin skin2;
-    private Skin skin;
 
     private Rectangle rectangle;
+
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
@@ -89,7 +90,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engineSlider.setValue(50);
         engineSlider.addListener(new ChangeListener() {
             float rotDiff = maxRot - minRot;
-            //float lastSentValueDiff = ;
             HashMap<String, Object> values;
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -159,7 +159,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     //----------------------------------------------------------------------------------------------
     public PlayScreen(SpaceGame game){
         this.game = game;
-        game.camera.setToOrtho(false, SpaceGame.WIDTH*1.5f, SpaceGame.HEIGHT*1.5f);
+        game.camera.setToOrtho(false, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         this.uiCamera = new OrthographicCamera();
         this.uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
         this.shapeRenderer = new ShapeRenderer();
@@ -172,19 +172,19 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         entityFactory = new EntityFactory(engine);
 
         //Add engine systems
-        //engine.addSystem(new ControlSystem());
+        engine.addSystem(new ControlSystem(game.camera, entityFactory, engine));
+        engine.addSystem(new RenderSystem(game.batch, game.camera, shapeRenderer, game));
         engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
-        //engine.addSystem(new CollisionSystem());
-        //engine.addSystem(new SoundSystem());
-        engine.addSystem(new RenderSystem(game.batch, game.camera));
-        engine.addSystem(new MovementSystem());
+        engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
+        engine.addSystem(new SoundSystem());
+        engine.addSystem(new AnimationSystem(entityFactory, game.batch, engine, GameSettings.BOX2D_PHYSICSWORLD, game.camera, game));
+        engine.addSystem(new CollisionSystem(GameSettings.BOX2D_PHYSICSWORLD, game.batch));
+        engine.addEntityListener(entityManager);
 
         if (GameSettings.isPhysicsResponsible) {
             engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
             engine.addSystem(new ForceApplierSystem());
         }
-
-        engine.addEntityListener(entityManager);
 
         //Create entities
         Texture shipTexture = new Texture(GameSettings.SPACESHIP_TEXTURE_PATH);
@@ -237,13 +237,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
 
-        //this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
-        //this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
-
-        this.skin = new Skin();
-        this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
-        this.skin.load(Gdx.files.internal("ui/uiskin.json"));
-
         game.p2pConnector.addReceivedDataListener(this);
     }
 
@@ -262,8 +255,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
 
-        uiStage.act(Gdx.graphics.getDeltaTime());
-        uiStage.draw();
 
         //TODO This was supposed to print the FPS, but doesnt!
         font.setColor(Color.WHITE);
@@ -273,6 +264,9 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         font.draw(game.batch, layout,
                 SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT/2 - layout.height
         );
+
+        uiStage.act(Gdx.graphics.getDeltaTime());
+        uiStage.draw();
 
         game.batch.end();
 
