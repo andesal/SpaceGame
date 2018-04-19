@@ -48,21 +48,17 @@ public class AndroidP2pConnector implements P2pConnector {
     private String otherPlayerEndpointId;
     private String otherPLayerName = "null";
 
-    private Json otherPlayerInput;
-    private Json userPlayerInput;
-
+    private Json json = new Json();
     private boolean isConnected = false;
     
     // Callback to receive payloads
     private final PayloadCallback payloadCallback = new PayloadCallback() {
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
-            Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
-
-            Log.d(TAG, "onPayloadReceived: Recieved payload!");
+            //Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+            //Log.d(TAG, "onPayloadReceived: Recieved payload!");
 
             String message = new String(payload.asBytes());
-            Json json = new Json();
 
             for (ReceivedDataListener dListener: dataListeners){
                 //noinspection ConstantConditions
@@ -73,12 +69,12 @@ public class AndroidP2pConnector implements P2pConnector {
 
         @Override
         public void onPayloadTransferUpdate(@NonNull String s, @NonNull PayloadTransferUpdate pltUpdate) {
-            Log.d(TAG, "onPayloadTransferUpdate: " + pltUpdate.getStatus() + "\n ->" +
+            /*Log.d(TAG, "onPayloadTransferUpdate: " + pltUpdate.getStatus() + "\n ->" +
                     pltUpdate.getBytesTransferred() + "/" + pltUpdate.getTotalBytes());
             if (pltUpdate.getStatus() == Status.SUCCESS){
-                Log.d(TAG, "onPayloadTransferUpdate: Finished download");
+                //Log.d(TAG, "onPayloadTransferUpdate: Finished download");
             }
-
+            */
         }
     };
 
@@ -177,7 +173,8 @@ public class AndroidP2pConnector implements P2pConnector {
 
     @Override
     public void sendData(JsonPayload data) {
-        String jsonString = (new Json()).toJson(data, JsonPayload.class);
+        System.out.println("ZZZZ " + data);
+        String jsonString = json.toJson(data, JsonPayload.class);
 
         //JSONObject middleJSON = new JSONObject();
         //middleJSON.put()
