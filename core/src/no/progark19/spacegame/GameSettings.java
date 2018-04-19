@@ -1,5 +1,6 @@
 package no.progark19.spacegame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
@@ -16,11 +17,16 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.lang.reflect.Array;
+import java.util.Random;
+
 /**
  * Created by Anders on 12.04.2018.
  */
 
 public class GameSettings {
+    public static boolean isLeftPlayer = false;
+
     public static final boolean CAMERA_FOLLOW_POSITION = true;
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
     public static final boolean BOX2D_DRAWDEBUG = true;
@@ -31,7 +37,7 @@ public class GameSettings {
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
     public static final float SPACESHIP_DENSITY = 0.5f;
     public static final float SPACESHIP_RESTITUTION = 0.5f;
-    public static final boolean SPACESHIP_ENABLE_ROTATION = true;
+    public static final boolean SPACESHIP_ENABLE_ROTATION = false;
     public final static String SPACESHIP_TEXTURE_PATH = "img/spaceship.png";
     public final static Vector2 ENGINE_ORIGIN = new Vector2(9,25);
     public final static float ENGINE_MAX_FORCE = 0.1f;
@@ -59,6 +65,24 @@ public class GameSettings {
 
     public final static int MAX_ASTEROIDS = 30;
 
+
+    //public static String gameFrameRate
+
+    private static Random mainRandom;
+
+    public static void setRandomSeed(long seed){
+        System.out.println("GotSeed:" + seed);
+        mainRandom = new Random(seed);
+
+    }
+
+    public static Random getMainRandom(){
+        if (mainRandom == null) {
+            throw new IllegalStateException("mainRandom not yet set!");
+        } else {
+            return mainRandom;
+        }
+    }
 
     //FIXME move to somewhere else
     public static Body createDynamicBody(Sprite sprite, World world,

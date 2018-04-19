@@ -117,20 +117,20 @@ public class SpawnSystem extends EntitySystem {
     }
 
 
-    private ArrayList<Integer> calculateSpawnCoordinates(Random r) {
-        int LeftX = randomNumber(r, (int) spawn.x, (int) notSpawn.x);
-        int RightX = randomNumber(r, (int) (notSpawn.x + notSpawn.getWidth()), (int) (spawn.x + spawn.getWidth()));
-        int bottomY = randomNumber(r, (int) spawn.y, (int) notSpawn.y);
-        int topY = randomNumber(r, (int) (notSpawn.y + notSpawn.getHeight()), (int) (spawn.y + spawn.getHeight()));
+    private ArrayList<Integer> calculateSpawnCoordinates() {
+        int LeftX = randomNumber((int) spawn.x, (int) notSpawn.x);
+        int RightX = randomNumber((int) (notSpawn.x + notSpawn.getWidth()), (int) (spawn.x + spawn.getWidth()));
+        int bottomY = randomNumber((int) spawn.y, (int) notSpawn.y);
+        int topY = randomNumber((int) (notSpawn.y + notSpawn.getHeight()), (int) (spawn.y + spawn.getHeight()));
 
-        int x = r.nextBoolean() ? LeftX : RightX;
-        int y = r.nextBoolean() ? bottomY : topY;
+        int x = GameSettings.getMainRandom().nextBoolean() ? LeftX : RightX;
+        int y = GameSettings.getMainRandom().nextBoolean() ? bottomY : topY;
 
         return new ArrayList<Integer>(Arrays.asList(x, y));
     }
 
-    private int randomNumber(Random random, int min, int max) {
-        return random.nextInt(max - min) + min;
+    private int randomNumber(int min, int max) {
+        return GameSettings.getMainRandom().nextInt(max - min) + min;
     }
 
 

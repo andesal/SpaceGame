@@ -19,12 +19,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import org.omg.CORBA.Bounds;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.AnimationComponent;
@@ -115,14 +109,11 @@ public class EntityFactory {
 
         Sprite sprite = new Sprite(texture);
         sprite.setOriginBasedPosition(posx, posy);
-        /*
-        ArrayList<Short> collideWith = new ArrayList<Short>();
-        collideWith.add(GameSettings.FIRE_ASTEROID_TAG);
-        collideWith.add(GameSettings.ICE_ASTEROID_TAG);
-        */
-        Body body = GameSettings.createDynamicBody(sprite, physicsWorld, null,
-                GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION,
-                GameSettings.SPACESHIP_TAG);
+
+        Body body = GameSettings.createDynamicBody(
+                sprite, physicsWorld, null,
+                GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION
+        );
 
         return engine.createEntity()
                 .add(new PositionComponent(posx, posy))
