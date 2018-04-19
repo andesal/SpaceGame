@@ -175,12 +175,10 @@ public class PlayScreen implements Screen {
         Gdx.input.setInputProcessor(uiStage);
 
         this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
-        this.skin2.add("default-font", game.font24);
         this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
 
         this.skin = new Skin();
         this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
-        this.skin.add("default-font", game.font24);
         this.skin.load(Gdx.files.internal("ui/uiskin.json"));
     }
 

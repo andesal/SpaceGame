@@ -21,7 +21,7 @@ class SpaceShip {
     private Array<SpaceShipEngine> engines;
     private final int maxSpeed = 1;
 
-    //Sprite controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
+   // Sprite controllDebugOverlay = new Sprite(new Texture("img/playscreenTestDebugOverlay.png"));
 
     public SpaceShip(Sprite baseShipSprite) {
         sprite_baseShip = baseShipSprite;

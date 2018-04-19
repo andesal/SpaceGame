@@ -59,11 +59,9 @@ public class SettingsScreen implements Screen {
         stage.clear();
 
         this.skin1 = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        this.skin1.add("default-font", game.font24);
         this.skin1.addRegions(new TextureAtlas("ui/uiskin.atlas"));
 
         this.skin2 = new Skin(Gdx.files.internal("ui/sgxui/sgx-ui.json"));
-        this.skin2.add("default-font", game.font24);
         this.skin2.addRegions(new TextureAtlas("ui/sgxui/sgx-ui.atlas"));
 
         initSettingsBtt();
