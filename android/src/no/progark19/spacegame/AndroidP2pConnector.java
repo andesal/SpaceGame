@@ -20,11 +20,14 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate.Status;
 import com.google.android.gms.nearby.connection.Strategy;
 
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import no.progark19.spacegame.interfaces.P2pConnector;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.utils.json.JsonPayload;
 
 /**
  * Created by Anders on 17.04.2018.
@@ -40,31 +43,38 @@ public class AndroidP2pConnector implements P2pConnector {
     private static final Strategy STRATEGY = Strategy.P2P_POINT_TO_POINT;
 
     private ConnectionsClient connectionsClient;
-
     private String deviceName;
 
     private String otherPlayerEndpointId;
-    private String otherPLayerName;
+    private String otherPLayerName = "null";
 
-    private Json otherPlayerInput;
-    private Json userPlayerInput;
-
+    private Json json = new Json();
     private boolean isConnected = false;
     
     // Callback to receive payloads
     private final PayloadCallback payloadCallback = new PayloadCallback() {
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
-            Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+            //Log.d(TAG, "onPayloadReceived: Recieved payload!");
+
+            String message = new String(payload.asBytes());
+
+            for (ReceivedDataListener dListener: dataListeners){
+                //noinspection ConstantConditions
+                System.out.println(json.prettyPrint(message));
+                dListener.onReceive(json.fromJson(JsonPayload.class, message));
+            }
         }
 
         @Override
         public void onPayloadTransferUpdate(@NonNull String s, @NonNull PayloadTransferUpdate pltUpdate) {
-            Log.d(TAG, "onPayloadTransferUpdate: " + pltUpdate.getStatus() + "\n ->" +
+            /*Log.d(TAG, "onPayloadTransferUpdate: " + pltUpdate.getStatus() + "\n ->" +
                     pltUpdate.getBytesTransferred() + "/" + pltUpdate.getTotalBytes());
             if (pltUpdate.getStatus() == Status.SUCCESS){
-                Log.d(TAG, "onPayloadTransferUpdate: Finished download");
+                //Log.d(TAG, "onPayloadTransferUpdate: Finished download");
             }
+            */
         }
     };
 
@@ -115,13 +125,14 @@ public class AndroidP2pConnector implements P2pConnector {
         public void onDisconnected(@NonNull String s) {
             Log.d(TAG, "onDisconnected: Disconnected from other player");
             Toast.makeText(launcher, "You got separated", Toast.LENGTH_SHORT).show();
+
         }
     };
 
     public AndroidP2pConnector(AndroidLauncher androidLauncher) {
+
         this.launcher = androidLauncher;
         connectionsClient = Nearby.getConnectionsClient(launcher);
-
     }
 
     private void startDiscovery() {
@@ -140,6 +151,11 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     @Override
+    public void setThisDeviceName(String name) {
+        deviceName = name;
+    }
+
+    @Override
     public void discoverPeers() {
         startAdvertising();
         startDiscovery();
@@ -151,8 +167,24 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     @Override
-    public void sendData(Json data) {
+    public void removeReceivedDataListener(ReceivedDataListener listener) {
+        dataListeners.remove(listener);
+    }
 
+    @Override
+    public void sendData(JsonPayload data) {
+        System.out.println("ZZZZ " + data);
+        String jsonString = json.toJson(data, JsonPayload.class);
+
+        //JSONObject middleJSON = new JSONObject();
+        //middleJSON.put()
+
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(jsonString.getBytes()));
+    }
+
+    @Override
+    public void sendData(String data) {
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(data.getBytes()));
     }
 
     @Override
