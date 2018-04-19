@@ -20,6 +20,8 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate.Status;
 import com.google.android.gms.nearby.connection.Strategy;
 
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class AndroidP2pConnector implements P2pConnector {
     private static final Strategy STRATEGY = Strategy.P2P_POINT_TO_POINT;
 
     private ConnectionsClient connectionsClient;
-    private String deviceName = "Henry";
+    private String deviceName;
 
     private String otherPlayerEndpointId;
     private String otherPLayerName = "null";
@@ -176,6 +178,9 @@ public class AndroidP2pConnector implements P2pConnector {
     @Override
     public void sendData(JsonPayload data) {
         String jsonString = (new Json()).toJson(data, JsonPayload.class);
+
+        //JSONObject middleJSON = new JSONObject();
+        //middleJSON.put()
 
         connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(jsonString.getBytes()));
     }

@@ -25,6 +25,8 @@ import java.util.Random;
 public class GameSettings {
     public static boolean isLeftPlayer = false;
 
+    public static final float ESC_MOVEMENT_INTERVAL = 1/80f;
+
     public static final boolean CAMERA_FOLLOW_POSITION = true;
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
     public static final boolean BOX2D_DRAWDEBUG = true;

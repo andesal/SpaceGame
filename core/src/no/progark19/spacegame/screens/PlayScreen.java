@@ -26,8 +26,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.time.Clock;
+import java.util.Date;
 import java.util.HashMap;
 
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
@@ -72,7 +75,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     private Texture bg;
     private int bgX = 0;
     private int bgY = 0;
-    private Skin skin2;
+    //private Skin skin2;
     private Skin skin;
 
     private Rectangle rectangle;
@@ -80,13 +83,15 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
-        Slider engineSlider = new Slider(0, 100, 0.1f, true, game.getSkin());
+        Slider engineSlider = new Slider(0, 100, 1f, true, game.getSkin());
         engineSlider.setPosition(posX, posY);
         engineSlider.setSize(20, SpaceGame.HEIGHT / 2 - 20);
         engineSlider.setScaleX(3);
         engineSlider.setValue(50);
         engineSlider.addListener(new ChangeListener() {
             float rotDiff = maxRot - minRot;
+            //float lastSentValueDiff = ;
+            HashMap<String, Object> values;
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //spaceShip.changeEngineAngle(engineIndex, ((Slider) actor).getValue());
@@ -100,7 +105,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
 
                 JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
+                values = new HashMap<String, Object>();
 
                 values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
                 values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION, relposcom.rotation);
@@ -114,12 +119,13 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             }
         });
         engineSlider.addListener(new ClickListener() {
+            HashMap<String, Object> values;
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 engineEntity.add(new ForceOnComponent());
 
                 JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
+                values = new HashMap<String, Object>();
 
                 values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
                 values.put(JsonPayloadTags.ENGINE_ON_UPDATE_ISON, true);
@@ -167,12 +173,12 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         entityFactory = new EntityFactory(engine);
 
         //Add engine systems
-        engine.addSystem(new ControlSystem());
+        //engine.addSystem(new ControlSystem());
         engine.addSystem(new RenderSystem(game.batch, game.camera));
-        engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
-        engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
-        engine.addSystem(new CollisionSystem());
-        engine.addSystem(new SoundSystem());
+        //engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
+        engine.addSystem(new MovementSystem(GameSettings.ESC_MOVEMENT_INTERVAL));
+        //engine.addSystem(new CollisionSystem());
+        //engine.addSystem(new SoundSystem());
         engine.addSystem(new ForceApplierSystem());
         engine.addEntityListener(entityManager);
 
@@ -227,8 +233,8 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
 
-        this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
-        this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
+        //this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
+        //this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
 
         this.skin = new Skin();
         this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
