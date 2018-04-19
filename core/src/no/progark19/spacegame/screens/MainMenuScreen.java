@@ -61,12 +61,10 @@ public class MainMenuScreen implements Screen {
         stage.clear();
 
         this.skin2 = new Skin(Gdx.files.internal("ui/sgxui/sgx-ui.json"));
-        this.skin2.add("default-font", game.font24);
         this.skin2.addRegions(new TextureAtlas("ui/sgxui/sgx-ui.atlas"));
 
         this.skin = new Skin();
         this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
-        this.skin.add("default-font", game.font24);
         this.skin.load(Gdx.files.internal("ui/uiskin.json"));
 
         initButtons();

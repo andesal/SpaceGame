@@ -18,7 +18,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import no.progark19.spacegame.gameObjects.SpaceShip;
@@ -37,7 +36,6 @@ public class SpaceGame extends Game {
 	public SpriteBatch batch;
 	ParticleEffect pe;
 
-	public BitmapFont font24;
 	public AssetManager assets;
 	private Skin skin;
 
@@ -62,8 +60,6 @@ public class SpaceGame extends Game {
 		camera = new OrthographicCamera();
 		//camera.setToOrtho(false, WIDTH, HEIGHT);
 		batch = new SpriteBatch();
-
-		initFonts();
 
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
@@ -106,13 +102,5 @@ public class SpaceGame extends Game {
 
 	public SpriteBatch getBatch() {
 		return this.batch;
-	}
-
-	private void initFonts(){
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon.ttf"));
-		FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		params.size = 24;
-		params.color = Color.BLACK;
-		font24 = generator.generateFont(params);
 	}
 }
