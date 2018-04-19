@@ -47,8 +47,9 @@ public class AndroidP2pConnector implements P2pConnector {
     private String otherPlayerEndpointId;
     private String otherPLayerName = "null";
 
+    private Json json = new Json();
     private boolean isConnected = false;
-
+    
     // Callback to receive payloads
     private final PayloadCallback payloadCallback = new PayloadCallback() {
         @Override
@@ -97,12 +98,10 @@ public class AndroidP2pConnector implements P2pConnector {
             /*Log.d(TAG, "onPayloadTransferUpdate: " + pltUpdate.getStatus() + "\n ->" +
                     pltUpdate.getBytesTransferred() + "/" + pltUpdate.getTotalBytes());
             if (pltUpdate.getStatus() == Status.SUCCESS){
-                Log.d(TAG, "onPayloadTransferUpdate: Finished download");
-            }*/
-
+                //Log.d(TAG, "onPayloadTransferUpdate: Finished download");
+            }
+            */
         }
-
-
     };
 
     // Callback for finding other devices
@@ -196,7 +195,6 @@ public class AndroidP2pConnector implements P2pConnector {
         dataListeners.remove(listener);
     }
 
-    //private InputStream inputStream = new Stream
     @Override
     public void sendData(RenderableWorldState data) {
         //String jsonString = (new Json()).toJson(data, JsonPayload.class);
