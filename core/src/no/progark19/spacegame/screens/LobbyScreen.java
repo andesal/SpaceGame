@@ -7,9 +7,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -20,6 +24,12 @@ import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.SpaceNameGenerator;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 public class LobbyScreen implements Screen, ReceivedDataListener {
 
@@ -43,6 +53,8 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private boolean seedMessageSent = false;
     private boolean seedDecided = false;
     private Random random = new Random();
+
+    private Skin skin2;
 
     private ClickListener readListener = new ClickListener() {
         @Override
@@ -75,7 +87,6 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
         //FIXME REMOVE
         onSupportedDevice = true;
 
-        stage.addListener(readListener);
     }
 
     @Override
@@ -87,7 +98,14 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
             game.p2pConnector.discoverPeers();
         }
 
+        System.out.println("LOBBY SCREEN");
         Gdx.input.setInputProcessor(stage);
+        stage.clear();
+
+        this.skin2 = new Skin(Gdx.files.internal("ui/sgxui/sgx-ui.json"));
+        this.skin2.addRegions(new TextureAtlas("ui/sgxui/sgx-ui.atlas"));
+
+        initButtons();
     }
 
     @Override
@@ -225,6 +243,54 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
             System.out.println("String tag not understood!");
 
         }
+
+
+    }
+
+
+    private void initButtons() {
+
+        TextButton buttonExit, buttonInitiate;
+
+        buttonInitiate = new TextButton("Initiate Game", skin2, "default");
+        buttonInitiate.setPosition(110, 190);
+        buttonInitiate.setSize(280, 60);
+        buttonInitiate.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        buttonInitiate.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                JsonPayload jpl = new JsonPayload();
+                jpl.setTAG(JsonPayloadTags.READY);
+                jpl.setValue(true);
+                game.p2pConnector.sendData(jpl);
+                LobbyScreen.this.setPlayerReady(true);
+                return true;
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                JsonPayload jpl = new JsonPayload();
+                jpl.setTAG(JsonPayloadTags.READY);
+                jpl.setValue(false);
+                game.p2pConnector.sendData(jpl);
+                LobbyScreen.this.setPlayerReady(false);
+            }
+        });
+
+        buttonExit = new TextButton("Main Menu", skin2, "default");
+        buttonExit.setPosition(110, 100);
+        buttonExit.setSize(280, 60);
+        buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        buttonExit.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+
+
+
+        stage.addActor(buttonInitiate);
+        stage.addActor(buttonExit);
 
 
     }
