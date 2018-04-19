@@ -22,7 +22,7 @@ import no.progark19.spacegame.managers.EntityManager;
 
 // Handles the movement of movable objects in the game world
 
-public class MovementSystem extends IntervalSystem {
+public class MovementSystem extends EntitySystem {
 
     //private ImmutableArray<Entity> asteroids;
     //private ImmutableArray<Entity> spaceship;
@@ -30,11 +30,8 @@ public class MovementSystem extends IntervalSystem {
     ImmutableArray<Entity> bodyEntities;
     ImmutableArray<Entity> nonBodyEntities;
     private World world;
-    private float interval;
 
-    public MovementSystem(float interval) {
-        super(interval);
-        this.interval = interval;
+    public MovementSystem() {
         this.world = GameSettings.BOX2D_PHYSICSWORLD;
     }
 
@@ -76,7 +73,7 @@ public class MovementSystem extends IntervalSystem {
     }*/
 
     @Override
-    protected void updateInterval() {
+    public void update(float deltaTime) {
         world.step(1/60f, 6,2);
 
         /*for (Entity entity : asteroids) {

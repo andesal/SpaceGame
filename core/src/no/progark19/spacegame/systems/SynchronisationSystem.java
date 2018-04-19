@@ -1,23 +1,19 @@
 package no.progark19.spacegame.systems;
 
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.systems.IntervalSystem;
 
 /**
  * Created by Anders on 19.04.2018.
  */
 
-public class SynchronisationSystem extends IntervalSystem {
+public class SynchronisationSystem extends EntitySystem {
 
-    public SynchronisationSystem(float interval) {
-        super(interval);
-    }
-
-    public SynchronisationSystem(float interval, int priority) {
-        super(interval, priority);
-    }
 
     @Override
-    protected void updateInterval() {
+    public void update(float deltaTime) {
+        super.update(deltaTime);
+
 
     }
 }
