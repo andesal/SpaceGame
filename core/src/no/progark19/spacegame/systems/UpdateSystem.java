@@ -67,7 +67,7 @@ public class UpdateSystem extends EntitySystem {
             RewardComponent rcom = ComponentMappers.REW_COMP.get(entity);
             if (rcom.type.equals("health")) {
                 HealthComponent hcom = ComponentMappers.HEALTH_MAP.get(entity);
-                if (hcom.health + rcom.reward <= GameSettings.HEALTH_SPACESHIP) {
+                if (hcom.health + rcom.reward <= GameSettings.MAX_HEALTH_SPACESHIP) {
                     hcom.health += rcom.reward;
                 }
             } else {

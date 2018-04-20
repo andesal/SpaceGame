@@ -5,11 +5,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
 import java.util.HashMap;
@@ -43,12 +45,14 @@ public class RenderSystem extends EntitySystem {
     private ImmutableArray<Entity> bulletEntities;
 
     private SpaceGame game;
+    private Stage uiStage;
     private static SpaceGame game1; //For debug forcedraw...
 
-    public RenderSystem(SpaceGame game) {
+    public RenderSystem(SpaceGame game, Stage uiStage) {
         this.game = game;
         this.game1 = game; //For debug forcedraw
         stateTimes = new HashMap<Entity, Float>();
+        this.uiStage = uiStage;
     }
 
     @Override
@@ -74,8 +78,8 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-        drawBackground();
 
+        //drawBackground();
         updateBackgroundCoordinates();
 
         for (Entity entity : renderables) {
@@ -182,6 +186,8 @@ public class RenderSystem extends EntitySystem {
 
         }
     }
+
+
 
 
 

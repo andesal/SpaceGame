@@ -93,7 +93,7 @@ public class EntityFactory {
             entity.add(vcom);
         }
 
-        HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH);
+        HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH_ASTEROIDS);
 
 
         entity.add(ecom);   //Element Component
@@ -117,7 +117,7 @@ public class EntityFactory {
                 sprite, physicsWorld, null,
                 GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
 
-HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH);
+HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH_SPACESHIP);
         FuelComponent fcom = new FuelComponent(GameSettings.MAX_FUEL);        return engine.createEntity()
                 .add(new SynchronizedComponent())
                     .add(newPositionComponent(posx, posy))

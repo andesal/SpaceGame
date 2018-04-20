@@ -180,7 +180,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
         //Add engine systems
         engine.addSystem(new ControlSystem(game, entityFactory));
-        engine.addSystem(new RenderSystem(game));
+        engine.addSystem(new RenderSystem(game, uiStage));
         engine.addSystem(new SpawnSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
         engine.addSystem(new SoundSystem());
@@ -237,6 +237,10 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
+
+
+        // FOR TEST HER, healt og fuel må være noe mer globale
+
     }
 
     @Override
@@ -264,8 +268,36 @@ public class PlayScreen implements Screen, ReceivedDataListener
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
 
+        uiStage.act(Gdx.graphics.getDeltaTime());
+        uiStage.draw();
+        float health = 0.6f; // 0 == DEAD, 1 == FULL HEALTH YEAH BABY! Spaceship.getHealth();
+        float fuel = 0.2f; // Spaceship.getFuel();
 
-        font.setColor(Color.WHITE);
+        float posX = 20;
+        float posY = SpaceGame.HEIGHT - 20;
+        game.batch.setColor(Color.RED);
+        /*
+        if (health > 0.6f)
+            game.batch.setColor(Color.GREEN);
+        else if (health > 0.2f)
+            game.batch.setColor(Color.ORANGE);
+        else
+            game.batch.setColor(Color.RED);
+            */
+        //game.batch.setColor(Color.RED);
+
+        game.batch.draw(game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class), posX ,posY, SpaceGame.WIDTH , 5);
+        /*if (fuel > 0.6f)
+            game.batch.setColor(Color.GREEN);
+        else if (fuel > 0.2f)
+            game.batch.setColor(Color.ORANGE);
+        else {
+            game.batch.setColor(Color.RED);
+        }
+        */
+        game.batch.draw(game.assetManager.get(Paths.PROGRESSBAR_TEXTURE_PATH, Texture.class), posX  ,posY, SpaceGame.WIDTH , 5);
+        //game.batch.setColor(Color.WHITE);
+        //font.setColor(Color.WHITE);
         font.getData().setScale(4);
         layout.setText(font, String.valueOf(Gdx.graphics.getFramesPerSecond()));
 
@@ -440,6 +472,11 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     @Override
     public void onReceive(String data) {
+
+    }
+
+    private void drawProgressBars() {
+
 
     }
 

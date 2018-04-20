@@ -54,8 +54,9 @@ public class GameSettings {
     public final static int MAX_ASTEROIDS = 30;
     public static Rectangle screenBounds = new Rectangle(-240, 720, 960, 960); //starting bounding box
 
-    public final static int HEALTH_SPACESHIP = 100;
-    public final static int MAX_HEALTH = 10;
+    public final static int MAX_HEALTH_SPACESHIP = 100;
+    public final static int MAX_HEALTH_ASTEROIDS = 50;
+
     public final static float MAX_FUEL = 100f;
     public final static float FUEL_USAGE = 0.25f;
 
