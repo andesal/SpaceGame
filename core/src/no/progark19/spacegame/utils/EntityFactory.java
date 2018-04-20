@@ -2,9 +2,13 @@ package no.progark19.spacegame.utils;
 
 
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -35,7 +39,6 @@ public class EntityFactory {
 
     private SpaceGame game;
     private PooledEngine engine;
-
     public enum ELEMENTS {
         FIRE, ICE
     }
@@ -76,7 +79,7 @@ public class EntityFactory {
         HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH);
 
         entity.add(bcom);
-        entity.add(ecom); 
+        entity.add(ecom);
         entity.add(scom);
         entity.add(new PositionComponent(x, y));
         entity.add(hcom);
@@ -138,8 +141,8 @@ public class EntityFactory {
         SpriteComponent scom = new SpriteComponent(new Sprite(texture));
         scom.sprite.setPosition(x,y);
 
-
         VelocityComponent vcom = new VelocityComponent(velocity);
+
 
         entity.add(ecom).add(scom).add(vcom).add(new RenderableComponent());
         return entity;
