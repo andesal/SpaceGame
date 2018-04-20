@@ -20,8 +20,11 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate.Status;
 import com.google.android.gms.nearby.connection.Strategy;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,38 +51,52 @@ public class AndroidP2pConnector implements P2pConnector {
     private String otherPlayerEndpointId;
     private String otherPLayerName = "null";
 
-    private Json otherPlayerInput;
-    private Json userPlayerInput;
-
     private boolean isConnected = false;
-    
+
     // Callback to receive payloads
     private final PayloadCallback payloadCallback = new PayloadCallback() {
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
-            Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+            switch (payload.getType()){
+                case Payload.Type.BYTES:
 
-            Log.d(TAG, "onPayloadReceived: Recieved payload!");
+                    break;
+                case Payload.Type.STREAM:
 
-            String message = new String(payload.asBytes());
-            Json json = new Json();
+                    break;
+                case Payload.Type.FILE:
 
-            for (ReceivedDataListener dListener: dataListeners){
-                //noinspection ConstantConditions
-                System.out.println(json.prettyPrint(message));
-                dListener.onReceive(json.fromJson(JsonPayload.class, message));
+                    break;
+
+                    
             }
+
+            //Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+
+            //Log.d(TAG, "onPayloadReceived: Recieved payload!");
+
+            //String message = new String(payload.asBytes());
+            //Json json = new Json();
+            //JsonPayload receivedData = SerializationUtils.deserialize(payload.asBytes());
+
+            /*for (ReceivedDataListener dListener: dataListeners){
+                //noinspection ConstantConditions
+                //System.out.println(json.prettyPrint(message));
+                dListener.onReceive((new String(payload.asBytes())));
+            }*/
         }
 
         @Override
         public void onPayloadTransferUpdate(@NonNull String s, @NonNull PayloadTransferUpdate pltUpdate) {
-            Log.d(TAG, "onPayloadTransferUpdate: " + pltUpdate.getStatus() + "\n ->" +
+            /*Log.d(TAG, "onPayloadTransferUpdate: " + pltUpdate.getStatus() + "\n ->" +
                     pltUpdate.getBytesTransferred() + "/" + pltUpdate.getTotalBytes());
             if (pltUpdate.getStatus() == Status.SUCCESS){
                 Log.d(TAG, "onPayloadTransferUpdate: Finished download");
-            }
+            }*/
 
         }
+
+
     };
 
     // Callback for finding other devices
@@ -129,7 +146,6 @@ public class AndroidP2pConnector implements P2pConnector {
         public void onDisconnected(@NonNull String s) {
             Log.d(TAG, "onDisconnected: Disconnected from other player");
             Toast.makeText(launcher, "You got separated", Toast.LENGTH_SHORT).show();
-
         }
     };
 
@@ -140,7 +156,6 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     private void startDiscovery() {
-        // Note: Discovery may fail. To keep this demo simple, we don't handle failures.
         DiscoveryOptions.Builder builder = new DiscoveryOptions.Builder();
         connectionsClient.startDiscovery(
                 launcher.getPackageName(), endpointDiscoveryCallback, builder.setStrategy(STRATEGY).build());
@@ -175,19 +190,23 @@ public class AndroidP2pConnector implements P2pConnector {
         dataListeners.remove(listener);
     }
 
+    //private InputStream inputStream = new Stream
     @Override
     public void sendData(JsonPayload data) {
-        String jsonString = (new Json()).toJson(data, JsonPayload.class);
+        //String jsonString = (new Json()).toJson(data, JsonPayload.class);
 
         //JSONObject middleJSON = new JSONObject();
         //middleJSON.put()
 
-        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(jsonString.getBytes()));
+        byte[] dataBytes = SerializationUtils.serialize(data);
+
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(dataBytes));
     }
 
     @Override
     public void sendData(String data) {
         connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(data.getBytes()));
+
     }
 
     @Override
@@ -198,5 +217,13 @@ public class AndroidP2pConnector implements P2pConnector {
     @Override
     public boolean hasConnection() {
         return isConnected;
+    }
+
+    @Override
+    public int decideLeadingPeer() {
+
+
+
+        return 0;
     }
 }

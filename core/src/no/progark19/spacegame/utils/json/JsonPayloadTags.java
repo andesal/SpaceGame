@@ -13,10 +13,18 @@ public interface JsonPayloadTags {
     int ENGINE_ROTATION_UPDATE = 3;
     //Tag for turning on an engine
     int ENGINE_ON_UPDATE = 4;
+        String ENGINE_UPDATE_ENGINEID = "EU1";
+        String ENGINE_ROTATION_UPDATE_ROTATION = "EU2";
+        String ENGINE_ROTATION_UPDATE_FORCEDIRECTION = "EU3";
+        String ENGINE_ON_UPDATE_ISON = "EU4";
 
-    String ENGINE_UPDATE_ENGINEID = "EU1";
-    String ENGINE_ROTATION_UPDATE_ROTATION = "EU2";
-    String ENGINE_ROTATION_UPDATE_FORCEDIRECTION = "EU3";
+    //
+    int SYNC_BODY = 5;
+        String SYNC_ENTITYID = "S1";
+        String SYNC_ROTATION = "S2";
+        String SYNC_POSX = "S3";
+        String SYNC_POSY = "S4";
 
-    String ENGINE_ON_UPDATE_ISON = "EU4";
+    int SYNC_CONTROLLER = 6;
+
 }

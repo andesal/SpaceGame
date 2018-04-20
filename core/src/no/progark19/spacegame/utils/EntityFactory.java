@@ -30,6 +30,7 @@ import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
+import no.progark19.spacegame.components.SynchronizedComponent;
 import no.progark19.spacegame.components.TextureComponent;
 import no.progark19.spacegame.managers.EntityManager;
 import no.progark19.spacegame.screens.PlayScreen;
@@ -108,13 +109,25 @@ public class EntityFactory {
                 sprite, physicsWorld, null,
                 GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION
         );
+        if (GameSettings.isLeftPlayer){
+            return engine.createEntity()
+                    .add(new SynchronizedComponent())
+                    .add(new PositionComponent(posx, posy))
+                    .add(new SpriteComponent(sprite))
+                    .add(new BodyComponent(body))
+                    .add(new RenderableComponent())
+                    .add(new LeadCameraComponent());
+        } else {
+            return engine.createEntity()
+                    .add(new PositionComponent(posx, posy))
+                    .add(new SpriteComponent(sprite))
+                    .add(new RenderableComponent())
+                    .add(new LeadCameraComponent());
+        }
 
-        return engine.createEntity()
-                .add(new PositionComponent(posx, posy))
-                .add(new SpriteComponent(sprite))
-                .add(new BodyComponent(body))
-                .add(new RenderableComponent())
-                .add(new LeadCameraComponent());
+
+
+
     }
 
     public Entity createShipEngine(float relx, float rely, float relRot, Entity parent, Texture texture){

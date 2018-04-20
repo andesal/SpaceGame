@@ -33,7 +33,10 @@ import java.time.Clock;
 import java.util.Date;
 import java.util.HashMap;
 
+import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.systems.NetworkSystem;
+import no.progark19.spacegame.systems.SynchronisationSystem;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
@@ -114,7 +117,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 jpl.setTAG(JsonPayloadTags.ENGINE_ROTATION_UPDATE);
                 jpl.setValue(values);
 
-                game.p2pConnector.sendData(jpl);
+                //game.p2pConnector.sendData(jpl);
 
             }
         });
@@ -133,7 +136,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
                 jpl.setValue(values);
 
-                game.p2pConnector.sendData(jpl);
+                //game.p2pConnector.sendData(jpl);
 
                 return true;
             }
@@ -151,7 +154,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
                 jpl.setValue(values);
 
-                game.p2pConnector.sendData(jpl);
+                //game.p2pConnector.sendData(jpl);
             }
         });
 
@@ -174,13 +177,18 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
         //Add engine systems
         //engine.addSystem(new ControlSystem());
-        engine.addSystem(new RenderSystem(game.batch, game.camera));
         //engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
-        engine.addSystem(new MovementSystem(GameSettings.ESC_MOVEMENT_INTERVAL));
         //engine.addSystem(new CollisionSystem());
         //engine.addSystem(new SoundSystem());
-        engine.addSystem(new ForceApplierSystem());
+        engine.addSystem(new RenderSystem(game.batch, game.camera));
+        if (GameSettings.isLeftPlayer) {
+            engine.addSystem(new MovementSystem());
+            engine.addSystem(new NetworkSystem(1/50f, game.p2pConnector));
+            engine.addSystem(new ForceApplierSystem());
+        }
+
         engine.addEntityListener(entityManager);
+
 
         //Create entities
         Texture shipTexture = new Texture(GameSettings.SPACESHIP_TEXTURE_PATH);
@@ -344,19 +352,21 @@ public void changed(ChangeEvent event, Actor actor) {
         int TAG = data.getTAG();
         HashMap<String, Object> values;
         int entityID;
-        Entity engineEntity;
-
+        float rotation;
+        float posX;
+        float posY;
+        Entity entity;
         switch (TAG){
             case JsonPayloadTags.ENGINE_ROTATION_UPDATE:
                 values = (HashMap<String, Object>) data.getValue();
                 entityID = (Integer) values.get(JsonPayloadTags.ENGINE_UPDATE_ENGINEID);
-                float rotation = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION);
+                rotation = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION);
                 float forceDir = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION);
 
-                engineEntity = EntityManager.getEntity(entityID);
+                entity = EntityManager.getEntity(entityID);
 
-                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
-                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
+                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(entity);
+                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(entity);
 
 
                 relposcom.rotation = rotation;
@@ -369,12 +379,25 @@ public void changed(ChangeEvent event, Actor actor) {
                 entityID = (Integer) values.get(JsonPayloadTags.ENGINE_UPDATE_ENGINEID);
                 boolean isOn = (Boolean) values.get(JsonPayloadTags.ENGINE_ON_UPDATE_ISON);
 
-                engineEntity = EntityManager.getEntity(entityID);
+                entity = EntityManager.getEntity(entityID);
                 if (isOn) {
-                    engineEntity.add(new ForceOnComponent());
+                    entity.add(new ForceOnComponent());
                 } else {
-                    engineEntity.remove(ForceOnComponent.class);
+                    entity.remove(ForceOnComponent.class);
                 }
+
+                break;
+            case JsonPayloadTags.SYNC_BODY:
+                values = (HashMap<String, Object>) data.getValue();
+                entityID = (Integer) values.get(JsonPayloadTags.SYNC_ENTITYID);
+                rotation = (Float) values.get(JsonPayloadTags.SYNC_ROTATION);
+                posX = (Float) values.get(JsonPayloadTags.SYNC_POSX);
+                posY = (Float) values.get(JsonPayloadTags.SYNC_POSY);
+
+                PositionComponent pcom = ComponentMappers.POS_MAP.get(EntityManager.getEntity(entityID));
+                pcom.rotation = rotation;
+                pcom.x = posX;
+                pcom.y = posY;
 
                 break;
             default:

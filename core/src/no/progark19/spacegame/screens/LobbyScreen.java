@@ -48,24 +48,24 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private ClickListener readListener = new ClickListener() {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-            JsonPayload jpl = new JsonPayload();
-            jpl.setTAG(JsonPayloadTags.READY);
-            jpl.setValue(true);
+            //JsonPayload jpl = new JsonPayload();
+            //jpl.setTAG(JsonPayloadTags.READY);
+            //jpl.setValue(true);
 
-            game.p2pConnector.sendData(jpl);
+            game.p2pConnector.sendData("true");
 
-            LobbyScreen.this.setPlayerReady(true);
+            //LobbyScreen.this.setPlayerReady(true);
             return true;
         }
         @Override
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-            JsonPayload jpl = new JsonPayload();
-            jpl.setTAG(JsonPayloadTags.READY);
-            jpl.setValue(false);
+            //JsonPayload jpl = new JsonPayload();
+            //jpl.setTAG(JsonPayloadTags.READY);
+            //jpl.setValue(false);
 
-            game.p2pConnector.sendData(jpl);
+            game.p2pConnector.sendData("false");
 
-            LobbyScreen.this.setPlayerReady(false);
+            //LobbyScreen.this.setPlayerReady(false);
         }
     };
 
@@ -233,6 +233,6 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
 
     @Override
     public void onReceive(String data) {
-        latestData = data;
+        System.out.println("Received:" + data);
     }
 }

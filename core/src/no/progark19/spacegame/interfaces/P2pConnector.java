@@ -24,4 +24,6 @@ public interface P2pConnector {
     void sendData(String data);
 
     String getOtherPeerName();
+
+    int decideLeadingPeer();
 }
