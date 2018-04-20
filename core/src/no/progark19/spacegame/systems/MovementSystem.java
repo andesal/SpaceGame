@@ -76,19 +76,6 @@ public class MovementSystem extends EntitySystem {
     public void update(float deltaTime) {
         world.step(1/60f, 6,2);
 
-        /*for (Entity entity : asteroids) {
-            BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
-            SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
-            Body body = bcom.body;
-            float posX = scom.sprite.getX();
-            float posY = scom.sprite.getY();
-            float velX = body.getLinearVelocity().x;
-            float velY = body.getLinearVelocity().y;
-            scom.sprite.rotate(0.5f);
-
-            scom.sprite.setPosition(posX += velX * deltaTime, posY += velY * deltaTime);
-        }*/
-
         for (Entity entity : bodyEntities){
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
             PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
@@ -97,6 +84,14 @@ public class MovementSystem extends EntitySystem {
             pcom.y = bcom.body.getPosition().y * GameSettings.BOX2D_PIXELS_TO_METERS;
 
             pcom.rotation = (float) Math.toDegrees(bcom.body.getAngle());
+        }
+        for (Entity entity : nonBodyEntities) {
+            VelocityComponent vcom = ComponentMappers.VEL_MAP.get(entity);
+            PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
+
+            pcom.x        = pcom.x        + vcom.velx*deltaTime;
+            pcom.y        = pcom.y        + vcom.vely*deltaTime;
+            pcom.rotation = pcom.rotation + vcom.velAngle*deltaTime;
         }
     }
 }

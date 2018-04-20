@@ -51,7 +51,7 @@ public class GameSettings {
 
     //public static String gameFrameRate
     public final static int WORLDSYNC_MAXSTATES = 5;
-    public static final float WORLDSYNCH_REFRESH_RATE = 1/30f;
+    public static final float WORLDSYNCH_REFRESH_RATE = 1/3f;
 
 
     private static Random mainRandom;

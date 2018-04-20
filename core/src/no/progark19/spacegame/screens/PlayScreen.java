@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Queue;
 
 import no.progark19.spacegame.components.PositionComponent;
+import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
@@ -176,9 +177,9 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         //engine.addSystem(new CollisionSystem());
         //engine.addSystem(new SoundSystem());
         engine.addSystem(new RenderSystem(game.batch, game.camera));
+        engine.addSystem(new MovementSystem());
 
         if (GameSettings.isPhysicsResponsible) {
-            engine.addSystem(new MovementSystem());
             engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
             engine.addSystem(new ForceApplierSystem());
         }
@@ -335,10 +336,15 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                     for (float[] state: currentState.getStates()){
                         Entity e = EntityManager.getEntity((int) state[WorldStateIndexes.WS_ENTITYID]);
                         PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
+                        VelocityComponent vcom = ComponentMappers.VEL_MAP.get(e);
 
                         pcom.x        = state[WorldStateIndexes.WS_RENDERABLE_POSX];
                         pcom.y        = state[WorldStateIndexes.WS_RENDERABLE_POSY];
                         pcom.rotation = state[WorldStateIndexes.WS_RENDERABLE_ROTATION];
+
+                        vcom.velx     = state[WorldStateIndexes.WS_RENDERABLE_VX];
+                        vcom.vely     = state[WorldStateIndexes.WS_RENDERABLE_VY];
+                        vcom.velAngle = state[WorldStateIndexes.WS_RENDERABLE_VR];
                     }
                 }
             } catch (InterruptedException e) {
@@ -351,15 +357,28 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     @Override
     public synchronized void onReceive(RenderableWorldState data) {
         System.out.println("Got data");
-        synchronized (lock) {
+        /*synchronized (lock) {
             worldStateQueue.add(data);
             if (worldStateWorker.getState() == Thread.State.NEW) {
                 worldStateWorker.start();
             } else {
                 lock.notify();
             }
-        }
+        }*/
 
+        for (float[] state: data.getStates()){
+            Entity e = EntityManager.getEntity((int) state[WorldStateIndexes.WS_ENTITYID]);
+            PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
+            VelocityComponent vcom = ComponentMappers.VEL_MAP.get(e);
+
+            pcom.x        = state[WorldStateIndexes.WS_RENDERABLE_POSX];
+            pcom.y        = state[WorldStateIndexes.WS_RENDERABLE_POSY];
+            pcom.rotation = state[WorldStateIndexes.WS_RENDERABLE_ROTATION];
+
+            vcom.velx     = state[WorldStateIndexes.WS_RENDERABLE_VX];
+            vcom.vely     = state[WorldStateIndexes.WS_RENDERABLE_VY];
+            vcom.velAngle = state[WorldStateIndexes.WS_RENDERABLE_VR];
+        }
 
         /*int TAG = data.getTAG();
         HashMap<String, Object> values;

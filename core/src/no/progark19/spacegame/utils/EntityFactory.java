@@ -25,6 +25,7 @@ import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.SynchronizedComponent;
+import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
 import no.progark19.spacegame.systems.RenderSystem;
 
@@ -55,16 +56,24 @@ public class EntityFactory {
         scom.sprite = new Sprite(texture);
         scom.sprite.setPosition(x, y);
 
-        BodyComponent bcom = engine.createComponent(BodyComponent.class);
-        //Body body = GameSettings.generatePolygon(x, y, world, texture, null); //polygonsprite parameter not used in method.
-        CircleShape shape = new CircleShape();
-        shape.setRadius((scom.sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
-        Body body = GameSettings.createDynamicBody(scom.sprite, world, shape,0.5f,0.5f);
-        body.setLinearVelocity(velocity);
+        if (GameSettings.isPhysicsResponsible){
+            BodyComponent bcom = engine.createComponent(BodyComponent.class);
+            //Body body = GameSettings.generatePolygon(x, y, world, texture, null); //polygonsprite parameter not used in method.
+            CircleShape shape = new CircleShape();
+            shape.setRadius((scom.sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
+            Body body = GameSettings.createDynamicBody(scom.sprite, world, shape,0.5f,0.5f);
+            body.setLinearVelocity(velocity);
+            bcom.body = body;
+            entity.add(bcom);   //Body Component
+        } else {
+            VelocityComponent vcom = engine.createComponent(VelocityComponent.class);
+            vcom.velx = velocity.x;
+            vcom.vely = velocity.y;
+            entity.add(vcom);
+        }
 
 
-        bcom.body = body;
-        entity.add(bcom);   //Body Component
+
         entity.add(ecom);   //Element Component
         entity.add(scom);   //Sprite Component
         entity.add(new PositionComponent(x, y));
@@ -114,7 +123,8 @@ public class EntityFactory {
                     .add(new PositionComponent(posx, posy))
                     .add(new SpriteComponent(sprite))
                     .add(new RenderableComponent())
-                    .add(new LeadCameraComponent());
+                    .add(new LeadCameraComponent())
+                    .add(new VelocityComponent());
         }
 
 
@@ -135,5 +145,4 @@ public class EntityFactory {
                 .add(new RenderableComponent())
                 .add(new ForceApplierComponent(GameSettings.ENGINE_MAX_FORCE));
     }
-
 }
