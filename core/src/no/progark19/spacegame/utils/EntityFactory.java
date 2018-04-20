@@ -24,7 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.AnimationComponent;
-import no.progark19.spacegame.components.AsteroidComponent;
+//import no.progark19.spacegame.components.AsteroidComponent;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.BoundsComponent;
 import no.progark19.spacegame.components.ElementComponent;
