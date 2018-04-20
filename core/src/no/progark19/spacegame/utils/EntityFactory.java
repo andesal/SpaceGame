@@ -2,33 +2,23 @@ package no.progark19.spacegame.utils;
 
 
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.AnimationComponent;
-import no.progark19.spacegame.components.AsteroidComponent;
 import no.progark19.spacegame.components.BodyComponent;
-import no.progark19.spacegame.components.BoundsComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
+import no.progark19.spacegame.components.FuelComponent;
 import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.ParentComponent;
@@ -37,22 +27,21 @@ import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
-import no.progark19.spacegame.components.TextureComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.screens.PlayScreen;
-import no.progark19.spacegame.systems.RenderSystem;
 
-/**
- * Created by Anders on 14.04.2018.
- */
 
 public class EntityFactory {
 
     private SpaceGame game;
     private PooledEngine engine;
+
     public enum ELEMENTS {
-        FIRE, ICE, SPECIAL
+        FIRE, ICE
+    }
+
+    public enum POWERUPS {
+        HEALTH, FUEL
     }
 
     public EntityFactory(SpaceGame game, PooledEngine engine) {
@@ -84,30 +73,16 @@ public class EntityFactory {
         body.setLinearVelocity(velocity);
         bcom.body = body;
 
+        HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH);
 
-        entity.add(bcom);   //Body Component
-        entity.add(ecom);   //Element Component
+        entity.add(bcom);
+        entity.add(ecom); 
         entity.add(scom);
         entity.add(new PositionComponent(x, y));
-        entity.add(engine.createComponent(HealthComponent.class));
-        entity.add(engine.createComponent(RenderableComponent.class));
+        entity.add(hcom);
         return entity;
     }
 
-    public Entity createPowerup(float x, float y, Texture texture) {
-        Entity entity = new Entity();
-        SpriteComponent scom = engine.createComponent(SpriteComponent.class);
-        scom.sprite = new Sprite(texture);
-        scom.sprite.setPosition(x, y);
-        entity.add(scom);
-
-        entity.add(engine.createComponent(PowerupComponent.class));
-        entity.add(engine.createComponent(RenderableComponent.class));
-
-        entity.add(engine.createComponent(BodyComponent.class));
-
-        return entity;
-    }
 
     public Entity createBaseSpaceShip(World physicsWorld, Texture texture){
         float posx = SpaceGame.WIDTH/2;
@@ -122,13 +97,16 @@ public class EntityFactory {
                 sprite, physicsWorld, null,
                 GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
 
+        HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH);
+        FuelComponent fcom = new FuelComponent(GameSettings.MAX_FUEL);
         return engine.createEntity()
                 .add(new PositionComponent(posx, posy))
                 .add(new SpriteComponent(sprite))
                 .add(new BodyComponent(body))
                 .add(new RenderableComponent())
                 .add(new LeadCameraComponent())
-                .add(new HealthComponent());
+                .add(hcom)
+                .add(fcom);
     }
 
     public Entity createShipEngine(float relx, float rely, float relRot, Entity parent, Texture texture){
@@ -145,7 +123,7 @@ public class EntityFactory {
                 .add(new ForceApplierComponent(GameSettings.ENGINE_MAX_FORCE));
     }
 
-    public Entity createProjectile(float x, float y, Vector2 velocity, Enum element, boolean flip, float rotation) {
+    public Entity createProjectile(float x, float y, Vector2 velocity, Enum element) {
         Entity entity = new Entity();
 
         ElementComponent ecom = new ElementComponent(element);
@@ -160,8 +138,8 @@ public class EntityFactory {
         SpriteComponent scom = new SpriteComponent(new Sprite(texture));
         scom.sprite.setPosition(x,y);
 
-        VelocityComponent vcom = new VelocityComponent(velocity);
 
+        VelocityComponent vcom = new VelocityComponent(velocity);
 
         entity.add(ecom).add(scom).add(vcom).add(new RenderableComponent());
         return entity;
@@ -179,6 +157,27 @@ public class EntityFactory {
 
         PositionComponent pcom = new PositionComponent(x, y);
         entity.add(acom).add(ecom).add(pcom).add(new RenderableComponent());
+        return entity;
+    }
+
+
+    public Entity createPowerup(float x, float y, Enum type) {
+        Entity entity = new Entity();
+
+        PowerupComponent pwcom = new PowerupComponent(type);
+        SpriteComponent scom = new SpriteComponent();
+        Texture texture;
+        if (type == POWERUPS.FUEL) {
+            texture = game.assetManager.get(Paths.FUEL_TEXTURE_PATH, Texture.class);
+        } else {
+            texture = game.assetManager.get(Paths.HEALT_TEXTURE_PATH, Texture.class);
+        }
+        scom.sprite = new Sprite(texture);
+        //entity.add(engine.createComponent(RenderableComponent.class));
+
+        PositionComponent pcom = new PositionComponent(x, y);
+        entity.add(pwcom).add(scom).add(pcom).add(new RenderableComponent());
+
         return entity;
     }
 

@@ -21,6 +21,7 @@ import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.ParentComponent;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.PositionComponent;
+import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
@@ -28,8 +29,6 @@ import no.progark19.spacegame.managers.EntityManager;
 import no.progark19.spacegame.utils.Paths;
 
 public class RenderSystem extends EntitySystem {
-    private ImmutableArray<Entity> spaceshipEntities;
-    private ImmutableArray<Entity> cameraFocusEntity;
     private int bgX = 0;
     private int bgY = 0;
     public Animation animation;
@@ -38,7 +37,8 @@ public class RenderSystem extends EntitySystem {
     private float t = 0;
 
     private HashMap<Entity, Float> stateTimes;
-
+    private ImmutableArray<Entity> renderables;
+    private ImmutableArray<Entity> cameraFocusEntity;
     private ImmutableArray<Entity> explosionEntities;
     private ImmutableArray<Entity> bulletEntities;
 
@@ -53,7 +53,7 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        spaceshipEntities = engine.getEntitiesFor(Family
+        renderables = engine.getEntitiesFor(Family
                 .all(RenderableComponent.class, SpriteComponent.class)
                 .one(PositionComponent.class, RelativePositionComponent.class).get());
         cameraFocusEntity = engine.getEntitiesFor(Family
@@ -61,9 +61,9 @@ public class RenderSystem extends EntitySystem {
                 .get());
         explosionEntities = engine.getEntitiesFor(Family.one(AnimationComponent.class).get());
         bulletEntities = engine.getEntitiesFor(Family.all(
-                ElementComponent.class, SpriteComponent.class,
+                SpriteComponent.class,
+                ElementComponent.class,
                 RenderableComponent.class).get());
-
 
     }
 
@@ -78,7 +78,12 @@ public class RenderSystem extends EntitySystem {
 
         updateBackgroundCoordinates();
 
-        for (Entity entity : spaceshipEntities) {
+        for (Entity entity : renderables) {
+
+            if (ComponentMappers.LEAD_MAP.get(entity) != null) {
+                System.out.println("HEALTH = " + ComponentMappers.HEALTH_MAP.get(entity).health+ " : " + ComponentMappers.FUEL_MAP.get(entity).fuel + " = " + "FUEL");
+            }
+
             //FIXME Kanskje fjerne positioncomponent og kun bruke sprites?
             PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
@@ -106,6 +111,7 @@ public class RenderSystem extends EntitySystem {
             scom.sprite.draw(game.batch);
         }
 
+        //TODO Change so that bullets are drawn in renderables...
         for (Entity entity : bulletEntities) {
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
             scom.sprite.draw(game.batch);

@@ -39,8 +39,6 @@ public class GameSettings {
     public final static float ENGINE_MAX_FORCE = 0.1f;
 
     public final static Vector2 DEBUG_FORCEARROW_ORIGIN = new Vector2(56.5f, 51.5f);
-
-    public static boolean sweep;
     public final static float PROJECTILE_SCALE = 0.05f;
 
 
@@ -48,13 +46,16 @@ public class GameSettings {
     public final static short SPACESHIP_TAG = 0x0002;
     public final static short FIRE_ASTEROID_TAG = 0x0004;
     public final static short ICE_ASTEROID_TAG = 0x0008;
-    public final static short BULLET_TAG = 0x016;
 
+    // Gameplay settings
     public final static int MAX_ASTEROIDS = 30;
     public static Rectangle screenBounds = new Rectangle(-240, 720, 960, 960); //starting bounding box
 
+    public final static int HEALTH_SPACESHIP = 100;
+    public final static int MAX_HEALTH = 10;
+    public final static float MAX_FUEL = 100f;
+    public final static float FUEL_USAGE = 0.25f;
 
-    //public static String gameFrameRate
 
     private static Random mainRandom;
 

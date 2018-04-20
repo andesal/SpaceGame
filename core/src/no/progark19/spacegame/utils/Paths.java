@@ -19,6 +19,9 @@ public class Paths {
     public final static String ICE_PROJECTILE_TEXTURE_PATH = "img/ice_region.png";
     public final static String FIRE_BULLET_TEXTURE_PATH = "img/fire_bullet.png";
     public final static String ICE_BULLET_TEXTURE_PATH = "img/ice_bullet.png";
+    public final static String FUEL_TEXTURE_PATH = "img/fuel.png";
+    public final static String HEALT_TEXTURE_PATH = "img/health.png";
+
 
     //TextureAtlas
     public final static String FIRE_EXPLOSION_ATLAS = "atlasLib/fire_explosion.atlas";

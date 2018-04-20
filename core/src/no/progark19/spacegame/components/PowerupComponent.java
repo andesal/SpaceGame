@@ -9,12 +9,10 @@ import com.badlogic.gdx.utils.Pool;
 
 public class PowerupComponent implements Component, Pool.Poolable{
 
-    private String type;
+    public Enum powerup;
 
-    public PowerupComponent() {}
-
-    public void setType(String type) {
-
+    public PowerupComponent(Enum powerup) {
+        this.powerup = powerup;
     }
 
     @Override
