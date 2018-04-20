@@ -59,11 +59,15 @@ public class ForceApplierSystem extends EntitySystem{
             BodyComponent bcom_parent = ComponentMappers.BOD_MAP.get(parent);
             PositionComponent parposcom = ComponentMappers.POS_MAP.get(parent);
             RelativePositionComponent relcom = ComponentMappers.RELPOS_MAP.get(entity);
+            FuelUsageComponent ucom = ComponentMappers.FUEL_USAGE_MAP.get(entity);
 
-
-            if (parent.getComponent(FuelUsageComponent.class) == null) {
+            if (ucom == null) {
                 parent.add(new FuelUsageComponent(deltaTime));
+
+            } else {
+                ucom.usage += deltaTime;
             }
+
 
             Vector2 forceVector = new Vector2(fcom.force, 0);
             forceVector.setAngle(fcom.direction + parposcom.rotation);
