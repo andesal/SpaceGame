@@ -30,7 +30,7 @@ import java.util.Arrays;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.AnimationComponent;
-import no.progark19.spacegame.components.AsteroidComponent;
+//import no.progark19.spacegame.components.AsteroidComponent;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
