@@ -2,13 +2,9 @@ package no.progark19.spacegame.utils;
 
 
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -76,7 +72,7 @@ public class EntityFactory {
         body.setLinearVelocity(velocity);
         bcom.body = body;
 
-        HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH);
+        HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH_ASTEROIDS);
 
         entity.add(bcom);
         entity.add(ecom);
@@ -100,7 +96,7 @@ public class EntityFactory {
                 sprite, physicsWorld, null,
                 GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
 
-        HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH);
+        HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH_SPACESHIP);
         FuelComponent fcom = new FuelComponent(GameSettings.MAX_FUEL);
         return engine.createEntity()
                 .add(new PositionComponent(posx, posy))

@@ -28,12 +28,12 @@ public class Assets {
         manager.load(Paths.ICE_BULLET_TEXTURE_PATH, Texture.class);
         manager.load(Paths.FUEL_TEXTURE_PATH, Texture.class);
         manager.load(Paths.HEALT_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.PROGRESSBAR_TEXTURE_PATH, Texture.class);
     }
 
     public void loadTextureAtlases() {
         manager.load(Paths.FIRE_EXPLOSION_2_ATLAS, TextureAtlas.class);
         manager.load(Paths.ICE_EXPLOSION_ATLAS, TextureAtlas.class);
-
     }
 
     public void loadSkins() {
