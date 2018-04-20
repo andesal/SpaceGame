@@ -3,6 +3,7 @@ package no.progark19.spacegame.screens;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
@@ -38,6 +39,8 @@ import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.systems.AnimationSystem;
 import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
+import no.progark19.spacegame.systems.SweepSystem;
+import no.progark19.spacegame.systems.UpdateSystem;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
@@ -60,7 +63,8 @@ import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.JsonPayloadTags;
 import no.progark19.spacegame.utils.json.WorldStateIndexes;
 
-public class PlayScreen implements Screen, ReceivedDataListener {
+public class PlayScreen implements Screen, ReceivedDataListener
+{
 
     private final SpaceGame game;
     private final Box2DDebugRenderer debugRenderer;
@@ -102,8 +106,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 //FIXME dette er muligens en litt dårlig løsning på dette [ARH]
                 RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
                 ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
-
-
                 relposcom.rotation = minRot + rotDiff*((Slider) actor).getValue()/100f;
                 fcom.direction = relposcom.rotation + 90;
 
@@ -184,6 +186,8 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addSystem(new SoundSystem());
         engine.addSystem(new AnimationSystem(game));
         engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
+        engine.addSystem(new SweepSystem());
+        engine.addSystem(new UpdateSystem(entityFactory));
         engine.addEntityListener(entityManager);
 
         if (GameSettings.isPhysicsResponsible) {
@@ -233,8 +237,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
-
-
     }
 
     @Override
@@ -440,4 +442,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     public void onReceive(String data) {
 
     }
+
+
 }

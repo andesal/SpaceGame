@@ -1,6 +1,5 @@
 package no.progark19.spacegame.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -10,16 +9,14 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
-import no.progark19.spacegame.components.ElementComponent;
-import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.PositionComponent;
-import no.progark19.spacegame.components.RotationComponent;
+import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
+import no.progark19.spacegame.components.SweepComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
 
@@ -84,8 +81,7 @@ public class MovementSystem extends EntitySystem {
             while(i.hasNext()) {
                 Entity entity = i.next();
                 Body b = ComponentMappers.BOD_MAP.get(entity).body;
-
-                getEngine().removeEntity(entity);
+                entity.add(new SweepComponent());
                 world.destroyBody(b);
                 i.remove();
             }
@@ -108,11 +104,19 @@ public class MovementSystem extends EntitySystem {
         }*/
 
         for (Entity entity : bodyEntities){
+
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
             PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
 
             pcom.x = bcom.body.getPosition().x * GameSettings.BOX2D_PIXELS_TO_METERS;
             pcom.y = bcom.body.getPosition().y * GameSettings.BOX2D_PIXELS_TO_METERS;
+
+            //Only entities
+            if (GameSettings.screenBounds.contains(pcom.x, pcom.y)) {
+                entity.add(new RenderableComponent());
+            } else {
+                entity.remove(RenderableComponent.class);
+            }
 
             pcom.rotation = (float) Math.toDegrees(bcom.body.getAngle());
         }
@@ -123,6 +127,11 @@ public class MovementSystem extends EntitySystem {
             pcom.x        = pcom.x        + vcom.velx*deltaTime;
             pcom.y        = pcom.y        + vcom.vely*deltaTime;
             pcom.rotation = pcom.rotation + vcom.velAngle*deltaTime;
+
+            //For projectiles
+            if (! GameSettings.screenBounds.contains(pcom.x, pcom.y)) {
+                entity.remove(RenderableComponent.class);
+            }
         }
     }
 }

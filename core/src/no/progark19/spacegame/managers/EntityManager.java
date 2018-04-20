@@ -43,6 +43,9 @@ public class EntityManager implements EntityListener{
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
             bcom.body.setUserData(entity);
         }
+        if (ComponentMappers.POWER_MAP.get(entity) != null) {
+            System.out.println("POWERUP ADDED");
+        }
         integerEntityMap.put(entityID, entity);
         entityIntegerMap.put(entity, entityID);
         entityID ++;
@@ -58,8 +61,6 @@ public class EntityManager implements EntityListener{
             Entity explosionEntity = entityFactory.createAnimationEntity(x, y, ecom.element);
             engine.addEntity(explosionEntity);
         }
-        engine.removeEntity(entity);
-
         integerEntityMap.remove(entityIntegerMap.remove(entity));
     }
 

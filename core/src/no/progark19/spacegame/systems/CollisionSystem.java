@@ -1,5 +1,6 @@
 package no.progark19.spacegame.systems;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
@@ -27,19 +28,25 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.lang.reflect.GenericArrayType;
 import java.util.ArrayList;
 
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.BodyComponent;
+import no.progark19.spacegame.components.DamagedComponent;
 import no.progark19.spacegame.components.ElementComponent;
+import no.progark19.spacegame.components.FuelComponent;
 import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.PositionComponent;
+import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
+import no.progark19.spacegame.components.RewardComponent;
 import no.progark19.spacegame.components.SpriteComponent;
+import no.progark19.spacegame.components.SweepComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
 import no.progark19.spacegame.utils.EntityFactory;
@@ -53,6 +60,8 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
     private ImmutableArray<Entity> bullets;
     private ImmutableArray<Entity> asteroids;
     private ImmutableArray<Entity> spaceship;
+    private ImmutableArray<Entity> powerups;
+
 
     private SpaceGame game;
     private World world;
@@ -77,32 +86,38 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
         spaceship = engine.getEntitiesFor(Family.all(
                 BodyComponent.class,
                 LeadCameraComponent.class).get());
+        powerups = engine.getEntitiesFor(Family.all(PowerupComponent.class).get());
     }
 
     public void update(float deltaTime) {
-        for (Entity bullet : bullets) {
-            SpriteComponent scomBullet = ComponentMappers.SPRITE_MAP.get(bullet);
-
-            for (Entity asteroid : asteroids) {
-                SpriteComponent scomAsteroid = ComponentMappers.SPRITE_MAP.get(asteroid);
-
-                if (scomBullet.sprite.getBoundingRectangle().overlaps(scomAsteroid.sprite.getBoundingRectangle())) {
-                    //TODO miniexplosion on hit (create new and rescale textureatlas).
-                    HealthComponent hcom = ComponentMappers.HEALTH_MAP.get(asteroid);
-                    ElementComponent ecomAsteroid = ComponentMappers.ELEMENT_MAP.get(asteroid);
-                    ElementComponent ecomBullet = ComponentMappers.ELEMENT_MAP.get(bullet);
-                    getEngine().removeEntity(bullet);
-                    if (! ecomAsteroid.element.equals(ecomBullet.element)) {
-                        hcom.health -= 10;
+        for (Entity ship : spaceship) {
+            for (Entity powerup : powerups) {
+                SpriteComponent scomShip = ComponentMappers.SPRITE_MAP.get(ship);
+                SpriteComponent scomPowerUp = ComponentMappers.SPRITE_MAP.get(powerup);
+                PowerupComponent powCom = ComponentMappers.POWER_MAP.get(powerup);
+                if (scomPowerUp.sprite.getBoundingRectangle().overlaps(scomShip.sprite.getBoundingRectangle())) {
+                    System.out.println("TRUE");
+                    getEngine().removeEntity(powerup);
+                    if (powCom.powerup == EntityFactory.POWERUPS.HEALTH) {
+                        ship.add(new RewardComponent(10, "health"));
+                    } else {
+                        ship.add(new RewardComponent(10, "fuel"));
                     }
-                    if (hcom.health == 0) {
-                        BodyComponent bcom = ComponentMappers.BOD_MAP.get(asteroid);
-                        EntityManager.flaggedForRemoval.add(asteroid);
+                }
+            }
+        }
 
-
-                        //TODO kick out enity OR REUSE...
-
+        for (Entity asteroid : asteroids) {
+            SpriteComponent scomAsteroid = ComponentMappers.SPRITE_MAP.get(asteroid);
+            for (Entity bullet : bullets) {
+                SpriteComponent scomBullet = ComponentMappers.SPRITE_MAP.get(bullet);
+                ElementComponent ecomBullet = ComponentMappers.ELEMENT_MAP.get(bullet);
+                ElementComponent ecomAsteroid = ComponentMappers.ELEMENT_MAP.get(asteroid);
+                if (scomBullet.sprite.getBoundingRectangle().overlaps(scomAsteroid.sprite.getBoundingRectangle()) ) {
+                    if (ecomBullet.element != ecomAsteroid.element) {
+                        asteroid.add(new DamagedComponent(10));
                     }
+                    bullet.add(new SweepComponent());
                 }
             }
         }
@@ -115,14 +130,15 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
         Fixture fb = contact.getFixtureB();
         short a = fa.getFilterData().categoryBits;
         short b = fb.getFilterData().categoryBits;
-
-        if ((a == GameSettings.SPACESHIP_TAG && (b == GameSettings.ICE_ASTEROID_TAG || b == GameSettings.FIRE_ASTEROID_TAG))
-                || (b == GameSettings.SPACESHIP_TAG && (a == GameSettings.ICE_ASTEROID_TAG || a == GameSettings.FIRE_ASTEROID_TAG))) {
-            System.out.println("D ");
-            return;
-        }
         Entity entityA = (Entity) fa.getBody().getUserData();
         Entity entityB = (Entity) fb.getBody().getUserData();
+
+        if ((a == GameSettings.SPACESHIP_TAG && (b == GameSettings.ICE_ASTEROID_TAG || b == GameSettings.FIRE_ASTEROID_TAG)) || (b == GameSettings.SPACESHIP_TAG && (a == GameSettings.ICE_ASTEROID_TAG || a == GameSettings.FIRE_ASTEROID_TAG))) {
+            System.out.println("HIT");
+            Entity ship = a == GameSettings.SPACESHIP_TAG ? entityA : entityB;
+            ship.add(new DamagedComponent(10));
+            return;
+        }
 
         SpriteComponent scomA = ComponentMappers.SPRITE_MAP.get(entityA);
         SpriteComponent scomB = ComponentMappers.SPRITE_MAP.get(entityB);
@@ -136,18 +152,21 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
             EntityManager.flaggedForRemoval.add(entityB);
         }
 
+        /*
+
         if (a == GameSettings.FIRE_ASTEROID_TAG && b == GameSettings.FIRE_ASTEROID_TAG) {
-            System.out.println("FIRE FIRE");
+            //System.out.println("FIRE FIRE");
         }
         if (a == GameSettings.ICE_ASTEROID_TAG && b == GameSettings.ICE_ASTEROID_TAG) {
 
-            System.out.println("ICE ICE");
+            //System.out.println("ICE ICE");
 
         }
         if ((a == GameSettings.FIRE_ASTEROID_TAG && b == GameSettings.ICE_ASTEROID_TAG) || (a == GameSettings.ICE_ASTEROID_TAG && b == GameSettings.FIRE_ASTEROID_TAG)) {
-            System.out.println("ICE FIRE");
+            //System.out.println("ICE FIRE");
 
         }
+        */
 
 
     }

@@ -7,7 +7,13 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
 import java.awt.Rectangle;
@@ -20,6 +26,7 @@ import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
+import no.progark19.spacegame.components.SweepComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.utils.EntityFactory;
 
@@ -32,7 +39,6 @@ public class ControlSystem extends EntitySystem {
 
     boolean testOneBullet = true;
     public float temp;
-
 
     private SpaceGame game;
     private EntityFactory entityFactory;
@@ -52,8 +58,8 @@ public class ControlSystem extends EntitySystem {
     public void update(float deltaTime) {
         //TODO REMOVE FLIP
         if (bullets.size() == 0) {
-            Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, new Vector2(5,0), EntityFactory.ELEMENTS.ICE, true, 0);
-            getEngine().addEntity(entity);
+            //Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, new Vector2(-5,0), EntityFactory.ELEMENTS.ICE);
+            //getEngine().addEntity(entity);
         }
         GameSettings.screenBounds.set((int) game.camera.position.x - (SpaceGame.WIDTH), (int) game.camera.position.y - (SpaceGame.WIDTH), (int) (SpaceGame.WIDTH * 2), (int) (SpaceGame.WIDTH * 2));
         temp += deltaTime;
@@ -61,7 +67,7 @@ public class ControlSystem extends EntitySystem {
             for (Entity entity : bullets) {
                 SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
                 if (!GameSettings.screenBounds.contains(scom.sprite.getX(), scom.sprite.getY())) {
-                    getEngine().removeEntity(entity);
+                    entity.add(new SweepComponent());
                 }
             }
         }
