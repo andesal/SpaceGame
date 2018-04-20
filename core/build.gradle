@@ -9,3 +9,7 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 eclipse.project {
     name = appName + "-core"
 }
+// https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
+dependencies{
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+}

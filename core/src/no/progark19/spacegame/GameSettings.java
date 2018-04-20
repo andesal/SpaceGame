@@ -23,9 +23,7 @@ import java.util.Random;
  */
 
 public class GameSettings {
-    public static boolean isLeftPlayer = false;
-
-    public static final float ESC_MOVEMENT_INTERVAL = 1/80f;
+    public static boolean isPhysicsResponsible = false;
 
     public static final boolean CAMERA_FOLLOW_POSITION = true;
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
@@ -52,6 +50,9 @@ public class GameSettings {
     public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
 
     //public static String gameFrameRate
+    public final static int WORLDSYNC_MAXSTATES = 5;
+    public static final float WORLDSYNCH_REFRESH_RATE = 1/30f;
+
 
     private static Random mainRandom;
 

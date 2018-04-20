@@ -18,9 +18,8 @@ import java.util.Random;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.SpaceNameGenerator;
-import no.progark19.spacegame.utils.json.JsonPayload;
-import no.progark19.spacegame.utils.json.JsonPayloadTags;
 
 public class LobbyScreen implements Screen, ReceivedDataListener {
 
@@ -48,24 +47,16 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private ClickListener readListener = new ClickListener() {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-            //JsonPayload jpl = new JsonPayload();
-            //jpl.setTAG(JsonPayloadTags.READY);
-            //jpl.setValue(true);
+            game.p2pConnector.sendData("ready|true");
 
-            game.p2pConnector.sendData("true");
-
-            //LobbyScreen.this.setPlayerReady(true);
+            LobbyScreen.this.setPlayerReady(true);
             return true;
         }
         @Override
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-            //JsonPayload jpl = new JsonPayload();
-            //jpl.setTAG(JsonPayloadTags.READY);
-            //jpl.setValue(false);
+            game.p2pConnector.sendData("ready|false");
 
-            game.p2pConnector.sendData("false");
-
-            //LobbyScreen.this.setPlayerReady(false);
+            LobbyScreen.this.setPlayerReady(false);
         }
     };
 
@@ -149,10 +140,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
                     if(!seedMessageSent){
                         thisPlayerSeed = random.nextLong();
 
-                        JsonPayload jpl = new JsonPayload();
-                        jpl.setTAG(JsonPayloadTags.GAME_SEED);
-                        jpl.setValue(thisPlayerSeed);
-                        game.p2pConnector.sendData(jpl);
+                        game.p2pConnector.sendData("seed|"+String.valueOf(thisPlayerSeed));
 
                         seedMessageSent = true;
                     }
@@ -208,31 +196,34 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
 
 
     @Override
-    public void onReceive(JsonPayload data) {
-        int TAG = data.getTAG();
-
-        switch (TAG){
-            case JsonPayloadTags.READY:
-                otherPlayerReady = (Boolean) data.getValue();
-                break;
-            case JsonPayloadTags.GAME_SEED:
-                game.p2pConnector.removeReceivedDataListener(this);
-                otherPlayerSeed = (Long) data.getValue();
-
-                GameSettings.isLeftPlayer = otherPlayerSeed > thisPlayerSeed;
-
-                GameSettings.setRandomSeed(otherPlayerSeed + thisPlayerSeed);
-
-                seedDecided = true;
-                break;
-            default:
-                System.out.println("NOT LEGAL JSON TAG");
-        }
-
+    public void onReceive(RenderableWorldState data) {
+        //
     }
 
     @Override
     public void onReceive(String data) {
         System.out.println("Received:" + data);
+        String[] msg = data.split("\\|");
+
+        if (msg[0].equals("ready")){
+            otherPlayerReady = Boolean.valueOf(msg[1]);
+        }
+        else if (msg[0].equals("seed")){
+            game.p2pConnector.removeReceivedDataListener(this);
+            otherPlayerSeed = Long.valueOf(msg[1]);
+
+            GameSettings.isPhysicsResponsible = otherPlayerSeed > thisPlayerSeed;
+
+            GameSettings.setRandomSeed(otherPlayerSeed + thisPlayerSeed);
+
+            seedDecided = true;
+
+        }
+        else {
+            System.out.println("String tag not understood!");
+
+        }
+
+
     }
 }

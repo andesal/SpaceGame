@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.badlogic.gdx.utils.Json;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AdvertisingOptions;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
@@ -17,20 +16,17 @@ import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.PayloadCallback;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
-import com.google.android.gms.nearby.connection.PayloadTransferUpdate.Status;
 import com.google.android.gms.nearby.connection.Strategy;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import no.progark19.spacegame.interfaces.P2pConnector;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
-import no.progark19.spacegame.utils.json.JsonPayload;
+import no.progark19.spacegame.utils.RenderableWorldState;
+import no.progark19.spacegame.utils.json.WorldStateIndexes;
 
 /**
  * Created by Anders on 17.04.2018.
@@ -57,7 +53,7 @@ public class AndroidP2pConnector implements P2pConnector {
     private final PayloadCallback payloadCallback = new PayloadCallback() {
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
-            switch (payload.getType()){
+            /*switch (payload.getType()){
                 case Payload.Type.BYTES:
 
                     break;
@@ -67,23 +63,33 @@ public class AndroidP2pConnector implements P2pConnector {
                 case Payload.Type.FILE:
 
                     break;
+            }*/
 
-                    
-            }
-
-            //Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
-
-            //Log.d(TAG, "onPayloadReceived: Recieved payload!");
+            Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onPayloadReceived: Recieved payload!");
 
             //String message = new String(payload.asBytes());
             //Json json = new Json();
             //JsonPayload receivedData = SerializationUtils.deserialize(payload.asBytes());
 
-            /*for (ReceivedDataListener dListener: dataListeners){
-                //noinspection ConstantConditions
-                //System.out.println(json.prettyPrint(message));
-                dListener.onReceive((new String(payload.asBytes())));
-            }*/
+
+            Object o = SerializationUtils.deserialize(payload.asBytes());
+
+            if (o instanceof String){
+                for (ReceivedDataListener dListener: dataListeners){
+                    //noinspection ConstantConditions
+                    //System.out.println(json.prettyPrint(message));
+                    String data = (String) o;
+                    dListener.onReceive(data);
+                }
+            } else if (o instanceof RenderableWorldState) {
+                for (ReceivedDataListener dListener : dataListeners) {
+                    //noinspection ConstantConditions
+                    //System.out.println(json.prettyPrint(message));
+                    RenderableWorldState data = (RenderableWorldState) o;
+                    dListener.onReceive(data);
+                }
+            }
         }
 
         @Override
@@ -192,7 +198,7 @@ public class AndroidP2pConnector implements P2pConnector {
 
     //private InputStream inputStream = new Stream
     @Override
-    public void sendData(JsonPayload data) {
+    public void sendData(RenderableWorldState data) {
         //String jsonString = (new Json()).toJson(data, JsonPayload.class);
 
         //JSONObject middleJSON = new JSONObject();
@@ -205,7 +211,7 @@ public class AndroidP2pConnector implements P2pConnector {
 
     @Override
     public void sendData(String data) {
-        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(data.getBytes()));
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(SerializationUtils.serialize(data)));
 
     }
 

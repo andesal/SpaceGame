@@ -1,6 +1,5 @@
 package no.progark19.spacegame.screens;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -26,17 +24,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.time.Clock;
-import java.util.Date;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
 import java.util.HashMap;
+import java.util.Queue;
 
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.systems.NetworkSystem;
-import no.progark19.spacegame.systems.SynchronisationSystem;
+import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
@@ -45,16 +43,14 @@ import no.progark19.spacegame.components.ForceOnComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.managers.AudioManager;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.systems.CollisionSystem;
 import no.progark19.spacegame.systems.ComponentMappers;
-import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
-import no.progark19.spacegame.systems.SoundSystem;
-import no.progark19.spacegame.systems.SpawnSystem;
+import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.JsonPayloadTags;
+import no.progark19.spacegame.utils.json.WorldStateIndexes;
 
 public class PlayScreen implements Screen, ReceivedDataListener {
 
@@ -82,7 +78,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     private Skin skin;
 
     private Rectangle rectangle;
-
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
@@ -177,18 +172,18 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
         //Add engine systems
         //engine.addSystem(new ControlSystem());
-        //engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
+        engine.addSystem(new SpawnSystem(engine, game.camera, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         //engine.addSystem(new CollisionSystem());
         //engine.addSystem(new SoundSystem());
         engine.addSystem(new RenderSystem(game.batch, game.camera));
-        if (GameSettings.isLeftPlayer) {
+
+        if (GameSettings.isPhysicsResponsible) {
             engine.addSystem(new MovementSystem());
-            engine.addSystem(new NetworkSystem(1/50f, game.p2pConnector));
+            engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
             engine.addSystem(new ForceApplierSystem());
         }
 
         engine.addEntityListener(entityManager);
-
 
         //Create entities
         Texture shipTexture = new Texture(GameSettings.SPACESHIP_TEXTURE_PATH);
@@ -214,7 +209,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addEntity(engineEntity3);
         engine.addEntity(engineEntity4);
 
-        if(GameSettings.isLeftPlayer){
+        if(GameSettings.isPhysicsResponsible){
             uiStage.addActor(
                     createEngineSlider(engineEntity1, 10,10,360,270)
             );
@@ -321,35 +316,52 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         shapeRenderer.dispose();
         theme.dispose();
     }
-    /*
-public void changed(ChangeEvent event, Actor actor) {
-                //spaceShip.changeEngineAngle(engineIndex, ((Slider) actor).getValue());
-                //FIXME dette er muligens en litt dårlig løsning på dette [ARH]
-                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
-                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
 
+    private Object lock = new Object();
+    private Queue<RenderableWorldState> worldStateQueue
+            = new CircularFifoQueue<RenderableWorldState>(GameSettings.WORLDSYNC_MAXSTATES);
+    private Thread worldStateWorker = new Thread((new Runnable() {
+        @Override
+        public void run() {
+            RenderableWorldState currentState;
+            try {
+                while (game.p2pConnector.hasConnection()){
+                    synchronized (lock){
+                        while (worldStateQueue.peek() == null) {
+                                lock.wait();
+                        }
+                        currentState = worldStateQueue.poll();
+                    }
+                    for (float[] state: currentState.getStates()){
+                        Entity e = EntityManager.getEntity((int) state[WorldStateIndexes.WS_ENTITYID]);
+                        PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
 
-                relposcom.rotation = minRot + rotDiff*((Slider) actor).getValue()/100f;
-                fcom.direction = relposcom.rotation + 90;
-
-
-                JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION, relposcom.rotation);
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION, fcom.direction);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ROTATION_UPDATE);
-                jpl.setValue(values);
-
+                        pcom.x        = state[WorldStateIndexes.WS_RENDERABLE_POSX];
+                        pcom.y        = state[WorldStateIndexes.WS_RENDERABLE_POSY];
+                        pcom.rotation = state[WorldStateIndexes.WS_RENDERABLE_ROTATION];
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
+        }
+    }));
 
-    */
+
     @Override
-    public void onReceive(JsonPayload data) {
-        int TAG = data.getTAG();
+    public synchronized void onReceive(RenderableWorldState data) {
+        System.out.println("Got data");
+        synchronized (lock) {
+            worldStateQueue.add(data);
+            if (worldStateWorker.getState() == Thread.State.NEW) {
+                worldStateWorker.start();
+            } else {
+                lock.notify();
+            }
+        }
+
+
+        /*int TAG = data.getTAG();
         HashMap<String, Object> values;
         int entityID;
         float rotation;
@@ -402,7 +414,9 @@ public void changed(ChangeEvent event, Actor actor) {
                 break;
             default:
                 System.out.println("NOT LEGAL JSON TAG");
-        }
+        }*/
+
+
     }
 
     @Override
