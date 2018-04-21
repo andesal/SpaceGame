@@ -60,6 +60,9 @@ public class GameSettings {
     public final static float START_FUEL = 50f;
     public final static float MAX_FUEL = 100f;
 
+    public static boolean IS_GAME_OVER = false;
+    public static boolean IS_GAME_PAUSED = false;
+
 
     //public static String gameFrameRate
 

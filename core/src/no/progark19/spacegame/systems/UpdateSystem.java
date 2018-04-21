@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 
 import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.DamagedComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
@@ -66,6 +67,7 @@ public class UpdateSystem extends EntitySystem {
                     healthBar.setValue((float) hcom.health/100);
                     if (hcom.health <= 0) {
                         System.out.println("GAME OVER HEALTH");
+                        GameSettings.IS_GAME_OVER = true;
                     }
                 }
                 entity.remove(DamagedComponent.class);

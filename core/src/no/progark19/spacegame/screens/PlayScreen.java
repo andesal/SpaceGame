@@ -14,14 +14,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -56,6 +61,12 @@ import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.JsonPayloadTags;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+
 public class PlayScreen implements Screen, ReceivedDataListener
 {
 
@@ -64,6 +75,11 @@ public class PlayScreen implements Screen, ReceivedDataListener
     private Matrix4 debugMatrix;
     private Stage uiStage;
     private Camera uiCamera;
+
+    private boolean isPause;
+    private boolean isGameOver;
+
+    private Group pauseGroup;
 
     private BitmapFont font;
     private GlyphLayout layout;
@@ -81,6 +97,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
     private int bgY = 0;
     //private Skin skin2;
     private Skin skin1;
+    private Skin skin2;
 
     public MyProgressBar healthBar;
     public MyProgressBar fuelBar;
@@ -261,12 +278,11 @@ public class PlayScreen implements Screen, ReceivedDataListener
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
 
-        //this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
-        //this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
-
-        this.skin1 = new Skin();
+        this.skin1 = new Skin(Gdx.files.internal(Paths.SKIN_1_JSON));
         this.skin1.addRegions(game.assetManager.get(Paths.SKIN_1_ATLAS, TextureAtlas.class));
-        this.skin1.load(Gdx.files.internal("ui/uiskin.json"));
+
+        this.skin2 = new Skin(Gdx.files.internal(Paths.SKIN_2_JSON));
+        this.skin2.addRegions(game.assetManager.get(Paths.SKIN_2_ATLAS, TextureAtlas.class));
 
         game.p2pConnector.addReceivedDataListener(this);
         //TODO COMMENT OUT THIS
@@ -284,6 +300,9 @@ public class PlayScreen implements Screen, ReceivedDataListener
         //entityManager.update();
 
         engine.update(delta);
+
+        // To initiate Pause and Game Over overlay
+
         //Draw Ui
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
@@ -337,6 +356,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     @Override
     public void dispose() {
+        pauseGroup.clear();
         uiStage.dispose();
         shapeRenderer.dispose();
         bg.dispose();
@@ -414,7 +434,6 @@ public void changed(ChangeEvent event, Actor actor) {
     }
 
     @Override
-    public void onReceive(String data) {
+    public void onReceive(String data) {    }
 
-    }
 }
