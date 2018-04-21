@@ -58,7 +58,6 @@ public class LoadingScreen implements Screen{
         shapeRenderer.setColor(Color.BLUE);
         shapeRenderer.rect(32, game.camera.viewportHeight / 2 - 8, progress * (game.camera.viewportWidth - 64), 16);
         shapeRenderer.end();
-
     }
 
     @Override
