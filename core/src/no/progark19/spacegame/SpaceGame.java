@@ -59,6 +59,8 @@ public class SpaceGame extends Game {
 		assets.loadDebugThings();
 		assets.loadTextures();
 		assets.loadSkins();
+		assets.loadSounds();
+		assets.loadMusic();
 		while (! assetManager.update()) {
 			System.out.println("LOADING");
 		}

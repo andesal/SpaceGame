@@ -3,6 +3,7 @@ package no.progark19.spacegame.screens;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -234,7 +235,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
 
 
     private void initButtons() {
-
+        final Sound s = game.assetManager.get(Paths.SOUND_CLICK); //TODO IMPLEMENT CLICK SOUND
         TextButton buttonExit, buttonInitiate;
         buttonInitiate = new TextButton("Initiate Game", game.skin2, "default");
         buttonInitiate.setPosition(110, 190);

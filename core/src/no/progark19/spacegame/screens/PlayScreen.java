@@ -196,7 +196,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         engine.addSystem(new AnimationSystem(game));
         engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new SweepSystem());
-        engine.addSystem(new UpdateSystem(entityFactory, healthBar, fuelBar));
+        engine.addSystem(new UpdateSystem(game, entityFactory, healthBar, fuelBar));
         engine.addEntityListener(entityManager);
 
         //Create entities
@@ -262,6 +262,17 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     @Override
     public void render(float delta) {
+        switch (GameSettings.GAME_STATE) {
+            case 1: //Play state
+               updateRunning(delta);
+            case 2:
+                updatePause();
+        }
+
+
+    }
+
+    private void updateRunning(float deltaTime) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -270,7 +281,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         game.batch.begin();
         //entityManager.update();
 
-        engine.update(delta);
+        engine.update(deltaTime);
         //Draw Ui
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
@@ -300,6 +311,9 @@ public class PlayScreen implements Screen, ReceivedDataListener
         }
     }
 
+    private void updatePause() {
+
+    }
 
 
     @Override

@@ -1,6 +1,8 @@
 package no.progark19.spacegame.utils;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -47,11 +49,17 @@ public class Assets {
     }
 
     public void loadSounds() {
+        manager.load(Paths.SOUND_CLICK, Sound.class);
+        manager.load(Paths.SOUND_SHOT_FIRED, Sound.class);
+        manager.load(Paths.SOUND_COLLISION_SPACESHIP, Sound.class);
+        manager.load(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
+        manager.load(Paths.SOUND_POWERUP, Sound.class);
 
     }
 
     public void loadMusic() {
 
+        manager.load(Paths.MUSIC_MAIN_THEME, Music.class);
     }
 
 

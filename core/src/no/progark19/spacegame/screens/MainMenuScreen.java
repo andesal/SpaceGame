@@ -5,6 +5,8 @@ import no.progark19.spacegame.utils.Paths;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -46,9 +48,6 @@ public class MainMenuScreen implements Screen {
         System.out.println("MAIN MENU");
         Gdx.input.setInputProcessor(stage);
         stage.clear();
-
-
-
         initButtons();
     }
 
@@ -97,6 +96,7 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initButtons(){
+        final Sound s = game.assetManager.get(Paths.SOUND_CLICK);
         TextButton buttonPlay, buttonExit, buttonOptions;
         buttonPlay = new TextButton("Start Game", game.skin2, "default");
         buttonPlay.setPosition(110, 330);
@@ -106,6 +106,12 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //game.setScreen(new LobbyScreen(game));
+
+                s.play(0.1f);
+                Music mainTheme = game.assetManager.get(Paths.MUSIC_MAIN_THEME, Music.class);
+                mainTheme.setLooping(true);
+                mainTheme.setVolume(1f);
+                mainTheme.play();
                 game.setScreen(new PlayScreen(game));
             }
         });
@@ -117,6 +123,7 @@ public class MainMenuScreen implements Screen {
         buttonOptions.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                s.play(0.1f);
                 game.setScreen(new SettingsScreen(game));
             }
         });

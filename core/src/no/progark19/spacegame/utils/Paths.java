@@ -30,9 +30,7 @@ public class Paths {
     public final static String LOBBY_TEXT_TEXTURE_PATH = "textImg/LOBBY_TEXT.png";
     public final static String SETTING_TEXT_TEXTURE_PATH = "textImg/SETTINGS_TEXT.png";
     //TextureAtlas
-    public final static String FIRE_EXPLOSION_ATLAS = "atlasLib/fire_explosion.atlas";
     public final static String FIRE_EXPLOSION_2_ATLAS = "atlasLib/fire_explosion_2.atlas";
-
     public final static String ICE_EXPLOSION_ATLAS = "atlasLib/ice.atlas";
     public final static String SKIN_1_ATLAS = "ui/uiskin.atlas";
     public final static String SKIN_2_ATLAS = "ui/uiskin.atlas";
@@ -43,7 +41,15 @@ public class Paths {
     public final static String SKIN_2_JSON = "ui/sgxui/sgx-ui.json";
 
     //Sound
+    public final static String SOUND_CLICK = "audio/click.mp3";
+    public final static String SOUND_SHOT_FIRED = "audio/shot_fired.mp3";
+    public final static String SOUND_COLLISION_SPACESHIP = "audio/collision.mp3";
+    public final static String SOUND_ASTEROID_EXPLOSION = "audio/explosion1.mp3";
+    public final static String SOUND_POWERUP = "audio/powerup.mp3";
+
+    //TODO THRUSTER SOUND
+
 
     //Music
-
+    public final static String MUSIC_MAIN_THEME = "audio/theme.mp3";
 }
