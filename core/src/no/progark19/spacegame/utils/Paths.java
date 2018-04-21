@@ -35,7 +35,6 @@ public class Paths {
     public final static String SKIN_1_ATLAS = "ui/uiskin.atlas";
     public final static String SKIN_2_ATLAS = "ui/uiskin.atlas";
 
-
     //JSON
     public final static String SKIN_1_JSON = "ui/uiskin.json";
     public final static String SKIN_2_JSON = "ui/sgxui/sgx-ui.json";

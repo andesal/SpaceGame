@@ -36,7 +36,7 @@ public class GameSettings {
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
     public static final float SPACESHIP_DENSITY = 0.5f;
     public static final float SPACESHIP_RESTITUTION = 0.5f;
-    public static final boolean SPACESHIP_ENABLE_ROTATION = false;
+    public static boolean SPACESHIP_ENABLE_ROTATION = false;
     public final static Vector2 ENGINE_ORIGIN = new Vector2(9,25);
     public final static float ENGINE_MAX_FORCE = 0.1f;
 
@@ -59,6 +59,9 @@ public class GameSettings {
     public final static int START_HEALTH = 60;
     public final static float START_FUEL = 50f;
     public final static float MAX_FUEL = 100f;
+
+    public static float MUSIC_VOLUME = 1;
+    public static float EFFECTS_VOLUME = 1;
 
     public static int GAME_STATE = 1; //Default Playstate
 

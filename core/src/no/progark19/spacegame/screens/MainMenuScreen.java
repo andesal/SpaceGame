@@ -1,5 +1,6 @@
 package no.progark19.spacegame.screens;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.utils.Paths;
 
@@ -110,7 +111,7 @@ public class MainMenuScreen implements Screen {
                 s.play(0.1f);
                 Music mainTheme = game.assetManager.get(Paths.MUSIC_MAIN_THEME, Music.class);
                 mainTheme.setLooping(true);
-                mainTheme.setVolume(1f);
+                mainTheme.setVolume(1f * GameSettings.MUSIC_VOLUME);
                 mainTheme.play();
                 game.setScreen(new PlayScreen(game));
             }

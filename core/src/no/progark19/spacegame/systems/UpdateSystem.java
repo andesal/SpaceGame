@@ -7,6 +7,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.audio.Sound;
 
+import java.lang.reflect.GenericArrayType;
+
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.DamagedComponent;
@@ -66,7 +68,7 @@ public class UpdateSystem extends EntitySystem {
                     getEngine().addEntity(entityFactory.createPowerup(x, y, EntityFactory.POWERUPS.FUEL));
                 }
                 Sound sound = game.assetManager.get(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
-                sound.play(0.3f);
+                sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
             } else {
                 if (lcom != null) {
                     healthBar.setValue((float) hcom.health/100);
@@ -94,12 +96,11 @@ public class UpdateSystem extends EntitySystem {
                 }
             }
             Sound sound = game.assetManager.get(Paths.SOUND_POWERUP, Sound.class);
-            sound.play(0.2f);
+            sound.play(0.2f * GameSettings.EFFECTS_VOLUME);
             entity.remove(RewardComponent.class);
         }
 
         for (Entity entity : spaceship) {
-            System.out.println("HEALTH = " + ComponentMappers.HEALTH_MAP.get(entity).health+ " : " + ComponentMappers.FUEL_MAP.get(entity).fuel + " = " + "FUEL");
             FuelComponent fcom = ComponentMappers.FUEL_MAP.get(entity);
             FuelUsageComponent ucom = ComponentMappers.FUEL_USAGE_MAP.get(entity);
             fcom.fuel -= ucom.usage;
