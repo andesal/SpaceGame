@@ -90,7 +90,6 @@ public class MovementSystem extends EntitySystem {
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
             Body body = bcom.body;
-            float posX = scom.sprite.getX();
             float posY = scom.sprite.getY();
             float velX = body.getLinearVelocity().x;
             float velY = body.getLinearVelocity().y;

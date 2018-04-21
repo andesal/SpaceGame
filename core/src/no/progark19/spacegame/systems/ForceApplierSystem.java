@@ -86,6 +86,7 @@ public class ForceApplierSystem extends EntitySystem{
 
             //bcom_parent.body.applyForceToCenter(forceVector, true);
             if(GameSettings.SPACESHIP_ENABLE_ROTATION){
+                System.out.println(bcom_parent);
                 bcom_parent.body.applyForce(
                         forceVector,
                         (new Vector2(relX, relY)).scl(1f/ GameSettings.BOX2D_PIXELS_TO_METERS),

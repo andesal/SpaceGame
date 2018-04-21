@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
@@ -186,21 +187,21 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         entityManager = new EntityManager(engine, entityFactory);
 
         healthBar = new MyProgressBar(100, 10, Color.RED);
-        healthBar.setPosition(10, Gdx.graphics.getHeight() - 20);
+        healthBar.setPosition(30, Gdx.graphics.getHeight() - 20);
         healthBar.setValue((float) GameSettings.START_HEALTH/100);
         uiStage.addActor(healthBar);
 
         Label healthLabel = new Label("Health", game.skin1);
-        healthLabel.setPosition(115, SpaceGame.HEIGHT - 26);
+        healthLabel.setPosition(135, SpaceGame.HEIGHT - 26);
         uiStage.addActor(healthLabel);
 
         fuelBar = new MyProgressBar(100, 10, Color.GREEN);
-        fuelBar.setPosition(10, Gdx.graphics.getHeight() - 35);
+        fuelBar.setPosition(30, Gdx.graphics.getHeight() - 35);
         fuelBar.setValue(GameSettings.START_FUEL/100);
         uiStage.addActor(fuelBar);
 
         Label fuelLabel = new Label("Fuel", game.skin1);
-        fuelLabel.setPosition(115, SpaceGame.HEIGHT - 41);
+        fuelLabel.setPosition(135, SpaceGame.HEIGHT - 41);
         uiStage.addActor(fuelLabel);
 
         //Add engine systems
@@ -271,23 +272,26 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         final TextureRegionDrawable trDrawDown = new TextureRegionDrawable(regionDown);
 
         final ImageButton elementButton = new ImageButton(trDrawUp, trDrawDown);
-
+        final Sound sound = game.assetManager.get(Paths.SOUND_CHECKBOX_CLICK);
         elementButton.addListener(new ClickListener(){
             boolean toggleState = true;
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
                 if (GameSettings.BULLET_TYPE.equals("FIRE")) {
                     ImageButton.ImageButtonStyle oldStyle = elementButton.getStyle();
                     oldStyle.imageUp = trDrawDown;
                     oldStyle.imageDown = trDrawDown;
                     elementButton.setStyle(oldStyle);
                     GameSettings.BULLET_TYPE = "ICE";
+                    sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
                 } else  {
                     ImageButton.ImageButtonStyle oldStyle = elementButton.getStyle();
                     oldStyle.imageUp = trDrawUp;
                     oldStyle.imageDown = trDrawUp;
                     elementButton.setStyle(oldStyle);
                     GameSettings.BULLET_TYPE = "FIRE";
+                    sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
                 }
             }
         });
@@ -299,18 +303,19 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
         label = new Label("", game.skin1);
         if (GameSettings.isPhysicsResponsible) {
-            //label.setPosition(50,0);
+            label.setPosition(50,0);
             label.setWidth(SpaceGame.WIDTH);
         } else {
             //label.setPosition(0,0);
-            label.setWidth(SpaceGame.WIDTH - 50);
+            label.setHeight(SpaceGame.HEIGHT);
         }
 
         //FOR LOOKOUT PLAYER
         //TODO UPDATE LABEL COORDINATES
+        final Sound fireSound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
         label = new Label("", game.skin1);
-        label.setPosition(0, regionDown.getRegionHeight());
-        label.setWidth(SpaceGame.WIDTH);
+        label.setPosition(50, regionDown.getRegionHeight());
+        label.setWidth(SpaceGame.WIDTH -100);
         label.setHeight(SpaceGame.HEIGHT);
         label.addListener(new ClickListener(){
             @Override
@@ -318,28 +323,29 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 System.out.println("ORIGINAL " + x + " : " + y);
                 Vector3 tp = game.translateScreenCoordinates(new Vector3(x, y, 0));
                 Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2 - shipTexture.getHeight()/2, 0));
+                Vector3 ed = game.translateScreenCoordinates(new Vector3(game.camera.position.x, game.camera.position.y, 0));
+
+                System.out.println(shipEntity.getComponent(PositionComponent.class).rotation);
+
                 float dx = tp.x - sp.x;
                 float dy = tp.y - sp.y;
                 float delta = (float) Math.atan(dy/dx);
                 Vector2 velVec = new Vector2(dx, dy);
                 if (tp.x < sp.x) {
                     delta += Math.PI;
-
+                    System.out.println("TRUE");
                 }
                 velVec.setAngleRad(delta);
-
-
-
-
-
-                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y + shipTexture.getHeight()/2, velVec.x, velVec.y, GameSettings.BULLET_TYPE));
-
+                engine.addEntity(entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, velVec.x, velVec.y, GameSettings.BULLET_TYPE));
+                fireSound.play(0.1f * GameSettings.EFFECTS_VOLUME);
 
                 return false;
             }
         });
         uiStage.addActor(label);
+
     }
+
 
     @Override
     public void show() {

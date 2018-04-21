@@ -49,7 +49,7 @@ public class NetworkSystem extends IntervalSystem {
 
     @Override
     protected void updateInterval() {
-        System.out.println("SYNCING");
+        //System.out.println("SYNCING");
         RenderableWorldState rws = new RenderableWorldState(synchronizedPhysicsObjects.size());
         for (Entity e: synchronizedPhysicsObjects) {
             PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
@@ -66,7 +66,7 @@ public class NetworkSystem extends IntervalSystem {
             state[WorldStateIndexes.WS_RENDERABLE_VR] = bcom.body.getAngularVelocity()  * GameSettings.BOX2D_PIXELS_TO_METERS;
 
             rws.addState(state);
-            System.out.println("Made state: " + Arrays.toString(state));
+            //System.out.println("Made state: " + Arrays.toString(state));
 
             /*payload = new JsonPayload();
             payload.setTAG(JsonPayloadTags.SYNC_BODY);

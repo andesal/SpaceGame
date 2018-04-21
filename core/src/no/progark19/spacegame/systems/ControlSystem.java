@@ -44,10 +44,10 @@ public class ControlSystem extends EntitySystem {
     public void update(float deltaTime) {
         //TODO REMOVE FLIP
         if (bullets.size() == 0) {
-            Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, -5,0, "ICE");
-            getEngine().addEntity(entity);
-            Sound sound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
-            sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
+            //Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, -5,0, "ICE");
+            //getEngine().addEntity(entity);
+            //Sound sound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
+            //sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
         }
         GameSettings.screenBounds.set((int) game.camera.position.x - (SpaceGame.WIDTH), (int) game.camera.position.y - (SpaceGame.WIDTH), SpaceGame.WIDTH * 2, (SpaceGame.WIDTH * 2));
         temp += deltaTime;

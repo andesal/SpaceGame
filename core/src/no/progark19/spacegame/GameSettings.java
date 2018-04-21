@@ -22,7 +22,7 @@ import java.util.Random;
 
 
 public class GameSettings {
-    public static boolean isPhysicsResponsible = false;
+    public static boolean isPhysicsResponsible = true;
 
     public static final boolean CAMERA_FOLLOW_POSITION = true;
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
