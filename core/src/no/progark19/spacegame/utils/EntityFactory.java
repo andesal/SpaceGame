@@ -48,7 +48,7 @@ public class EntityFactory {
         this.engine = engine;
     }
 
-    public Entity createAsteroid(float x, float y, Vector2 velocity, Enum element) {
+    public Entity createAsteroid(float x, float y, Vector2 velocity, String element) {
         Entity entity = new Entity();
 
         ElementComponent ecom = new ElementComponent(element);
@@ -56,7 +56,7 @@ public class EntityFactory {
         SpriteComponent scom = engine.createComponent(SpriteComponent.class);
 
         Texture texture;
-        if (element == ELEMENTS.FIRE) {
+        if (element.equals("FIRE")) {
             texture = game.assetManager.get(Paths.ASTEROID_FIRE_TEXTURE_PATH, Texture.class);
         } else {
             texture = game.assetManager.get(Paths.ASTEROID_ICE_TEXTURE_PATH, Texture.class);
@@ -64,7 +64,7 @@ public class EntityFactory {
         scom.sprite = new Sprite(texture);
         scom.sprite.setPosition(x, y);
 
-        short tag = element == ELEMENTS.FIRE ? GameSettings.FIRE_ASTEROID_TAG : GameSettings.ICE_ASTEROID_TAG;
+        short tag = element.equals("FIRE") ? GameSettings.FIRE_ASTEROID_TAG : GameSettings.ICE_ASTEROID_TAG;
         CircleShape shape = new CircleShape();
         shape.setRadius((scom.sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
         BodyComponent bcom = new BodyComponent();
@@ -122,13 +122,13 @@ public class EntityFactory {
                 .add(new ForceApplierComponent(GameSettings.ENGINE_MAX_FORCE));
     }
 
-    public Entity createProjectile(float x, float y, Vector2 velocity, Enum element) {
+    public Entity createProjectile(float x, float y, Vector2 velocity, String element) {
         Entity entity = new Entity();
 
         ElementComponent ecom = new ElementComponent(element);
 
         Texture texture;
-        if (element == ELEMENTS.FIRE) {
+        if (element.equals("FIRE")) {
             texture = game.assetManager.get(Paths.FIRE_BULLET_TEXTURE_PATH, Texture.class);
         } else {
             texture = game.assetManager.get(Paths.ICE_BULLET_TEXTURE_PATH, Texture.class);
@@ -144,11 +144,11 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity createAnimationEntity(float x, float y, Enum element) {
+    public Entity createAnimationEntity(float x, float y, String element) {
         Entity entity = new Entity();
         AnimationComponent acom;
         ElementComponent ecom = new ElementComponent(element);
-        if (element == ELEMENTS.FIRE) {
+        if (element.equals("FIRE")) {
             acom = new AnimationComponent(GameSettings.createAnimation(game.assetManager.get(Paths.FIRE_EXPLOSION_2_ATLAS, TextureAtlas.class), 1/255f));
         } else {
             acom = new AnimationComponent(GameSettings.createAnimation(game.assetManager.get(Paths.ICE_EXPLOSION_ATLAS, TextureAtlas.class), 1/149f));

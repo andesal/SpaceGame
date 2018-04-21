@@ -6,9 +6,9 @@ import com.badlogic.gdx.utils.Pool;
 
 public class ElementComponent implements Component, Pool.Poolable {
 
-    public Enum element;
+    public String element;
 
-    public ElementComponent(Enum element) {
+    public ElementComponent(String element) {
         this.element = element;
     }
 

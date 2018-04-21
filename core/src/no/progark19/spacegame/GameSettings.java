@@ -65,7 +65,7 @@ public class GameSettings {
 
     public static int GAME_STATE = 1; //Default Playstate
 
-
+    public static String BULLET_TYPE = "FIRE";
     //public static String gameFrameRate
 
     private static Random mainRandom;

@@ -82,7 +82,7 @@ public class SpawnSystem extends EntitySystem {
             float velX = randomNumber(GameSettings.getMainRandom(), -200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
             float velY = randomNumber(GameSettings.getMainRandom(), -200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
             fire = !fire;
-            Enum element = fire ? EntityFactory.ELEMENTS.FIRE : EntityFactory.ELEMENTS.ICE;
+            String element = fire ? "FIRE" : "ICE";
             Entity entity = entityFactory.createAsteroid(x, y, new Vector2(velX, velY), element);
             getEngine().addEntity(entity);
             numAsteroids++;

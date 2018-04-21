@@ -62,7 +62,7 @@ public class UpdateSystem extends EntitySystem {
                 EntityManager.flaggedForRemoval.add(entity);
                 float x = scom.sprite.getX() + scom.sprite.getOriginX();
                 float y = scom.sprite.getY() + scom.sprite.getOriginY();
-                if (ecom.element == EntityFactory.ELEMENTS.FIRE) {
+                if (ecom.element.equals("FIRE")) {
                     getEngine().addEntity(entityFactory.createPowerup(x, y, EntityFactory.POWERUPS.HEALTH));
                 } else {
                     getEngine().addEntity(entityFactory.createPowerup(x, y, EntityFactory.POWERUPS.FUEL));

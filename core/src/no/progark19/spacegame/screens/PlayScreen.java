@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import no.progark19.spacegame.systems.AnimationSystem;
@@ -246,7 +248,37 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             );
         }
 
-        //ImageButton elementButton = new Button();
+        final Texture imageUp = new Texture("img/fire_button.png");
+        final Texture imageDown = new Texture("img/ice_button.png");
+        final TextureRegion regionUp = new TextureRegion(imageUp);
+        final TextureRegion regionDown = new TextureRegion(imageDown);
+
+        final TextureRegionDrawable trDrawUp = new TextureRegionDrawable(regionUp);
+        final TextureRegionDrawable trDrawDown = new TextureRegionDrawable(regionDown);
+
+        final ImageButton elementButton = new ImageButton(trDrawUp, trDrawDown);
+
+        elementButton.addListener(new ClickListener(){
+            boolean toggleState = true;
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (GameSettings.BULLET_TYPE.equals("FIRE")) {
+                    ImageButton.ImageButtonStyle oldStyle = elementButton.getStyle();
+                    oldStyle.imageUp = trDrawDown;
+                    oldStyle.imageDown = trDrawDown;
+                    elementButton.setStyle(oldStyle);
+                    GameSettings.BULLET_TYPE = "ICE";
+                } else  {
+                    ImageButton.ImageButtonStyle oldStyle = elementButton.getStyle();
+                    oldStyle.imageUp = trDrawUp;
+                    oldStyle.imageDown = trDrawUp;
+                    elementButton.setStyle(oldStyle);
+                    GameSettings.BULLET_TYPE = "FIRE";
+                }
+            }
+        });
+        elementButton.setPosition(10, 20);
+        uiStage.addActor(elementButton);
 
 
         this.font = new BitmapFont();
@@ -261,7 +293,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             label.setWidth(SpaceGame.WIDTH - 50);
 
         }
-
+/*
         label.setHeight(SpaceGame.HEIGHT);
         label.addListener(new ClickListener(){
             @Override
@@ -276,6 +308,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             }
         });
         uiStage.addActor(label);
+        */
     }
 
     @Override
