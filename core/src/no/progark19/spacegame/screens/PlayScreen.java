@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -92,19 +91,13 @@ public class PlayScreen implements Screen, ReceivedDataListener
     private PooledEngine engine;
     public Sound theme;
     private EntityFactory entityFactory;
-    private Texture bg;
-    private int bgX = 0;
-    private int bgY = 0;
-    //private Skin skin2;
-    private Skin skin1;
-    private Skin skin2;
 
     public MyProgressBar healthBar;
     public MyProgressBar fuelBar;
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
-        Slider engineSlider = new Slider(0, 100, 1f, true, game.getSkin());
+        Slider engineSlider = new Slider(0, 100, 1f, true, game.skin1);
         engineSlider.setPosition(posX, posY);
         engineSlider.setSize(20, SpaceGame.HEIGHT / 2 - 20);
         engineSlider.setScaleX(3);
@@ -196,7 +189,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         healthBar.setValue((float) GameSettings.START_HEALTH/100);
         uiStage.addActor(healthBar);
 
-        Label healthLabel = new Label("Health", game.getSkin());
+        Label healthLabel = new Label("Health", game.skin1);
         healthLabel.setPosition(115, SpaceGame.HEIGHT - 26);
         uiStage.addActor(healthLabel);
 
@@ -205,7 +198,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         fuelBar.setValue(GameSettings.START_FUEL/100);
         uiStage.addActor(fuelBar);
 
-        Label fuelLabel = new Label("Fuel", game.getSkin());
+        Label fuelLabel = new Label("Fuel", game.skin1);
         fuelLabel.setPosition(115, SpaceGame.HEIGHT - 41);
         uiStage.addActor(fuelLabel);
 
@@ -219,7 +212,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         engine.addSystem(new AnimationSystem(game));
         engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new SweepSystem());
-        engine.addSystem(new UpdateSystem(entityFactory, healthBar, fuelBar));
+        engine.addSystem(new UpdateSystem(game, entityFactory, healthBar, fuelBar));
         engine.addEntityListener(entityManager);
 
         //Create entities
@@ -278,12 +271,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
 
-        this.skin1 = new Skin(Gdx.files.internal(Paths.SKIN_1_JSON));
-        this.skin1.addRegions(game.assetManager.get(Paths.SKIN_1_ATLAS, TextureAtlas.class));
-
-        this.skin2 = new Skin(Gdx.files.internal(Paths.SKIN_2_JSON));
-        this.skin2.addRegions(game.assetManager.get(Paths.SKIN_2_ATLAS, TextureAtlas.class));
-
         game.p2pConnector.addReceivedDataListener(this);
         //TODO COMMENT OUT THIS
         GameSettings.setRandomSeed((new Random()).nextLong());
@@ -291,6 +278,17 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     @Override
     public void render(float delta) {
+        switch (GameSettings.GAME_STATE) {
+            case 1: //Play state
+               updateRunning(delta);
+            case 2:
+                updatePause();
+        }
+
+
+    }
+
+    private void updateRunning(float deltaTime) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -299,10 +297,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         game.batch.begin();
         //entityManager.update();
 
-        engine.update(delta);
-
-        // To initiate Pause and Game Over overlay
-
+        engine.update(deltaTime);
         //Draw Ui
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
@@ -332,6 +327,9 @@ public class PlayScreen implements Screen, ReceivedDataListener
         }
     }
 
+    private void updatePause() {
+
+    }
 
 
     @Override
@@ -359,7 +357,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
         pauseGroup.clear();
         uiStage.dispose();
         shapeRenderer.dispose();
-        bg.dispose();
         debugRenderer.dispose();
         shapeRenderer.dispose();
         theme.dispose();

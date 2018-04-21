@@ -49,12 +49,6 @@ public class PlayScreen_DEMO implements Screen {
     private Stage stage;
     private ShapeRenderer shapeRenderer;
 
-    Texture blank;
-    //Animation[] rolls;
-
-    public ParticleEffect pe;
-
-    public EntityManager entityManager;
     private PooledEngine engine;
     // Textures
     private Texture background;
@@ -103,7 +97,7 @@ public class PlayScreen_DEMO implements Screen {
     }
 
     private void createEngineSlider(final int engineIndex, float posX, float posY){
-        Slider engineSlider = new Slider(0,100,0.1f, true, game.getSkin());
+        Slider engineSlider = new Slider(0,100,0.1f, true, game.skin2);
         engineSlider.setPosition(posX,posY);
         engineSlider.setSize(20, SpaceGame.HEIGHT/2 - 20);
         engineSlider.setScaleX(3);
@@ -136,8 +130,6 @@ public class PlayScreen_DEMO implements Screen {
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
-
-        blank = new Texture("ui/blank.png");
 
         /*TODO {1} NOT IN PlayScreen -----------------------------------------------------*/
         uiCamera = new OrthographicCamera();
@@ -233,7 +225,7 @@ public class PlayScreen_DEMO implements Screen {
         game.camera.update();
         //Draw Ui
         game.batch.setProjectionMatrix(uiCamera.combined);
-        initGameOverlay();
+
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
 
@@ -308,31 +300,5 @@ public class PlayScreen_DEMO implements Screen {
         stage.dispose();
         shapeRenderer.dispose();
 
-    }
-
-    private void initGameOverlay() {
-        // FOR TEST HER, healt og fuel må være noe mer globale
-        float health = 0.6f; // 0 == DEAD, 1 == FULL HEALTH YEAH BABY! Spaceship.getHealth();
-        float fuel = 0.2f; // Spaceship.getFuel();
-
-        float posX = 20;
-        float posY = SpaceGame.HEIGHT - 20;
-
-        if (health > 0.6f)
-            uiStage.getBatch().setColor(Color.GREEN);
-        else if (health > 0.2f)
-            uiStage.getBatch().setColor(Color.ORANGE);
-        else
-            uiStage.getBatch().setColor(Color.RED);
-        uiStage.getBatch().draw(blank, posX - 100 ,posY + 20, SpaceGame.WIDTH * health, 5);
-
-        if (fuel > 0.6f)
-            uiStage.getBatch().setColor(Color.GREEN);
-        else if (fuel > 0.2f)
-            uiStage.getBatch().setColor(Color.ORANGE);
-        else
-            uiStage.getBatch().setColor(Color.RED);
-        uiStage.getBatch().draw(blank, posX  ,posY, SpaceGame.WIDTH * fuel, 5);
-        uiStage.getBatch().setColor(Color.WHITE);
     }
 }

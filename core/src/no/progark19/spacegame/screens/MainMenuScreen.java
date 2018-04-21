@@ -1,24 +1,21 @@
 package no.progark19.spacegame.screens;
 
+import no.progark19.spacegame.SpaceGame;
+import no.progark19.spacegame.utils.Paths;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-
-import no.progark19.spacegame.GameSettings;
-import no.progark19.spacegame.SpaceGame;
-import no.progark19.spacegame.utils.Paths;
-
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
@@ -34,23 +31,16 @@ public class MainMenuScreen implements Screen {
     private final SpaceGame game;
 
     private Stage stage;
-    private Skin skin2;
-    private Skin skin1;
 
     private TextButton buttonPlay, buttonExit, buttonOptions;
 
 
     private ShapeRenderer shapeRenderer;
-    Slider testSlider;
-
-    private Texture background, logo;
 
     public MainMenuScreen(final SpaceGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
-        background = new Texture("img/menu_bg_darkblue_plain.jpg");
-        logo = new Texture("textImg/SPACE_GAME_TEXT_V.png");
     }
 
     @Override
@@ -58,14 +48,6 @@ public class MainMenuScreen implements Screen {
         System.out.println("MAIN MENU");
         Gdx.input.setInputProcessor(stage);
         stage.clear();
-
-        this.skin1 = new Skin(Gdx.files.internal(Paths.SKIN_1_JSON));
-        this.skin1.addRegions(game.assetManager.get(Paths.SKIN_1_ATLAS, TextureAtlas.class));
-
-        this.skin2 = new Skin(Gdx.files.internal(Paths.SKIN_2_JSON));
-        this.skin2.addRegions(game.assetManager.get(Paths.SKIN_2_ATLAS, TextureAtlas.class));
-
-
         initButtons();
     }
 
@@ -79,8 +61,8 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.getBatch().begin();
 
-        stage.getBatch().draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
-        stage.getBatch().draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
+        stage.getBatch().draw(game.assetManager.get(Paths.BACKGROUND_MAIN_MENU_TEXTURE_PATH, Texture.class), 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
+        stage.getBatch().draw(game.assetManager.get(Paths.MENU_TEXT_TEXTURE_PATH, Texture.class), SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
         update(delta);
 
         stage.getBatch().end();
@@ -114,10 +96,9 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initButtons(){
-
+        final Sound s = game.assetManager.get(Paths.SOUND_CLICK);
         TextButton buttonPlay, buttonExit, buttonOptions;
-
-        buttonPlay = new TextButton("Start Game", skin2, "default");
+        buttonPlay = new TextButton("Start Game", game.skin2, "default");
         buttonPlay.setPosition(110, 330);
         buttonPlay.setSize(280, 60);
         buttonPlay.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
@@ -125,22 +106,29 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //game.setScreen(new LobbyScreen(game));
+
+                s.play(0.1f);
+                Music mainTheme = game.assetManager.get(Paths.MUSIC_MAIN_THEME, Music.class);
+                mainTheme.setLooping(true);
+                mainTheme.setVolume(1f);
+                mainTheme.play();
                 game.setScreen(new PlayScreen(game));
             }
         });
 
-        buttonOptions = new TextButton("Settings", skin2, "default");
+        buttonOptions = new TextButton("Settings", game.skin2, "default");
         buttonOptions.setPosition(110, 260);
         buttonOptions.setSize(280, 60);
         buttonOptions.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
         buttonOptions.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                s.play(0.1f);
                 game.setScreen(new SettingsScreen(game));
             }
         });
 
-        buttonExit = new TextButton("Exit", skin2, "default");
+        buttonExit = new TextButton("Exit", game.skin2, "default");
         buttonExit.setPosition(110, 120);
         buttonExit.setSize(280, 60);
         buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
