@@ -304,8 +304,9 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         } else {
             //label.setPosition(0,0);
             label.setWidth(SpaceGame.WIDTH - 50);
+        }
 
-//FOR LOOKOUT PLAYER
+        //FOR LOOKOUT PLAYER
         //TODO UPDATE LABEL COORDINATES
         label = new Label("", game.skin1);
         label.setPosition(0, regionDown.getRegionHeight());
@@ -320,7 +321,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 float dx = tp.x - sp.x;
                 float dy = tp.y - sp.y;
                 float delta = (float) Math.atan(dy/dx);
-                Vector2 velVec = new Vector2(dx/10, dy/10);
+                Vector2 velVec = new Vector2(dx, dy);
                 if (tp.x < sp.x) {
                     delta += Math.PI;
 
