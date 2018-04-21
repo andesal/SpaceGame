@@ -2,6 +2,7 @@ package no.progark19.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -104,6 +105,7 @@ public class SettingsScreen implements Screen {
     }
 
     private void initSettingsBtt(){
+        final Sound s = game.assetManager.get(Paths.SOUND_CLICK);
 
         final TextButton comBtt, buttonExit;
         final CheckBox wifi_check = new CheckBox("WiFi", game.skin2);
@@ -181,6 +183,7 @@ public class SettingsScreen implements Screen {
         buttonExit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                s.play(0.1f);
                 game.setScreen(new MainMenuScreen(game));
             }
         });

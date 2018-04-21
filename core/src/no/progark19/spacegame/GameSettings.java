@@ -61,6 +61,9 @@ public class GameSettings {
     public final static float START_FUEL = 50f;
     public final static float MAX_FUEL = 100f;
 
+    public static int GAME_STATE = 1; //Default Playstate
+
+
     //public static String gameFrameRate
     public final static int WORLDSYNC_MAXSTATES = 5;
     public static final float WORLDSYNCH_REFRESH_RATE = 1/3f;

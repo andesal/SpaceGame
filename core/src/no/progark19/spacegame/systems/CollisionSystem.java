@@ -9,6 +9,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -50,6 +51,7 @@ import no.progark19.spacegame.components.SweepComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
 import no.progark19.spacegame.utils.EntityFactory;
+import no.progark19.spacegame.utils.Paths;
 
 /**
  * Created by anderssalvesen on 17.04.2018.
@@ -96,7 +98,6 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
                 SpriteComponent scomPowerUp = ComponentMappers.SPRITE_MAP.get(powerup);
                 PowerupComponent powCom = ComponentMappers.POWER_MAP.get(powerup);
                 if (scomPowerUp.sprite.getBoundingRectangle().overlaps(scomShip.sprite.getBoundingRectangle())) {
-                    System.out.println("TRUE");
                     getEngine().removeEntity(powerup);
                     if (powCom.powerup == EntityFactory.POWERUPS.HEALTH) {
                         ship.add(new RewardComponent(10, "health"));
@@ -135,6 +136,8 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
 
         if ((a == GameSettings.SPACESHIP_TAG && (b == GameSettings.ICE_ASTEROID_TAG || b == GameSettings.FIRE_ASTEROID_TAG)) || (b == GameSettings.SPACESHIP_TAG && (a == GameSettings.ICE_ASTEROID_TAG || a == GameSettings.FIRE_ASTEROID_TAG))) {
             System.out.println("HIT");
+            Sound sound = game.assetManager.get(Paths.SOUND_COLLISION_SPACESHIP, Sound.class);
+            sound.play(0.3f);
             Entity ship = a == GameSettings.SPACESHIP_TAG ? entityA : entityB;
             ship.add(new DamagedComponent(10));
             return;
@@ -150,6 +153,9 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
         if (GameSettings.screenBounds.contains(xA, yA) || GameSettings.screenBounds.contains(xB, yB)) {
             EntityManager.flaggedForRemoval.add(entityA);
             EntityManager.flaggedForRemoval.add(entityB);
+            Sound sound = game.assetManager.get(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
+            sound.play(0.3f);
+
         }
 
         /*
