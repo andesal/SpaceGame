@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -17,13 +18,16 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -41,6 +45,7 @@ import java.util.Random;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.systems.SweepSystem;
 import no.progark19.spacegame.systems.UpdateSystem;
+import no.progark19.spacegame.utils.Assets;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
@@ -74,6 +79,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
     private final Box2DDebugRenderer debugRenderer;
     private Matrix4 debugMatrix;
     private Stage uiStage;
+    private Stage overlayStage;
     private Camera uiCamera;
 
     private boolean isPause;
@@ -93,8 +99,8 @@ public class PlayScreen implements Screen, ReceivedDataListener
     public Sound theme;
     private EntityFactory entityFactory;
 
-    public MyProgressBar healthBar;
-    public MyProgressBar fuelBar;
+    private MyProgressBar healthBar;
+    private MyProgressBar fuelBar;
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
@@ -172,11 +178,14 @@ public class PlayScreen implements Screen, ReceivedDataListener
     }
     //----------------------------------------------------------------------------------------------
 
-    public PlayScreen(SpaceGame game){
+    public PlayScreen(final SpaceGame game){
+        GameSettings.BOX2D_PHYSICSWORLD = new World(new Vector2(0,0), true);
+        System.out.println("B2D WORLD INITIALIZED");
         this.game = game;
         game.camera.setToOrtho(false, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         this.uiCamera = new OrthographicCamera();
         this.uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
+        this.overlayStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
         this.shapeRenderer = new ShapeRenderer();
         debugRenderer = new Box2DDebugRenderer();
         debugRenderer.setDrawAABBs(true);
@@ -186,6 +195,8 @@ public class PlayScreen implements Screen, ReceivedDataListener
         entityFactory = new EntityFactory(game, engine);
         entityManager = new EntityManager(engine, entityFactory);
 
+
+        // Health and fuel bars
         healthBar = new MyProgressBar(100, 10, Color.RED);
         healthBar.setPosition(10, Gdx.graphics.getHeight() - 20);
         healthBar.setValue((float) GameSettings.START_HEALTH/100);
@@ -204,6 +215,21 @@ public class PlayScreen implements Screen, ReceivedDataListener
         fuelLabel.setPosition(115, SpaceGame.HEIGHT - 41);
         uiStage.addActor(fuelLabel);
 
+        //Buttons
+        TextButton pauseButton;
+        pauseButton =  new TextButton("Pause", game.skin2, "default");
+        pauseButton.setSize(60,30);
+        pauseButton.setPosition(400, SpaceGame.HEIGHT - 41);
+        pauseButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        pauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameSettings.GAME_STATE = 1;
+            }
+        });
+        uiStage.addActor(pauseButton);
+
+
         //Add engine systems
         engine.addSystem(new ControlSystem(game, entityFactory));
         engine.addSystem(new RenderSystem(game, uiStage));
@@ -212,7 +238,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         engine.addSystem(new SoundSystem());
         engine.addSystem(new ForceApplierSystem(game));
         engine.addSystem(new AnimationSystem(game));
-        engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
+        engine.addSystem(new CollisionSystem(game, entityFactory));
         engine.addSystem(new SweepSystem());
         engine.addSystem(new UpdateSystem(game, entityFactory, healthBar, fuelBar));
         engine.addEntityListener(entityManager);
@@ -259,10 +285,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
-
-
-        // FOR TEST HER, healt og fuel må være noe mer globale
-
     }
 
     @Override
@@ -278,34 +300,38 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     @Override
     public void render(float delta) {
-        switch (GameSettings.GAME_STATE) {
-            case 1: //Play state
-               updateRunning(delta);
-            case 2: // Pause state
-                updateRunning(0);
-                pauseGame();
-            case 3: // Game Over state
-                gameOver();
-        }
-    }
-
-    private void updateRunning(float deltaTime) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.setProjectionMatrix(game.camera.combined);
-
         game.batch.begin();
-        //entityManager.update();
 
+        switch (GameSettings.GAME_STATE) {
+            case 0: // Game running
+                updateRunning(delta);
+                uiStage.draw();
+                break;
+            case 1: // Game paused
+                pauseGame();
+                overlayStage.draw();
+                uiStage.draw();
+                break;
+            case 2: // Game over
+                gameOver();
+                overlayStage.draw();
+                uiStage.draw();
+                break;
+        }
+        game.batch.end();
+    }
+
+    private void updateRunning(float deltaTime) {
+        uiStage.act(Gdx.graphics.getDeltaTime());
+        //entityManager.update();
         engine.update(deltaTime);
         //Draw Ui
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
-
-
-        uiStage.act(Gdx.graphics.getDeltaTime());
-        uiStage.draw();
 
         //TODO This was supposed to print the FPS, but doesnt!
         font.setColor(Color.WHITE);
@@ -315,8 +341,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
         font.draw(game.batch, layout,
                 SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT/2 - layout.height
         );
-
-        game.batch.end();
 
         //Draw physics debug info
         if(GameSettings.BOX2D_DRAWDEBUG){
@@ -336,6 +360,8 @@ public class PlayScreen implements Screen, ReceivedDataListener
     @Override
     public void pause() {
 
+
+
     }
 
     @Override
@@ -350,12 +376,12 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     @Override
     public void dispose() {
-        pauseGroup.clear();
         uiStage.dispose();
-        shapeRenderer.dispose();
         debugRenderer.dispose();
         shapeRenderer.dispose();
-        theme.dispose();
+        font.dispose();
+        GameSettings.BOX2D_PHYSICSWORLD.dispose();
+
     }
     /*
 public void changed(ChangeEvent event, Actor actor) {
@@ -427,96 +453,79 @@ public void changed(ChangeEvent event, Actor actor) {
     }
 
     @Override
-    public void onReceive(String data) {    }
+    public void onReceive(String data) { }
 
 
-    public void pauseGame(){
-        // Todo: Actually pause the game.
-        //GameSettings.IS_GAME_PAUSED = true;
+    private void pauseGame(){
 
         pauseGroup = new Group();
-        final TextButton mainMenu, resumeGame, newGame;
+        for (Actor actor : uiStage.getActors()) {
+            actor.remove();
+        }
+        final TextButton mainMenu, resumeGame;
 
         mainMenu = new TextButton("Main Menu", game.skin2, "default");
-        mainMenu.setPosition(110, 100);
+        mainMenu.setPosition(110, 300);
         mainMenu.setSize(220, 40);
         mainMenu.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                dispose();
+                GameSettings.GAME_STATE = 0;
+                engine.removeAllEntities();
                 game.setScreen(new MainMenuScreen(game));
             }
         });
 
         resumeGame = new TextButton("Resume Game", game.skin2, "default" );
-        resumeGame.setPosition(110, 240);
+        resumeGame.setPosition(110, 350);
         resumeGame.setSize(220, 40);
         resumeGame.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
         resumeGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                pauseGroup.removeActor(resumeGame, true);
+                pauseGroup.removeActor(mainMenu, true);
+                uiStage.getActors().removeValue(pauseGroup);
+                //for (Actor actor : uiStage.getActors()) {
+                //    actor.remove();
+                //}
                 resumeGame();
             }
         });
 
-        newGame = new TextButton("New Game", game.skin2, "default");
-        newGame.setPosition(110, 170);
-        newGame.setSize(220, 40);
-        newGame.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        newGame.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new LobbyScreen(game));
-            }
-        });
-
-        //ButtonGroup<Button> pauseGroup1 = new ButtonGroup<Button>(mainMenu, resumeGame, newGame );
-
         pauseGroup.addActor(resumeGame);
-        pauseGroup.addActor(newGame);
         pauseGroup.addActor(mainMenu);
-
         uiStage.addActor(pauseGroup);
     }
 
-    public void gameOver(){
+    private void gameOver(){
         Group overGroup = new Group();
-        TextButton mainMenu, newGame;
-
-        //GameSettings.IS_GAME_OVER = true;
-
-        newGame = new TextButton("New Game", game.skin2, "default");
-        newGame.setPosition(110, 170);
-        newGame.setSize(220, 40);
-        newGame.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        newGame.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new LobbyScreen(game));
-            }
-        });
+        TextButton mainMenu;
 
         mainMenu = new TextButton("Main Menu", game.skin2, "default");
-        mainMenu.setPosition(110, 100);
+        mainMenu.setPosition(110, 300);
         mainMenu.setSize(220, 40);
         mainMenu.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                dispose();
+                GameSettings.GAME_STATE = 0;
+                engine.removeAllEntities();
                 game.setScreen(new MainMenuScreen(game));
             }
         });
 
-        overGroup.addActor(newGame);
         overGroup.addActor(mainMenu);
 
         uiStage.addActor(overGroup);
     }
 
-    public void resumeGame(){
-        if(GameSettings.IS_GAME_PAUSED){
-            GameSettings.IS_GAME_PAUSED = false;
+    private void resumeGame(){
             pauseGroup.remove();
-        }
+
+            GameSettings.GAME_STATE = 0;
     }
 }

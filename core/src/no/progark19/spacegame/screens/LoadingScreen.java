@@ -3,15 +3,19 @@ package no.progark19.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import no.progark19.spacegame.SpaceGame;
+import no.progark19.spacegame.utils.Assets;
 import no.progark19.spacegame.utils.LoadingBarWithBorders;
+import no.progark19.spacegame.utils.Paths;
 
 public class LoadingScreen implements Screen{
 
@@ -19,12 +23,14 @@ public class LoadingScreen implements Screen{
 
     private ShapeRenderer shapeRenderer;
 
+
     private float progress;
 
     public LoadingScreen(final SpaceGame game){
         this.game = game;
 
         this.shapeRenderer = new ShapeRenderer();
+
     }
 
     @Override
@@ -36,11 +42,13 @@ public class LoadingScreen implements Screen{
     }
 
     private void update(float delta) {
+
         progress = MathUtils.lerp(progress, game.assetManager.getProgress(), .1f);
         if (game.assetManager.update() && progress >= game.assetManager.getProgress() - .001f) {
             game.setScreen(new MainMenuScreen(game));
 //            game.setScreen(new PlayScreen(game));
         }
+
     }
 
 

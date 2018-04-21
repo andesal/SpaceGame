@@ -30,7 +30,7 @@ public class GameSettings {
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
     public static final boolean BOX2D_DRAWDEBUG = true;
     public static final float BOX2D_PIXELS_TO_METERS = 100f;  // Used to scale box2d drawings
-    public final static World BOX2D_PHYSICSWORLD = new World(new Vector2(0,0), true);
+    public static World BOX2D_PHYSICSWORLD;
 
     public static final boolean SPACESHIP_STABILIZE_ROTATION = true;
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
@@ -56,14 +56,11 @@ public class GameSettings {
     public final static int MAX_HEALTH_SPACESHIP = 100;
     public final static int MAX_HEALTH_ASTEROIDS = 50;
 
-    public final static int START_HEALTH = 60;
+    public final static int START_HEALTH = 10;
     public final static float START_FUEL = 50f;
     public final static float MAX_FUEL = 100f;
 
-    public static int GAME_STATE = 1; //Default Playstate
-
-    public static boolean IS_GAME_OVER = false;
-    public static boolean IS_GAME_PAUSED = false;
+    public static int GAME_STATE = 0; //Default Playstate
 
 
     //public static String gameFrameRate

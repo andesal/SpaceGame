@@ -53,7 +53,7 @@ public class EntityManager implements EntityListener{
 
     @Override
     public void entityRemoved(Entity entity) {
-        if (ComponentMappers.BOD_MAP.get(entity) != null) {
+        if (ComponentMappers.BOD_MAP.get(entity) != null && ComponentMappers.LEAD_MAP.get(entity) == null) {
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
             ElementComponent ecom = ComponentMappers.ELEMENT_MAP.get(entity);
             float x = scom.sprite.getX() + scom.sprite.getOriginX();

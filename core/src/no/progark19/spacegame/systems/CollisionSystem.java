@@ -66,15 +66,13 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
 
 
     private SpaceGame game;
-    private World world;
     private EntityFactory entityFactory;
 
 
-    public CollisionSystem(SpaceGame game, World world, EntityFactory entityFactory) {
+    public CollisionSystem(SpaceGame game, EntityFactory entityFactory) {
         this.game = game;
-        this.world = world;
         this.entityFactory = entityFactory;
-        world.setContactListener(this);
+        GameSettings.BOX2D_PHYSICSWORLD.setContactListener(this);
 
     }
 

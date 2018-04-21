@@ -1,5 +1,6 @@
 package no.progark19.spacegame.screens;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.utils.Paths;
 
@@ -40,6 +41,9 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final SpaceGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
+        game.camera.direction.set(0,0,-1);
+        game.camera.up.set(0,1,0);
+        game.camera.update();
         this.shapeRenderer = new ShapeRenderer();
     }
 
@@ -59,11 +63,12 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.getBatch().begin();
 
+        stage.getBatch().begin();
+        update(delta);
         stage.getBatch().draw(game.assetManager.get(Paths.BACKGROUND_MAIN_MENU_TEXTURE_PATH, Texture.class), 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         stage.getBatch().draw(game.assetManager.get(Paths.MENU_TEXT_TEXTURE_PATH, Texture.class), SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
-        update(delta);
+
 
         stage.getBatch().end();
         stage.draw();
@@ -112,6 +117,7 @@ public class MainMenuScreen implements Screen {
                 mainTheme.setLooping(true);
                 mainTheme.setVolume(1f);
                 mainTheme.play();
+                GameSettings.GAME_STATE = 0;
                 game.setScreen(new PlayScreen(game));
             }
         });

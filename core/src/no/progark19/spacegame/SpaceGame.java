@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import no.progark19.spacegame.screens.LoadingScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
+import no.progark19.spacegame.screens.PlayScreen;
 import no.progark19.spacegame.screens.SettingsScreen;
 import no.progark19.spacegame.utils.Assets;
 import no.progark19.spacegame.utils.Paths;
@@ -31,8 +32,6 @@ public class SpaceGame extends Game {
     //FIXME trur disse er unødvendig
 	public LoadingScreen loadingScreen;
     public MainMenuScreen mainMenuScreen;
-    //public LobbyScreen lobbyScreen;
-    //public PlayScreen playScreen;
     public SettingsScreen settingsScreen;
 
     public P2pConnector p2pConnector;
@@ -105,11 +104,7 @@ public class SpaceGame extends Game {
         assetManager.dispose();
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
-		//lobbyScreen.dispose();
-		//playScreen.dispose();
 		settingsScreen.dispose();
-
-
     }
 
 }

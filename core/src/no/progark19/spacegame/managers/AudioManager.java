@@ -4,6 +4,9 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 
+import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.screens.SettingsScreen;
+
 /**
  * Created by anderssalvesen on 10.04.2018.
  */
@@ -14,8 +17,11 @@ public class AudioManager {
     public Sound theme;
     public Sound spaceship;
     public Sound explosion1;
+    private SettingsScreen settingsScreen;
+    private GameSettings settings;
 
     public AudioManager() {
+
         theme = Gdx.audio.newSound(Gdx.files.internal("data/theme.mp3"));
         spaceship = Gdx.audio.newSound(Gdx.files.internal("data/engine.mp3"));
         explosion1 = Gdx.audio.newSound(Gdx.files.internal("data/explosion1.mp3"));
@@ -25,14 +31,6 @@ public class AudioManager {
         sound.play(volume, pitch, pan);
         if (loop) sound.loop();
 
-    }
-
-    public void update() {
-       if (!gameStarted) {
-           System.out.println("jasjs");
-           playSound(theme, 1, 1, (float) 0.5, true);
-           gameStarted = true;
-       }
     }
 
 }

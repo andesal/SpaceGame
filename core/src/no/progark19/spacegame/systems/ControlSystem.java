@@ -44,7 +44,7 @@ public class ControlSystem extends EntitySystem {
     public void update(float deltaTime) {
         //TODO REMOVE FLIP
         if (bullets.size() == 0) {
-            Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, new Vector2(-5,0), EntityFactory.ELEMENTS.ICE);
+            Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, new Vector2(-5,0), EntityFactory.ELEMENTS.FIRE);
             getEngine().addEntity(entity);
             Sound sound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
             sound.play(0.1f);
