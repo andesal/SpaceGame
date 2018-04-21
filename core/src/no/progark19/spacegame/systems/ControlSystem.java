@@ -47,7 +47,7 @@ public class ControlSystem extends EntitySystem {
             Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, new Vector2(-5,0), EntityFactory.ELEMENTS.ICE);
             getEngine().addEntity(entity);
             Sound sound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
-            sound.play(0.1f);
+            sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
         }
         GameSettings.screenBounds.set((int) game.camera.position.x - (SpaceGame.WIDTH), (int) game.camera.position.y - (SpaceGame.WIDTH), SpaceGame.WIDTH * 2, (SpaceGame.WIDTH * 2));
         temp += deltaTime;

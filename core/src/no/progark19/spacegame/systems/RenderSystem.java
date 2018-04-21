@@ -28,6 +28,7 @@ import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.screens.PlayScreen;
 import no.progark19.spacegame.utils.Paths;
 
 public class RenderSystem extends EntitySystem {
@@ -81,11 +82,11 @@ public class RenderSystem extends EntitySystem {
 
         drawBackground();
         updateBackgroundCoordinates();
-
+        //PlayScreen.label.setPosition(game.camera.position.x - SpaceGame.WIDTH/2, game.camera.position.y-SpaceGame.HEIGHT/2);
+        //System.out.println(PlayScreen.label.getX() + " _ " + PlayScreen.label.getY());
         for (Entity entity : renderables) {
 
             if (ComponentMappers.LEAD_MAP.get(entity) != null) {
-                System.out.println("HEALTH = " + ComponentMappers.HEALTH_MAP.get(entity).health+ " : " + ComponentMappers.FUEL_MAP.get(entity).fuel + " = " + "FUEL");
             }
 
             //FIXME Kanskje fjerne positioncomponent og kun bruke sprites?
@@ -147,8 +148,7 @@ public class RenderSystem extends EntitySystem {
                 game.camera.rotate(-pcom.rotation);
             }
             game.camera.update();
-            //System.out.println("X: " + game.camera.position.x);
-            //System.out.println("Y: " + game.camera.position.y);
+            //System.out.println("X: " + game.camera.position.x + " Y: " + game.camera.position.y);
 
         };
     }

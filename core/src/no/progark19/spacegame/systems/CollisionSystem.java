@@ -135,9 +135,8 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
         Entity entityB = (Entity) fb.getBody().getUserData();
 
         if ((a == GameSettings.SPACESHIP_TAG && (b == GameSettings.ICE_ASTEROID_TAG || b == GameSettings.FIRE_ASTEROID_TAG)) || (b == GameSettings.SPACESHIP_TAG && (a == GameSettings.ICE_ASTEROID_TAG || a == GameSettings.FIRE_ASTEROID_TAG))) {
-            System.out.println("HIT");
             Sound sound = game.assetManager.get(Paths.SOUND_COLLISION_SPACESHIP, Sound.class);
-            sound.play(0.3f);
+            sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
             Entity ship = a == GameSettings.SPACESHIP_TAG ? entityA : entityB;
             ship.add(new DamagedComponent(10));
             return;
@@ -154,7 +153,7 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
             EntityManager.flaggedForRemoval.add(entityA);
             EntityManager.flaggedForRemoval.add(entityB);
             Sound sound = game.assetManager.get(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
-            sound.play(0.3f);
+            sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
 
         }
 

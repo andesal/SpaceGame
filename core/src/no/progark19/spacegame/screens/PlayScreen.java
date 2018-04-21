@@ -12,13 +12,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -54,7 +58,6 @@ import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
-import no.progark19.spacegame.systems.SoundSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
@@ -63,8 +66,8 @@ import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.JsonPayloadTags;
 import no.progark19.spacegame.utils.json.WorldStateIndexes;
 
-public class PlayScreen implements Screen, ReceivedDataListener
-{
+
+public class PlayScreen implements Screen, ReceivedDataListener {
 
     private final SpaceGame game;
     private final Box2DDebugRenderer debugRenderer;
@@ -74,7 +77,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     private BitmapFont font;
     private GlyphLayout layout;
-
 
     private ShapeRenderer shapeRenderer;
     private OrthographicCamera camera;
@@ -90,9 +92,13 @@ public class PlayScreen implements Screen, ReceivedDataListener
     public MyProgressBar healthBar;
     public MyProgressBar fuelBar;
 
+    public static Label label;
+
+
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
         Slider engineSlider = new Slider(0, 100, 1f, true, game.skin1);
+        Rectangle re = new Rectangle(0,0,SpaceGame.WIDTH, SpaceGame.HEIGHT);
         engineSlider.setPosition(posX, posY);
         engineSlider.setSize(20, SpaceGame.HEIGHT / 2 - 20);
         engineSlider.setScaleX(3);
@@ -124,12 +130,14 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
             }
         });
+
         engineSlider.addListener(new ClickListener() {
             HashMap<String, Object> values;
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 engineEntity.add(new ForceOnComponent());
 
+                System.out.println("X " + x + " :" + " Y " + y);
                 JsonPayload jpl = new JsonPayload();
                 values = new HashMap<String, Object>();
 
@@ -164,7 +172,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         return engineSlider;
     }
     //----------------------------------------------------------------------------------------------
-    public PlayScreen(SpaceGame game){
+    public PlayScreen(final SpaceGame game){
         this.game = game;
         game.camera.setToOrtho(false, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         this.uiCamera = new OrthographicCamera();
@@ -201,7 +209,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         engine.addSystem(new RenderSystem(game, uiStage));
         engine.addSystem(new SpawnSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
-        engine.addSystem(new SoundSystem());
+        engine.addSystem(new ForceApplierSystem(game));
         engine.addSystem(new AnimationSystem(game));
         engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new SweepSystem());
@@ -253,13 +261,36 @@ public class PlayScreen implements Screen, ReceivedDataListener
             );
         }
 
+        //ImageButton elementButton = new Button();
+
 
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
 
+        label = new Label("", game.skin1);
+        if (GameSettings.isLeftPlayer) {
+            //label.setPosition(50,0);
+            label.setWidth(SpaceGame.WIDTH);
+        } else {
+            //label.setPosition(0,0);
+            label.setWidth(SpaceGame.WIDTH - 50);
 
-        // FOR TEST HER, healt og fuel må være noe mer globale
+        }
 
+        label.setHeight(SpaceGame.HEIGHT);
+        label.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("ORIGINAL " + x + " : " + y);
+
+                Vector3 v3 = game.translateScreenCoordinates(new Vector3(x, y, 0));
+                System.out.println("WORLD " + v3.x + " : " + v3.y);
+                engine.addEntity(entityFactory.createAsteroid(v3.x ,v3.y ,new Vector2(0, 0), EntityFactory.ELEMENTS.FIRE));
+
+                return false;
+            }
+        });
+        uiStage.addActor(label);
     }
 
     @Override

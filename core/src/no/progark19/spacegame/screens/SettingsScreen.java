@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.utils.Paths;
 
@@ -114,11 +115,18 @@ public class SettingsScreen implements Screen {
         comGroup.setMaxCheckCount(1);
         comGroup.setMinCheckCount(1);
 
-        final Slider volume = new Slider(1, 100, 1, false, game.skin2);
+        final CheckBox easy_mode = new CheckBox("Easy Mode", game.skin2);
+        final CheckBox hard_mode = new CheckBox("Hard Mode", game.skin2);
+
+        ButtonGroup<Button> difficulty_group = new ButtonGroup<Button>(easy_mode, hard_mode);
+        difficulty_group.setMaxCheckCount(1);
+        difficulty_group.setMinCheckCount(1);
+
+        final Slider volume = new Slider(0, 100, 1, false, game.skin2);
         volume.setValue(100);
         final Label volumeValue = new Label("100", game.skin2);
 
-        final Slider effVolume = new Slider(1, 100, 1, false, game.skin2);
+        final Slider effVolume = new Slider(0, 100, 1, false, game.skin2);
         effVolume.setValue(100);
         final Label effVolumeValue = new Label("100", game.skin2);
 
@@ -131,6 +139,9 @@ public class SettingsScreen implements Screen {
             public void changed (ChangeEvent event, Actor actor) {
                 //sound.setVolume(soundId, volume.getValue());
                 volumeValue.setText("" + volume.getValue());
+                GameSettings.MUSIC_VOLUME = volume.getValue()/100;
+                System.out.println("MUSIC " +GameSettings.MUSIC_VOLUME);
+
             }
         });
 
@@ -138,6 +149,8 @@ public class SettingsScreen implements Screen {
             public void changed (ChangeEvent event, Actor actor) {
                 //sound.setVolume(soundId, volume.getValue());
                 effVolumeValue.setText("" + effVolume.getValue());
+                GameSettings.EFFECTS_VOLUME = effVolume.getValue()/100;
+                System.out.println("EFFECTS: " + GameSettings.EFFECTS_VOLUME);
             }
         });
 
@@ -150,6 +163,9 @@ public class SettingsScreen implements Screen {
 
         wifi_check.setChecked(true);
         bt_check.setChecked(false);
+
+        easy_mode.setChecked(false);
+        hard_mode.setChecked(true);
 
         wifi_check.addListener(new ChangeListener() {
             @Override
@@ -165,6 +181,21 @@ public class SettingsScreen implements Screen {
             }
         });
 
+        easy_mode.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.graphics.setContinuousRendering(easy_mode.isChecked());
+                GameSettings.SPACESHIP_ENABLE_ROTATION = false;
+            }
+        });
+
+        hard_mode.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.graphics.setContinuousRendering(hard_mode.isChecked());
+                GameSettings.SPACESHIP_ENABLE_ROTATION = true;
+            }
+        });
         comBtt = new TextButton("Network usage", game.skin2, "default");
         comBtt.setPosition(110, 170);
         comBtt.setSize(280,60);
@@ -206,8 +237,14 @@ public class SettingsScreen implements Screen {
         wifi_check.setPosition(110, 520);
         bt_check.setPosition(110, 500);
 
+        easy_mode.setPosition(110, 350);
+        hard_mode.setPosition(110, 330);
+
+
         stage.addActor(wifi_check);
         stage.addActor(bt_check);
+        stage.addActor(easy_mode);
+        stage.addActor(hard_mode);
         stage.addActor(table);
         //stage.addActor(comBtt);
         stage.addActor(buttonExit);

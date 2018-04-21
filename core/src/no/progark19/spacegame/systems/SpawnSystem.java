@@ -34,7 +34,7 @@ public class SpawnSystem extends EntitySystem {
     private ImmutableArray<Entity> asteroids;
     private ImmutableArray<Entity> obstacles;
     private ImmutableArray<Entity> collectables;
-    private int numAsteroids = 0;
+    private int numAsteroids = 30;
 
     private Rectangle spawn = new Rectangle();
     private Rectangle notSpawn = new Rectangle();
@@ -58,12 +58,16 @@ public class SpawnSystem extends EntitySystem {
 
     public void update(float deltaTime) {
         if (yeah) {
+            /*
             getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y-20 ,new Vector2(0, 0), EntityFactory.ELEMENTS.FIRE));
+
             getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 500 ,game.camera.position.y-50 ,new Vector2(0, 0), EntityFactory.ELEMENTS.FIRE));
             getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 800 ,game.camera.position.y-50 ,new Vector2(0, 0), EntityFactory.ELEMENTS.ICE));
             getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y+300 ,new Vector2(0, -1), EntityFactory.ELEMENTS.ICE));
             getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y-300 ,new Vector2(0, +1), EntityFactory.ELEMENTS.FIRE));
             yeah = false;
+            */
+
         }
         notSpawn = new Rectangle(game.camera.position.x - 720, game.camera.position.y - 1080, 1440, 2160);
         spawn = new Rectangle(notSpawn.x - 480, notSpawn.y - 720, 2400, 3600);
