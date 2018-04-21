@@ -210,10 +210,10 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addEntityListener(entityManager);
 
         //Create entities
-        Texture shipTexture = game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
+        final Texture shipTexture = game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
         Texture engineTexture = game.assetManager.get(Paths.ENGINE_TEXTURE_PATH, Texture.class);
 
-        Entity shipEntity = entityFactory.createBaseSpaceShip(
+        final Entity shipEntity = entityFactory.createBaseSpaceShip(
                 GameSettings.BOX2D_PHYSICSWORLD, shipTexture
         );
         engine.addEntity(shipEntity);
@@ -299,15 +299,29 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("ORIGINAL " + x + " : " + y);
                 Vector3 tp = game.translateScreenCoordinates(new Vector3(x, y, 0));
-                Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2, 0));
+                Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2 - shipTexture.getHeight()/2, 0));
                 float dx = tp.x - sp.x;
                 float dy = tp.y - sp.y;
                 float delta = (float) Math.tanh(dy/dx);
-                Vector2 velVec = new Vector2(dx, dy);
-                System.out.println(delta);
-                velVec.rotateRad(delta);
+                Vector2 velVec = new Vector2(dx/10, dy/10);
+                double degrees = Math.toDegrees(delta);
 
-                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y, velVec, GameSettings.BULLET_TYPE));
+                System.out.println("SOURCE " + sp.x + " : " + sp.y);
+                System.out.println("TARGET " + tp.x + " : " + tp.y);
+                System.out.println("dX " + dx);
+                System.out.println("dY " + dy);
+                System.out.println("dt " + delta);
+               
+
+                //delta += Math.PI/2;
+                velVec.setAngleRad(delta);
+                velVec.rotate(90);
+
+
+
+
+
+                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y + shipTexture.getHeight()/2, velVec, GameSettings.BULLET_TYPE));
 
 
                 return false;
