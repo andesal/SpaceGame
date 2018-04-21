@@ -302,20 +302,13 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2 - shipTexture.getHeight()/2, 0));
                 float dx = tp.x - sp.x;
                 float dy = tp.y - sp.y;
-                float delta = (float) Math.tanh(dy/dx);
+                float delta = (float) Math.atan(dy/dx);
                 Vector2 velVec = new Vector2(dx/10, dy/10);
-                double degrees = Math.toDegrees(delta);
+                if (tp.x < sp.x) {
+                    delta += Math.PI;
 
-                System.out.println("SOURCE " + sp.x + " : " + sp.y);
-                System.out.println("TARGET " + tp.x + " : " + tp.y);
-                System.out.println("dX " + dx);
-                System.out.println("dY " + dy);
-                System.out.println("dt " + delta);
-               
-
-                //delta += Math.PI/2;
+                }
                 velVec.setAngleRad(delta);
-                velVec.rotate(90);
 
 
 
