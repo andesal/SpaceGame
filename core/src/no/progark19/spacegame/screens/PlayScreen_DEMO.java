@@ -137,7 +137,7 @@ public class PlayScreen_DEMO implements Screen {
         uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
 
         // Set up textures & sprites etc -----------------------------------------------------------
-        background = new Texture("img/paralax_space2.png");
+        background = new Texture("img/space_bg.jpg");
         Sprite sprite_Spaceship = new Sprite(new Texture("img/spaceship.png"));
         Sprite engineSprite = new Sprite(new Texture("img/spaceship_engine.png"));
         engineSprite.setOrigin(GameSettings.ENGINE_ORIGIN.x, GameSettings.ENGINE_ORIGIN.y);

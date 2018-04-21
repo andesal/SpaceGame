@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -27,6 +29,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import no.progark19.spacegame.systems.AnimationSystem;
 import no.progark19.spacegame.systems.CollisionSystem;
+
 import java.util.HashMap;
 import java.util.Random;
 
@@ -76,19 +79,23 @@ public class PlayScreen implements Screen, ReceivedDataListener
     private Texture bg;
     private int bgX = 0;
     private int bgY = 0;
+    //private Skin skin2;
+    private Skin skin1;
 
     public MyProgressBar healthBar;
     public MyProgressBar fuelBar;
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
-        Slider engineSlider = new Slider(0, 100, 0.1f, true, game.getSkin());
+        Slider engineSlider = new Slider(0, 100, 1f, true, game.getSkin());
         engineSlider.setPosition(posX, posY);
         engineSlider.setSize(20, SpaceGame.HEIGHT / 2 - 20);
         engineSlider.setScaleX(3);
         engineSlider.setValue(50);
         engineSlider.addListener(new ChangeListener() {
             float rotDiff = maxRot - minRot;
+            //float lastSentValueDiff = ;
+            HashMap<String, Object> values;
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //spaceShip.changeEngineAngle(engineIndex, ((Slider) actor).getValue());
@@ -100,7 +107,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
 
                 JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
+                values = new HashMap<String, Object>();
 
                 values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
                 values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION, relposcom.rotation);
@@ -114,12 +121,13 @@ public class PlayScreen implements Screen, ReceivedDataListener
             }
         });
         engineSlider.addListener(new ClickListener() {
+            HashMap<String, Object> values;
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 engineEntity.add(new ForceOnComponent());
 
                 JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
+                values = new HashMap<String, Object>();
 
                 values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
                 values.put(JsonPayloadTags.ENGINE_ON_UPDATE_ISON, true);
@@ -252,6 +260,14 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
+
+        //this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
+        //this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
+
+        this.skin1 = new Skin();
+        this.skin1.addRegions(game.assetManager.get(Paths.SKIN_1_ATLAS, TextureAtlas.class));
+        this.skin1.load(Gdx.files.internal("ui/uiskin.json"));
+
         game.p2pConnector.addReceivedDataListener(this);
         //TODO COMMENT OUT THIS
         GameSettings.setRandomSeed((new Random()).nextLong());
@@ -275,6 +291,15 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
+
+        //TODO This was supposed to print the FPS, but doesnt!
+        font.setColor(Color.WHITE);
+        font.getData().setScale(4);
+        layout.setText(font, String.valueOf(Gdx.graphics.getFramesPerSecond()));
+
+        font.draw(game.batch, layout,
+                SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT/2 - layout.height
+        );
 
         game.batch.end();
 
@@ -392,11 +417,4 @@ public void changed(ChangeEvent event, Actor actor) {
     public void onReceive(String data) {
 
     }
-
-    private void drawProgressBars() {
-
-
-    }
-
-
 }

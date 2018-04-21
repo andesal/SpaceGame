@@ -4,12 +4,15 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.progark19.spacegame.interfaces.P2pConnector;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import no.progark19.spacegame.screens.LoadingScreen;
@@ -19,7 +22,6 @@ import no.progark19.spacegame.utils.Assets;
 
 
 public class SpaceGame extends Game {
-    //public static final String TITLE = "SpaceGame";
     public static final int WIDTH = 480;
     public static final int HEIGHT = 720;
 
@@ -75,7 +77,7 @@ public class SpaceGame extends Game {
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
 		//lobbyScreen = new LobbyScreen(this);
-		//playScreen = new PlayScreen(this);
+        //playScreen = new PlayScreen(this);
 		settingsScreen = new SettingsScreen(this);
 		this.setScreen(loadingScreen);
 

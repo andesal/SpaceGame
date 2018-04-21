@@ -24,6 +24,8 @@ import java.util.Random;
 public class GameSettings {
     public static boolean isLeftPlayer = false;
 
+    public static final float ESC_MOVEMENT_INTERVAL = 1/80f;
+
     public static final boolean CAMERA_FOLLOW_POSITION = true;
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
     public static final boolean BOX2D_DRAWDEBUG = true;
@@ -58,6 +60,8 @@ public class GameSettings {
     public final static float START_FUEL = 50f;
     public final static float MAX_FUEL = 100f;
 
+
+    //public static String gameFrameRate
 
     private static Random mainRandom;
 

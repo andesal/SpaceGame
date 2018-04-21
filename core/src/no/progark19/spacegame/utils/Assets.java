@@ -1,5 +1,6 @@
 package no.progark19.spacegame.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -37,6 +38,8 @@ public class Assets {
     }
 
     public void loadSkins() {
+        manager.load(Paths.SKIN_1_ATLAS, TextureAtlas.class);
+        manager.load(Paths.SKIN_2_ATLAS, TextureAtlas.class);
 
     }
 

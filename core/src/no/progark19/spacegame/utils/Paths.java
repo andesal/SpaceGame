@@ -1,6 +1,8 @@
 package no.progark19.spacegame.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * Created by anderssalvesen on 19.04.2018.
@@ -34,6 +36,7 @@ public class Paths {
 
     //JSON
     public final static String SKIN_1_JSON = "ui/uiskin.json";
+    public final static String SKIN_2_JSON = "ui/sgxui/sgx-ui.json";
 
     //Sound
 
