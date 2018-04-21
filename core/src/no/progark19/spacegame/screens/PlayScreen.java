@@ -2,7 +2,6 @@ package no.progark19.spacegame.screens;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -23,7 +22,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -33,13 +31,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
 import no.progark19.spacegame.systems.AnimationSystem;
 import no.progark19.spacegame.systems.CollisionSystem;
 
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.Random;
 
+import no.progark19.spacegame.components.PositionComponent;
+import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.systems.NetworkSystem;
+import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.systems.SweepSystem;
 import no.progark19.spacegame.systems.UpdateSystem;
 import no.progark19.spacegame.utils.EntityFactory;
@@ -55,11 +60,13 @@ import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
-import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
+import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.JsonPayloadTags;
+import no.progark19.spacegame.utils.json.WorldStateIndexes;
+
 
 
 public class PlayScreen implements Screen, ReceivedDataListener {
@@ -70,12 +77,12 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     private Stage uiStage;
     private Camera uiCamera;
 
-    private BitmapFont font;
-    private GlyphLayout layout;
+    //private BitmapFont font;
+    //private GlyphLayout layout;
 
     private ShapeRenderer shapeRenderer;
-    private OrthographicCamera camera;
-    private AudioManager audioManager;
+    //private OrthographicCamera camera;
+    //private AudioManager audioManager;
     private EntityManager entityManager;
     private PooledEngine engine;
     public Sound theme;
@@ -97,7 +104,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engineSlider.setValue(50);
         engineSlider.addListener(new ChangeListener() {
             float rotDiff = maxRot - minRot;
-            //float lastSentValueDiff = ;
             HashMap<String, Object> values;
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -119,7 +125,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 jpl.setTAG(JsonPayloadTags.ENGINE_ROTATION_UPDATE);
                 jpl.setValue(values);
 
-                game.p2pConnector.sendData(jpl);
+                //game.p2pConnector.sendData(jpl);
 
             }
         });
@@ -140,7 +146,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
                 jpl.setValue(values);
 
-                game.p2pConnector.sendData(jpl);
+                //game.p2pConnector.sendData(jpl);
 
                 return true;
             }
@@ -158,7 +164,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
                 jpl.setValue(values);
 
-                game.p2pConnector.sendData(jpl);
+                //game.p2pConnector.sendData(jpl);
             }
         });
 
@@ -209,6 +215,11 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addSystem(new UpdateSystem(game, entityFactory, healthBar, fuelBar));
         engine.addEntityListener(entityManager);
 
+        if (GameSettings.isPhysicsResponsible) {
+            engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
+            engine.addSystem(new ForceApplierSystem(game));
+        }
+
         //Create entities
         final Texture shipTexture = game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
         Texture engineTexture = game.assetManager.get(Paths.ENGINE_TEXTURE_PATH, Texture.class);
@@ -233,7 +244,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addEntity(engineEntity3);
         engine.addEntity(engineEntity4);
 
-        if(GameSettings.isLeftPlayer){
+        if(GameSettings.isPhysicsResponsible){
             uiStage.addActor(
                     createEngineSlider(engineEntity1, 10,10,360,270)
             );
@@ -249,6 +260,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             );
         }
 
+        //this.font = new BitmapFont();
         //FOR ENGINE OPERATOR PLAYER
         final Texture imageUp = new Texture("img/fire_button.png");
         final Texture imageDown = new Texture("img/ice_button.png");
@@ -283,16 +295,21 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         uiStage.addActor(elementButton);
 
 
-        this.font = new BitmapFont();
-        this.layout = new GlyphLayout();
+        //this.layout = new GlyphLayout();
 
+        label = new Label("", game.skin1);
+        if (GameSettings.isPhysicsResponsible) {
+            //label.setPosition(50,0);
+            label.setWidth(SpaceGame.WIDTH);
+        } else {
+            //label.setPosition(0,0);
+            label.setWidth(SpaceGame.WIDTH - 50);
 
-
-        //FOR LOOKOUT PLAYER
+//FOR LOOKOUT PLAYER
         //TODO UPDATE LABEL COORDINATES
         label = new Label("", game.skin1);
         label.setPosition(0, regionDown.getRegionHeight());
-        label.setWidth(SpaceGame.HEIGHT);
+        label.setWidth(SpaceGame.WIDTH);
         label.setHeight(SpaceGame.HEIGHT);
         label.addListener(new ClickListener(){
             @Override
@@ -314,14 +331,13 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
 
 
-                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y + shipTexture.getHeight()/2, velVec, GameSettings.BULLET_TYPE));
+                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y + shipTexture.getHeight()/2, velVec.x, velVec.y, GameSettings.BULLET_TYPE));
 
 
                 return false;
             }
         });
         uiStage.addActor(label);
-
     }
 
     @Override
@@ -366,14 +382,8 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
 
-        //TODO This was supposed to print the FPS, but doesnt!
-        font.setColor(Color.WHITE);
-        font.getData().setScale(4);
-        layout.setText(font, String.valueOf(Gdx.graphics.getFramesPerSecond()));
-
-        font.draw(game.batch, layout,
-                SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT/2 - layout.height
-        );
+        uiStage.act(Gdx.graphics.getDeltaTime());
+        uiStage.draw();
 
         game.batch.end();
 
@@ -420,35 +430,70 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         shapeRenderer.dispose();
         theme.dispose();
     }
-    /*
-public void changed(ChangeEvent event, Actor actor) {
-                //spaceShip.changeEngineAngle(engineIndex, ((Slider) actor).getValue());
-                //FIXME dette er muligens en litt dårlig løsning på dette [ARH]
-                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
-                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
 
+    private Object lock = new Object();
+    private Queue<RenderableWorldState> worldStateQueue
+            = new CircularFifoQueue<RenderableWorldState>(GameSettings.WORLDSYNC_MAXSTATES);
+    private Thread worldStateWorker = new Thread((new Runnable() {
+        @Override
+        public void run() {
+            RenderableWorldState currentState;
+            try {
+                while (game.p2pConnector.hasConnection()){
+                    synchronized (lock){
+                        while (worldStateQueue.peek() == null) {
+                                lock.wait();
+                        }
+                        currentState = worldStateQueue.poll();
+                    }
+                    for (float[] state: currentState.getStates()){
+                        Entity e = EntityManager.getEntity((int) state[WorldStateIndexes.WS_ENTITYID]);
+                        PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
+                        VelocityComponent vcom = ComponentMappers.VEL_MAP.get(e);
 
-                relposcom.rotation = minRot + rotDiff*((Slider) actor).getValue()/100f;
-                fcom.direction = relposcom.rotation + 90;
+                        pcom.x        = state[WorldStateIndexes.WS_RENDERABLE_POSX];
+                        pcom.y        = state[WorldStateIndexes.WS_RENDERABLE_POSY];
+                        pcom.rotation = state[WorldStateIndexes.WS_RENDERABLE_ROTATION];
 
-
-                JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION, relposcom.rotation);
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION, fcom.direction);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ROTATION_UPDATE);
-                jpl.setValue(values);
-
+                        vcom.velx     = state[WorldStateIndexes.WS_RENDERABLE_VX];
+                        vcom.vely     = state[WorldStateIndexes.WS_RENDERABLE_VY];
+                        vcom.velAngle = state[WorldStateIndexes.WS_RENDERABLE_VR];
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
+        }
+    }));
 
-    */
+
     @Override
-    public void onReceive(JsonPayload data) {
-        int TAG = data.getTAG();
+    public synchronized void onReceive(RenderableWorldState data) {
+        System.out.println("Got data");
+        /*synchronized (lock) {
+            worldStateQueue.add(data);
+            if (worldStateWorker.getState() == Thread.State.NEW) {
+                worldStateWorker.start();
+            } else {
+                lock.notify();
+            }
+        }*/
+
+        for (float[] state: data.getStates()){
+            Entity e = EntityManager.getEntity((int) state[WorldStateIndexes.WS_ENTITYID]);
+            PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
+            VelocityComponent vcom = ComponentMappers.VEL_MAP.get(e);
+
+            pcom.x        = state[WorldStateIndexes.WS_RENDERABLE_POSX];
+            pcom.y        = state[WorldStateIndexes.WS_RENDERABLE_POSY];
+            pcom.rotation = state[WorldStateIndexes.WS_RENDERABLE_ROTATION];
+
+            vcom.velx     = state[WorldStateIndexes.WS_RENDERABLE_VX];
+            vcom.vely     = state[WorldStateIndexes.WS_RENDERABLE_VY];
+            vcom.velAngle = state[WorldStateIndexes.WS_RENDERABLE_VR];
+        }
+
+        /*int TAG = data.getTAG();
         HashMap<String, Object> values;
         int entityID;
         Entity engineEntity;
@@ -484,13 +529,35 @@ public void changed(ChangeEvent event, Actor actor) {
                 }
 
                 break;
+            case JsonPayloadTags.SYNC_BODY:
+                values = (HashMap<String, Object>) data.getValue();
+                entityID = (Integer) values.get(JsonPayloadTags.SYNC_ENTITYID);
+                rotation = (Float) values.get(JsonPayloadTags.SYNC_ROTATION);
+                posX = (Float) values.get(JsonPayloadTags.SYNC_POSX);
+                posY = (Float) values.get(JsonPayloadTags.SYNC_POSY);
+
+                PositionComponent pcom = ComponentMappers.POS_MAP.get(EntityManager.getEntity(entityID));
+                pcom.rotation = rotation;
+                pcom.x = posX;
+                pcom.y = posY;
+
+                break;
             default:
                 System.out.println("NOT LEGAL JSON TAG");
-        }
+        }*/
+
+
     }
 
     @Override
     public void onReceive(String data) {
 
     }
+
+    private void drawProgressBars() {
+
+
+    }
+
+
 }

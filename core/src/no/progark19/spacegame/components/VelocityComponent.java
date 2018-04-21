@@ -1,20 +1,21 @@
 package no.progark19.spacegame.components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * Created by anderssalvesen on 09.04.2018.
  */
 
-public class VelocityComponent implements Component {
+public class VelocityComponent implements Component, Pool.Poolable {
 
-    public Vector2 velocity;
+    public float velx = 0;
+    public float vely = 0;
+    public float velAngle = 0;
 
-    public VelocityComponent(Vector2 velocity) {
-        this.velocity = velocity;
+    @Override
+    public void reset() {
+        velx = 0;
+        vely = 0;
     }
-
-
-
 }

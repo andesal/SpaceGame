@@ -50,7 +50,7 @@ public class MovementSystem extends EntitySystem {
         nonBodyEntities = engine.getEntitiesFor(Family
                 .all(
                         VelocityComponent.class,
-                        SpriteComponent.class)
+                        PositionComponent.class)
                 .get());
 
         /*
@@ -116,23 +116,20 @@ public class MovementSystem extends EntitySystem {
 
             pcom.rotation = (float) Math.toDegrees(bcom.body.getAngle());
         }
-
-        for (Entity entity : nonBodyEntities){
+        System.out.println("Handling nonbodies");
+        for (Entity entity : nonBodyEntities) {
+            System.out.println(entity.getComponents());
             VelocityComponent vcom = ComponentMappers.VEL_MAP.get(entity);
-            SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
+            PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);
 
-            float x = scom.sprite.getX() + vcom.velocity.x;
-            float y = scom.sprite.getY() + vcom.velocity.y;
+            pcom.x        = pcom.x        + vcom.velx*deltaTime;
+            pcom.y        = pcom.y        + vcom.vely*deltaTime;
+            pcom.rotation = pcom.rotation + vcom.velAngle*deltaTime;
 
             //For projectiles
-            if (! GameSettings.screenBounds.contains(x, y)) {
+            /*if (! GameSettings.screenBounds.contains(pcom.x, pcom.y)) {
                 entity.remove(RenderableComponent.class);
-            }
-
-            scom.sprite.setPosition(x, y);
-
-
-            //pcom.rotation = (float) Math.toDegrees(bcom.body.getAngle());
+            }*/
         }
     }
 }

@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+/**
+ * Created by anderssalvesen on 15.04.2018.
+ */
 
 public class Assets {
 
@@ -31,7 +34,6 @@ public class Assets {
         manager.load(Paths.BACKGROUND_MAIN_MENU_TEXTURE_PATH, Texture.class);
         manager.load(Paths.MENU_TEXT_TEXTURE_PATH, Texture.class);
         manager.load(Paths.SETTING_TEXT_TEXTURE_PATH, Texture.class);
-
     }
 
     public void loadTextureAtlases() {
@@ -63,11 +65,5 @@ public class Assets {
 
         manager.load(Paths.MUSIC_MAIN_THEME, Music.class);
     }
-
-
-
-
-
-
 
 }

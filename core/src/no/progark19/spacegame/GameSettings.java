@@ -22,9 +22,7 @@ import java.util.Random;
 
 
 public class GameSettings {
-    public static boolean isLeftPlayer = false;
-
-    public static final float ESC_MOVEMENT_INTERVAL = 1/80f;
+    public static boolean isPhysicsResponsible = false;
 
     public static final boolean CAMERA_FOLLOW_POSITION = true;
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
@@ -36,7 +34,7 @@ public class GameSettings {
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
     public static final float SPACESHIP_DENSITY = 0.5f;
     public static final float SPACESHIP_RESTITUTION = 0.5f;
-    public static boolean SPACESHIP_ENABLE_ROTATION = false;
+    public static boolean SPACESHIP_ENABLE_ROTATION = true;
     public final static Vector2 ENGINE_ORIGIN = new Vector2(9,25);
     public final static float ENGINE_MAX_FORCE = 0.1f;
 
@@ -67,6 +65,9 @@ public class GameSettings {
 
     public static String BULLET_TYPE = "FIRE";
     //public static String gameFrameRate
+    public final static int WORLDSYNC_MAXSTATES = 5;
+    public static final float WORLDSYNCH_REFRESH_RATE = 1/3f;
+
 
     private static Random mainRandom;
 

@@ -8,11 +8,9 @@ import com.badlogic.gdx.utils.Pool;
  * Created by Anders on 19.04.2018.
  */
 
-public class SynchronisationComponent implements Component, Pool.Poolable {
-    //Array<> Cl
+public class SynchronizedComponent implements Component, Pool.Poolable {
+    //Empty marker component
 
     @Override
-    public void reset() {
-
-    }
+    public void reset() {  }
 }

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.badlogic.gdx.utils.Json;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AdvertisingOptions;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
@@ -17,17 +16,17 @@ import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.PayloadCallback;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
-import com.google.android.gms.nearby.connection.PayloadTransferUpdate.Status;
 import com.google.android.gms.nearby.connection.Strategy;
 
-import org.json.JSONObject;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import no.progark19.spacegame.interfaces.P2pConnector;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
-import no.progark19.spacegame.utils.json.JsonPayload;
+import no.progark19.spacegame.utils.RenderableWorldState;
+import no.progark19.spacegame.utils.json.WorldStateIndexes;
 
 /**
  * Created by Anders on 17.04.2018.
@@ -48,22 +47,48 @@ public class AndroidP2pConnector implements P2pConnector {
     private String otherPlayerEndpointId;
     private String otherPLayerName = "null";
 
-    private Json json = new Json();
     private boolean isConnected = false;
     
     // Callback to receive payloads
     private final PayloadCallback payloadCallback = new PayloadCallback() {
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
-            //Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
-            //Log.d(TAG, "onPayloadReceived: Recieved payload!");
+            /*switch (payload.getType()){
+                case Payload.Type.BYTES:
 
-            String message = new String(payload.asBytes());
+                    break;
+                case Payload.Type.STREAM:
 
-            for (ReceivedDataListener dListener: dataListeners){
-                //noinspection ConstantConditions
-                System.out.println(json.prettyPrint(message));
-                dListener.onReceive(json.fromJson(JsonPayload.class, message));
+                    break;
+                case Payload.Type.FILE:
+
+                    break;
+            }*/
+
+            Toast.makeText(launcher, "Recieved payload from " + s, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onPayloadReceived: Recieved payload!");
+
+            //String message = new String(payload.asBytes());
+            //Json json = new Json();
+            //JsonPayload receivedData = SerializationUtils.deserialize(payload.asBytes());
+
+
+            Object o = SerializationUtils.deserialize(payload.asBytes());
+
+            if (o instanceof String){
+                for (ReceivedDataListener dListener: dataListeners){
+                    //noinspection ConstantConditions
+                    //System.out.println(json.prettyPrint(message));
+                    String data = (String) o;
+                    dListener.onReceive(data);
+                }
+            } else if (o instanceof RenderableWorldState) {
+                for (ReceivedDataListener dListener : dataListeners) {
+                    //noinspection ConstantConditions
+                    //System.out.println(json.prettyPrint(message));
+                    RenderableWorldState data = (RenderableWorldState) o;
+                    dListener.onReceive(data);
+                }
             }
         }
 
@@ -125,7 +150,6 @@ public class AndroidP2pConnector implements P2pConnector {
         public void onDisconnected(@NonNull String s) {
             Log.d(TAG, "onDisconnected: Disconnected from other player");
             Toast.makeText(launcher, "You got separated", Toast.LENGTH_SHORT).show();
-
         }
     };
 
@@ -136,7 +160,6 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     private void startDiscovery() {
-        // Note: Discovery may fail. To keep this demo simple, we don't handle failures.
         DiscoveryOptions.Builder builder = new DiscoveryOptions.Builder();
         connectionsClient.startDiscovery(
                 launcher.getPackageName(), endpointDiscoveryCallback, builder.setStrategy(STRATEGY).build());
@@ -172,14 +195,15 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     @Override
-    public void sendData(JsonPayload data) {
-        System.out.println("ZZZZ " + data);
-        String jsonString = json.toJson(data, JsonPayload.class);
+    public void sendData(RenderableWorldState data) {
+        //String jsonString = (new Json()).toJson(data, JsonPayload.class);
 
         //JSONObject middleJSON = new JSONObject();
         //middleJSON.put()
 
-        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(jsonString.getBytes()));
+        byte[] dataBytes = SerializationUtils.serialize(data);
+
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(dataBytes));
     }
 
     @Override
@@ -195,5 +219,10 @@ public class AndroidP2pConnector implements P2pConnector {
     @Override
     public boolean hasConnection() {
         return isConnected;
+    }
+
+    @Override
+    public int decideLeadingPeer() {
+        return 0;
     }
 }

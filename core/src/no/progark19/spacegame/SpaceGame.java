@@ -46,7 +46,7 @@ public class SpaceGame extends Game {
 	}
 
 	public Vector3 translateScreenCoordinates(Vector3 coordinates){
-		return camera.unproject(coordinates.scl(1,-1,1).add(0,HEIGHT-1, 0));
+		return camera.unproject(coordinates.scl(1, -1, 1).add(0, HEIGHT - 1, 0));
 	}
 
 	public Skin skin1, skin2;
@@ -108,5 +108,4 @@ public class SpaceGame extends Game {
 
 
     }
-
 }

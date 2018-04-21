@@ -1,8 +1,6 @@
 package no.progark19.spacegame.interfaces;
 
-import com.badlogic.gdx.utils.Json;
-
-import no.progark19.spacegame.utils.json.JsonPayload;
+import no.progark19.spacegame.utils.RenderableWorldState;
 
 /**
  * Created by Anders on 16.04.2018.
@@ -19,9 +17,11 @@ public interface P2pConnector {
 
     void removeReceivedDataListener(ReceivedDataListener listener);
 
-    void sendData(JsonPayload data);
+    void sendData(RenderableWorldState data);
 
     void sendData(String data);
 
     String getOtherPeerName();
+
+    int decideLeadingPeer();
 }
