@@ -6,9 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -46,6 +48,9 @@ public class PlayScreen_DEMO implements Screen {
     private final SpaceGame game;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
+
+    Texture blank;
+    //Animation[] rolls;
 
     public ParticleEffect pe;
 
@@ -131,6 +136,8 @@ public class PlayScreen_DEMO implements Screen {
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
+
+        blank = new Texture("ui/blank.png");
 
         /*TODO {1} NOT IN PlayScreen -----------------------------------------------------*/
         uiCamera = new OrthographicCamera();
@@ -226,7 +233,7 @@ public class PlayScreen_DEMO implements Screen {
         game.camera.update();
         //Draw Ui
         game.batch.setProjectionMatrix(uiCamera.combined);
-
+        initGameOverlay();
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
 
@@ -301,5 +308,31 @@ public class PlayScreen_DEMO implements Screen {
         stage.dispose();
         shapeRenderer.dispose();
 
+    }
+
+    private void initGameOverlay() {
+        // FOR TEST HER, healt og fuel må være noe mer globale
+        float health = 0.6f; // 0 == DEAD, 1 == FULL HEALTH YEAH BABY! Spaceship.getHealth();
+        float fuel = 0.2f; // Spaceship.getFuel();
+
+        float posX = 20;
+        float posY = SpaceGame.HEIGHT - 20;
+
+        if (health > 0.6f)
+            uiStage.getBatch().setColor(Color.GREEN);
+        else if (health > 0.2f)
+            uiStage.getBatch().setColor(Color.ORANGE);
+        else
+            uiStage.getBatch().setColor(Color.RED);
+        uiStage.getBatch().draw(blank, posX - 100 ,posY + 20, SpaceGame.WIDTH * health, 5);
+
+        if (fuel > 0.6f)
+            uiStage.getBatch().setColor(Color.GREEN);
+        else if (fuel > 0.2f)
+            uiStage.getBatch().setColor(Color.ORANGE);
+        else
+            uiStage.getBatch().setColor(Color.RED);
+        uiStage.getBatch().draw(blank, posX  ,posY, SpaceGame.WIDTH * fuel, 5);
+        uiStage.getBatch().setColor(Color.WHITE);
     }
 }

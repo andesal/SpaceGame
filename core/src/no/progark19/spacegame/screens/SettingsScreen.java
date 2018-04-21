@@ -120,6 +120,8 @@ public class SettingsScreen implements Screen {
         final CheckBox wifi_check = new CheckBox("WiFi", skin2);
         final CheckBox bt_check = new CheckBox("Bluetooth", skin2);
         ButtonGroup comGroup = new ButtonGroup(wifi_check, bt_check);
+
+        // For WiFi/BT toggle
         comGroup.setMaxCheckCount(1);
         comGroup.setMinCheckCount(1);
 
