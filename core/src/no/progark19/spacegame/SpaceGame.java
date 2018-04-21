@@ -6,19 +6,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import no.progark19.spacegame.interfaces.P2pConnector;
-import no.progark19.spacegame.managers.EntityManager;
-
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import no.progark19.spacegame.screens.LoadingScreen;
+import no.progark19.spacegame.screens.LobbyScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
+import no.progark19.spacegame.screens.PlayScreen;
 import no.progark19.spacegame.screens.SettingsScreen;
 import no.progark19.spacegame.utils.Assets;
 import no.progark19.spacegame.utils.Paths;
@@ -37,10 +32,8 @@ public class SpaceGame extends Game {
 
     //FIXME trur disse er unødvendig
 	public LoadingScreen loadingScreen;
-	public MainMenuScreen mainMenuScreen;
-	//public LobbyScreen lobbyScreen;
-	//public PlayScreen playScreen;
-	public SettingsScreen settingsScreen;
+    public MainMenuScreen mainMenuScreen;
+    public SettingsScreen settingsScreen;
 
     public P2pConnector p2pConnector;
 
@@ -53,7 +46,7 @@ public class SpaceGame extends Game {
 	}
 
 	public Vector3 translateScreenCoordinates(Vector3 coordinates){
-		return camera.unproject(coordinates.scl(1, -1, 1).add(0, HEIGHT-1,0));
+		return camera.unproject(coordinates.scl(1, -1, 1).add(0, HEIGHT - 1, 0));
 	}
 
 	public Skin skin1, skin2;
@@ -69,7 +62,7 @@ public class SpaceGame extends Game {
 		assets.loadSounds();
 		assets.loadMusic();
 		while (! assetManager.update()) {
-			System.out.println("LOADING" + assetManager.getProgress());
+			System.out.println("LOADING");
 		}
 		camera = new OrthographicCamera();
 		//camera.setToOrtho(false, WIDTH, HEIGHT);
@@ -80,7 +73,6 @@ public class SpaceGame extends Game {
 		//lobbyScreen = new LobbyScreen(this);
         //playScreen = new PlayScreen(this);
 		settingsScreen = new SettingsScreen(this);
-
 		this.setScreen(loadingScreen);
 
         skin1 = assetManager.get(Paths.SKIN_1_JSON, Skin.class);
@@ -105,20 +97,18 @@ public class SpaceGame extends Game {
         super.resize(width, height);
     }
 
+
 	@Override
 	public void dispose() {
 		batch.dispose();
         assetManager.dispose();
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
-		//lobbyScreen.dispose();
-		//playScreen.dispose();
 		settingsScreen.dispose();
 
 
     }
 
-	public SpriteBatch getBatch() {
-		return this.batch;
-	}
+    }
+
 }

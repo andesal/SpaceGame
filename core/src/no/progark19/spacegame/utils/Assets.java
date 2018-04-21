@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+/**
+ * Created by anderssalvesen on 15.04.2018.
+ */
 
 public class Assets {
 
@@ -54,6 +57,7 @@ public class Assets {
         manager.load(Paths.SOUND_COLLISION_SPACESHIP, Sound.class);
         manager.load(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
         manager.load(Paths.SOUND_POWERUP, Sound.class);
+        manager.load(Paths.SOUND_CHECKBOX_CLICK, Sound.class);
 
     }
 
@@ -61,11 +65,5 @@ public class Assets {
 
         manager.load(Paths.MUSIC_MAIN_THEME, Music.class);
     }
-
-
-
-
-
-
 
 }

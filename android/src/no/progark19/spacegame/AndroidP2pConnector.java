@@ -47,7 +47,7 @@ public class AndroidP2pConnector implements P2pConnector {
     private String otherPlayerEndpointId;
     private String otherPLayerName = "null";
 
-    private Json json = new Json();
+    //private Json json = new Json();
     private boolean isConnected = false;
     
     // Callback to receive payloads
@@ -209,8 +209,7 @@ public class AndroidP2pConnector implements P2pConnector {
 
     @Override
     public void sendData(String data) {
-        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(SerializationUtils.serialize(data)));
-
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(data.getBytes()));
     }
 
     @Override
@@ -225,9 +224,6 @@ public class AndroidP2pConnector implements P2pConnector {
 
     @Override
     public int decideLeadingPeer() {
-
-
-
         return 0;
     }
 }

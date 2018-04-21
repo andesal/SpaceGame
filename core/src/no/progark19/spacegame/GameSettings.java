@@ -20,9 +20,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import java.util.Locale;
 import java.util.Random;
 
-/**
- * Created by Anders on 12.04.2018.
- */
 
 public class GameSettings {
     public static boolean isPhysicsResponsible = false;
@@ -66,7 +63,7 @@ public class GameSettings {
 
     public static int GAME_STATE = 1; //Default Playstate
 
-
+    public static String BULLET_TYPE = "FIRE";
     //public static String gameFrameRate
     public final static int WORLDSYNC_MAXSTATES = 5;
     public static final float WORLDSYNCH_REFRESH_RATE = 1/3f;

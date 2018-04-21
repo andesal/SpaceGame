@@ -2,6 +2,7 @@ package no.progark19.spacegame.screens;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,12 +30,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
+import no.progark19.spacegame.systems.AnimationSystem;
+import no.progark19.spacegame.systems.CollisionSystem;
+
 import java.util.HashMap;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Random;
 
 import no.progark19.spacegame.components.PositionComponent;
@@ -44,6 +52,8 @@ import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.systems.SweepSystem;
 import no.progark19.spacegame.systems.UpdateSystem;
+import no.progark19.spacegame.systems.SweepSystem;
+import no.progark19.spacegame.systems.UpdateSystem;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
@@ -52,7 +62,6 @@ import no.progark19.spacegame.components.ForceOnComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.managers.AudioManager;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.systems.CollisionSystem;
 import no.progark19.spacegame.systems.ComponentMappers;
 import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
@@ -61,10 +70,13 @@ import no.progark19.spacegame.systems.RenderSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
+import no.progark19.spacegame.utils.MyProgressBar;
+import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.JsonPayloadTags;
 import no.progark19.spacegame.utils.json.WorldStateIndexes;
+
 
 
 public class PlayScreen implements Screen, ReceivedDataListener {
@@ -261,10 +273,41 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             );
         }
 
-        //ImageButton elementButton = new Button();
-
-
         this.font = new BitmapFont();
+        //FOR ENGINE OPERATOR PLAYER
+        final Texture imageUp = new Texture("img/fire_button.png");
+        final Texture imageDown = new Texture("img/ice_button.png");
+        final TextureRegion regionUp = new TextureRegion(imageUp);
+        final TextureRegion regionDown = new TextureRegion(imageDown);
+
+        final TextureRegionDrawable trDrawUp = new TextureRegionDrawable(regionUp);
+        final TextureRegionDrawable trDrawDown = new TextureRegionDrawable(regionDown);
+
+        final ImageButton elementButton = new ImageButton(trDrawUp, trDrawDown);
+
+        elementButton.addListener(new ClickListener(){
+            boolean toggleState = true;
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (GameSettings.BULLET_TYPE.equals("FIRE")) {
+                    ImageButton.ImageButtonStyle oldStyle = elementButton.getStyle();
+                    oldStyle.imageUp = trDrawDown;
+                    oldStyle.imageDown = trDrawDown;
+                    elementButton.setStyle(oldStyle);
+                    GameSettings.BULLET_TYPE = "ICE";
+                } else  {
+                    ImageButton.ImageButtonStyle oldStyle = elementButton.getStyle();
+                    oldStyle.imageUp = trDrawUp;
+                    oldStyle.imageDown = trDrawUp;
+                    elementButton.setStyle(oldStyle);
+                    GameSettings.BULLET_TYPE = "FIRE";
+                }
+            }
+        });
+        elementButton.setPosition(10, 20);
+        uiStage.addActor(elementButton);
+
+
         this.layout = new GlyphLayout();
 
         label = new Label("", game.skin1);
@@ -275,7 +318,32 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             //label.setPosition(0,0);
             label.setWidth(SpaceGame.WIDTH - 50);
 
-        }
+//FOR LOOKOUT PLAYER
+        //TODO UPDATE LABEL COORDINATES
+        label = new Label("", game.skin1);
+        label.setPosition(0, regionDown.getRegionHeight());
+        label.setWidth(SpaceGame.HEIGHT);
+        label.setHeight(SpaceGame.HEIGHT);
+        label.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("ORIGINAL " + x + " : " + y);
+                Vector3 tp = game.translateScreenCoordinates(new Vector3(x, y, 0));
+                Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2, 0));
+                float dx = tp.x - sp.x;
+                float dy = tp.y - sp.y;
+                float delta = (float) Math.tanh(dy/dx);
+                Vector2 velVec = new Vector2(dx, dy);
+                System.out.println(delta);
+                velVec.rotateRad(delta);
+
+                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y, velVec, GameSettings.BULLET_TYPE));
+
+
+                return false;
+            }
+        });
+        uiStage.addActor(label);    }
 
         label.setHeight(SpaceGame.HEIGHT);
         label.addListener(new ClickListener(){

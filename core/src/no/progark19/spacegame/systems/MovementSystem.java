@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IntervalSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -23,7 +22,6 @@ import no.progark19.spacegame.managers.EntityManager;
 // Handles the movement of movable objects in the game world
 
 public class MovementSystem extends EntitySystem {
-
     //private ImmutableArray<Entity> asteroids;
     //private ImmutableArray<Entity> spaceship;
     //private ImmutableArray<Entity> projectiles;
@@ -38,12 +36,10 @@ public class MovementSystem extends EntitySystem {
         this.world = world;
     }
 
-    /*
     public MovementSystem(int priority) {
         super(priority);
-    }*/
+    }
 
-    @Override
     public void addedToEngine(Engine engine) {
         bodyEntities = engine.getEntitiesFor(Family
                 .all(
@@ -54,7 +50,7 @@ public class MovementSystem extends EntitySystem {
         nonBodyEntities = engine.getEntitiesFor(Family
                 .all(
                         VelocityComponent.class,
-                        PositionComponent.class)
+                        SpriteComponent.class)
                 .get());
 
         /*

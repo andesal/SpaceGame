@@ -11,15 +11,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
 import no.progark19.spacegame.SpaceGame;
+import no.progark19.spacegame.utils.LoadingBarWithBorders;
 
 public class LoadingScreen implements Screen{
 
     private final SpaceGame game;
+
     private ShapeRenderer shapeRenderer;
+
     private float progress;
 
     public LoadingScreen(final SpaceGame game){
         this.game = game;
+
         this.shapeRenderer = new ShapeRenderer();
     }
 
@@ -31,10 +35,9 @@ public class LoadingScreen implements Screen{
 
     @Override
     public void show() {
-        System.out.println("LOADING"); // For debug purposessses
+        System.out.println("GAME: LOADING"); // For debug purposessses
         shapeRenderer.setProjectionMatrix(game.camera.combined);
         this.progress = 0f;
-        queueAssets();
     }
 
     private void update(float delta) {
@@ -44,6 +47,7 @@ public class LoadingScreen implements Screen{
             game.setScreen(new PlayScreen(game));
         }
     }
+
 
 
     @Override

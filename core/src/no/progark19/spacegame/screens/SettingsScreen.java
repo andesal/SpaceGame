@@ -140,7 +140,6 @@ public class SettingsScreen implements Screen {
                 //sound.setVolume(soundId, volume.getValue());
                 volumeValue.setText("" + volume.getValue());
                 GameSettings.MUSIC_VOLUME = volume.getValue()/100;
-                System.out.println("MUSIC " +GameSettings.MUSIC_VOLUME);
 
             }
         });
@@ -150,7 +149,6 @@ public class SettingsScreen implements Screen {
                 //sound.setVolume(soundId, volume.getValue());
                 effVolumeValue.setText("" + effVolume.getValue());
                 GameSettings.EFFECTS_VOLUME = effVolume.getValue()/100;
-                System.out.println("EFFECTS: " + GameSettings.EFFECTS_VOLUME);
             }
         });
 
@@ -167,10 +165,13 @@ public class SettingsScreen implements Screen {
         easy_mode.setChecked(false);
         hard_mode.setChecked(true);
 
+        final Sound sound = game.assetManager.get(Paths.SOUND_CHECKBOX_CLICK);
+
         wifi_check.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.graphics.setContinuousRendering(wifi_check.isChecked());
+                sound.play(0.1f);
             }
         });
 
@@ -178,6 +179,7 @@ public class SettingsScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.graphics.setContinuousRendering(bt_check.isChecked());
+                sound.play(0.1f);
             }
         });
 
@@ -186,6 +188,7 @@ public class SettingsScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.graphics.setContinuousRendering(easy_mode.isChecked());
                 GameSettings.SPACESHIP_ENABLE_ROTATION = false;
+                sound.play(0.1f);
             }
         });
 
@@ -194,6 +197,7 @@ public class SettingsScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.graphics.setContinuousRendering(hard_mode.isChecked());
                 GameSettings.SPACESHIP_ENABLE_ROTATION = true;
+                sound.play(0.1f);
             }
         });
         comBtt = new TextButton("Network usage", game.skin2, "default");

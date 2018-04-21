@@ -36,6 +36,7 @@ import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.components.SynchronizedComponent;
 import no.progark19.spacegame.components.VelocityComponent;
+import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
 import no.progark19.spacegame.systems.RenderSystem;
 

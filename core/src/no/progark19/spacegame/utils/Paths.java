@@ -3,6 +3,7 @@ package no.progark19.spacegame.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * Created by anderssalvesen on 19.04.2018.
@@ -36,6 +37,7 @@ public class Paths {
 
     //JSON
     public final static String SKIN_1_JSON = "ui/uiskin.json";
+    public final static String SKIN_2_JSON = "ui/sgxui/sgx-ui.json";
 
     //Sound
     public final static String SOUND_CLICK = "audio/click.mp3";
@@ -43,6 +45,7 @@ public class Paths {
     public final static String SOUND_COLLISION_SPACESHIP = "audio/collision.mp3";
     public final static String SOUND_ASTEROID_EXPLOSION = "audio/explosion1.mp3";
     public final static String SOUND_POWERUP = "audio/powerup.mp3";
+    public final static String SOUND_CHECKBOX_CLICK = "audio/checkbox_click.mp3";
 
     //TODO THRUSTER SOUND
 
