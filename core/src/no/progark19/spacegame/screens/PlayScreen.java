@@ -3,7 +3,6 @@ package no.progark19.spacegame.screens;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
@@ -16,15 +15,16 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
@@ -57,6 +57,7 @@ import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
 import no.progark19.spacegame.systems.SoundSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
+import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.json.JsonPayload;
@@ -87,8 +88,8 @@ public class PlayScreen implements Screen, ReceivedDataListener
     private int bgX = 0;
     private int bgY = 0;
 
-    private Rectangle rectangle;
-
+    public MyProgressBar healthBar;
+    public MyProgressBar fuelBar;
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
@@ -178,6 +179,24 @@ public class PlayScreen implements Screen, ReceivedDataListener
         entityFactory = new EntityFactory(game, engine);
         entityManager = new EntityManager(engine, entityFactory);
 
+        healthBar = new MyProgressBar(100, 10, Color.RED);
+        healthBar.setPosition(10, Gdx.graphics.getHeight() - 20);
+        healthBar.setValue((float) GameSettings.START_HEALTH/100);
+        uiStage.addActor(healthBar);
+
+        Label healthLabel = new Label("Health", game.getSkin());
+        healthLabel.setPosition(115, SpaceGame.HEIGHT - 26);
+        uiStage.addActor(healthLabel);
+
+        fuelBar = new MyProgressBar(100, 10, Color.GREEN);
+        fuelBar.setPosition(10, Gdx.graphics.getHeight() - 35);
+        fuelBar.setValue(GameSettings.START_FUEL/100);
+        uiStage.addActor(fuelBar);
+
+        Label fuelLabel = new Label("Fuel", game.getSkin());
+        fuelLabel.setPosition(115, SpaceGame.HEIGHT - 41);
+        uiStage.addActor(fuelLabel);
+
         //Add engine systems
         engine.addSystem(new ControlSystem(game, entityFactory));
         engine.addSystem(new RenderSystem(game, uiStage));
@@ -187,7 +206,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         engine.addSystem(new AnimationSystem(game));
         engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new SweepSystem());
-        engine.addSystem(new UpdateSystem(entityFactory));
+        engine.addSystem(new UpdateSystem(entityFactory, healthBar, fuelBar));
         engine.addEntityListener(entityManager);
 
         if (GameSettings.isPhysicsResponsible) {
@@ -235,6 +254,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
             );
         }
 
+
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
 
@@ -245,6 +265,8 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     @Override
     public void show() {
+
+
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
 
@@ -268,42 +290,9 @@ public class PlayScreen implements Screen, ReceivedDataListener
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
 
+
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
-        float health = 0.6f; // 0 == DEAD, 1 == FULL HEALTH YEAH BABY! Spaceship.getHealth();
-        float fuel = 0.2f; // Spaceship.getFuel();
-
-        float posX = 20;
-        float posY = SpaceGame.HEIGHT - 20;
-        game.batch.setColor(Color.RED);
-        /*
-        if (health > 0.6f)
-            game.batch.setColor(Color.GREEN);
-        else if (health > 0.2f)
-            game.batch.setColor(Color.ORANGE);
-        else
-            game.batch.setColor(Color.RED);
-            */
-        //game.batch.setColor(Color.RED);
-
-        game.batch.draw(game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class), posX ,posY, SpaceGame.WIDTH , 5);
-        /*if (fuel > 0.6f)
-            game.batch.setColor(Color.GREEN);
-        else if (fuel > 0.2f)
-            game.batch.setColor(Color.ORANGE);
-        else {
-            game.batch.setColor(Color.RED);
-        }
-        */
-        game.batch.draw(game.assetManager.get(Paths.PROGRESSBAR_TEXTURE_PATH, Texture.class), posX  ,posY, SpaceGame.WIDTH , 5);
-        //game.batch.setColor(Color.WHITE);
-        //font.setColor(Color.WHITE);
-        font.getData().setScale(4);
-        layout.setText(font, String.valueOf(Gdx.graphics.getFramesPerSecond()));
-
-        font.draw(game.batch, layout,
-                SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT/2 - layout.height
-        );
 
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
