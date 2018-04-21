@@ -97,7 +97,7 @@ public class UpdateSystem extends EntitySystem {
             fcom.fuel -= ucom.usage;
             entity.remove(FuelUsageComponent.class);
             if (fcom.fuel <= 0) {
-                System.out.println("NO FUEL LEFT");
+                System.out.println("GAME OVER FUEL");
             } else {
                 fuelBar.setValue(fcom.fuel/100);
 

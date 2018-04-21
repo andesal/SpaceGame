@@ -8,16 +8,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -26,6 +22,7 @@ import java.util.Random;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.SpaceNameGenerator;
 
@@ -50,7 +47,6 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
 
     private ShapeRenderer shapeRenderer;
 
-    private Texture background, logo;
     // Dark network magics
     private String latestData = "";
     private String thisName = SpaceNameGenerator.generate();
@@ -62,8 +58,6 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private boolean seedMessageSent = false;
     private boolean seedDecided = false;
     private Random random = new Random();
-
-    private Skin skin2;
 
     private ClickListener readListener = new ClickListener() {
         @Override
@@ -92,9 +86,6 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
 
-        background = new Texture("img/menu_bg_darkblue_plain.jpg");
-        logo = new Texture("textImg/LOBBY_TEXT.png");
-
         onSupportedDevice = Gdx.app.getType() == Application.ApplicationType.Android;
         //FIXME REMOVE
         onSupportedDevice = true;
@@ -113,10 +104,6 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
         System.out.println("LOBBY SCREEN");
         Gdx.input.setInputProcessor(stage);
         stage.clear();
-
-        this.skin2 = new Skin(Gdx.files.internal("ui/sgxui/sgx-ui.json"));
-        this.skin2.addRegions(new TextureAtlas("ui/sgxui/sgx-ui.atlas"));
-
         initButtons();
     }
 
@@ -134,7 +121,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
 
         stage.getBatch().begin();
         //stage.getBatch().draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
-        stage.getBatch().draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
+        stage.getBatch().draw(game.assetManager.get(Paths.LOBBY_TEXT_TEXTURE_PATH, Texture.class), SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
         stage.getBatch().end();
         game.batch.begin();
         //font.setColor(Color.BLACK);
@@ -265,8 +252,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private void initButtons() {
 
         TextButton buttonExit, buttonInitiate;
-
-        buttonInitiate = new TextButton("Initiate Game", skin2, "default");
+        buttonInitiate = new TextButton("Initiate Game", game.skin2, "default");
         buttonInitiate.setPosition(110, 190);
         buttonInitiate.setSize(280, 60);
         buttonInitiate.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
@@ -290,7 +276,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
             }
         });
 
-        buttonExit = new TextButton("Main Menu", skin2, "default");
+        buttonExit = new TextButton("Main Menu", game.skin2, "default");
         buttonExit.setPosition(110, 100);
         buttonExit.setSize(280, 60);
         buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));

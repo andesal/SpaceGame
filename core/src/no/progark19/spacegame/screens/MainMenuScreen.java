@@ -1,18 +1,18 @@
 package no.progark19.spacegame.screens;
 
+import no.progark19.spacegame.SpaceGame;
+import no.progark19.spacegame.utils.Paths;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -35,23 +35,16 @@ public class MainMenuScreen implements Screen {
     private final SpaceGame game;
 
     private Stage stage;
-    private Skin skin2;
-    private Skin skin;
 
     private TextButton buttonPlay, buttonExit, buttonOptions;
 
 
     private ShapeRenderer shapeRenderer;
-    Slider testSlider;
-
-    private Texture background, logo;
 
     public MainMenuScreen(final SpaceGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
-        background = new Texture("img/menu_bg_darkblue_plain.jpg");
-        logo = new Texture("textImg/SPACE_GAME_TEXT_V.png");
     }
 
     @Override
@@ -81,8 +74,8 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.getBatch().begin();
 
-        stage.getBatch().draw(background, 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
-        stage.getBatch().draw(logo, SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
+        stage.getBatch().draw(game.assetManager.get(Paths.BACKGROUND_MAIN_MENU_TEXTURE_PATH, Texture.class), 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
+        stage.getBatch().draw(game.assetManager.get(Paths.MENU_TEXT_TEXTURE_PATH, Texture.class), SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
         update(delta);
 
         stage.getBatch().end();
@@ -116,10 +109,8 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initButtons(){
-
         TextButton buttonPlay, buttonExit, buttonOptions;
-
-        buttonPlay = new TextButton("Start Game", skin2, "default");
+        buttonPlay = new TextButton("Start Game", game.skin2, "default");
         buttonPlay.setPosition(110, 330);
         buttonPlay.setSize(280, 60);
         buttonPlay.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
@@ -130,7 +121,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        buttonOptions = new TextButton("Settings", skin2, "default");
+        buttonOptions = new TextButton("Settings", game.skin2, "default");
         buttonOptions.setPosition(110, 260);
         buttonOptions.setSize(280, 60);
         buttonOptions.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
@@ -141,7 +132,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        buttonExit = new TextButton("Exit", skin2, "default");
+        buttonExit = new TextButton("Exit", game.skin2, "default");
         buttonExit.setPosition(110, 120);
         buttonExit.setSize(280, 60);
         buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));

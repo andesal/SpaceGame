@@ -20,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -93,7 +92,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
-        Slider engineSlider = new Slider(0, 100, 1f, true, game.getSkin());
+        Slider engineSlider = new Slider(0, 100, 1f, true, game.skin1);
         engineSlider.setPosition(posX, posY);
         engineSlider.setSize(20, SpaceGame.HEIGHT / 2 - 20);
         engineSlider.setScaleX(3);
@@ -184,7 +183,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         healthBar.setValue((float) GameSettings.START_HEALTH/100);
         uiStage.addActor(healthBar);
 
-        Label healthLabel = new Label("Health", game.getSkin());
+        Label healthLabel = new Label("Health", game.skin1);
         healthLabel.setPosition(115, SpaceGame.HEIGHT - 26);
         uiStage.addActor(healthLabel);
 
@@ -193,7 +192,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         fuelBar.setValue(GameSettings.START_FUEL/100);
         uiStage.addActor(fuelBar);
 
-        Label fuelLabel = new Label("Fuel", game.getSkin());
+        Label fuelLabel = new Label("Fuel", game.skin1);
         fuelLabel.setPosition(115, SpaceGame.HEIGHT - 41);
         uiStage.addActor(fuelLabel);
 
@@ -335,7 +334,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
     public void dispose() {
         uiStage.dispose();
         shapeRenderer.dispose();
-        bg.dispose();
         debugRenderer.dispose();
         shapeRenderer.dispose();
         theme.dispose();
