@@ -1,24 +1,20 @@
 package no.progark19.spacegame;
 
+import no.progark19.spacegame.interfaces.P2pConnector;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import no.progark19.spacegame.interfaces.P2pConnector;
-
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import no.progark19.spacegame.screens.LoadingScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
 import no.progark19.spacegame.screens.SettingsScreen;
 import no.progark19.spacegame.utils.Assets;
+import no.progark19.spacegame.utils.Paths;
 
 
 public class SpaceGame extends Game {
@@ -31,8 +27,6 @@ public class SpaceGame extends Game {
 	//public BitmapFont font24;
 	public AssetManager assetManager;
 	public Assets assets;
-
-	private Skin skin;
 
     //FIXME trur disse er unødvendig
 	public LoadingScreen loadingScreen;
@@ -55,9 +49,7 @@ public class SpaceGame extends Game {
 		return camera.unproject(coordinates.add(0, SpaceGame.HEIGHT - 1, 0));
 	}
 
-	public Skin getSkin(){
-		return skin;
-	}
+	public Skin skin1, skin2;
 
 	@Override
 	public void create() {
@@ -81,8 +73,13 @@ public class SpaceGame extends Game {
 		settingsScreen = new SettingsScreen(this);
 		this.setScreen(loadingScreen);
 
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-    }
+        skin1 = assetManager.get(Paths.SKIN_1_JSON, Skin.class);
+		skin2 = assetManager.get(Paths.SKIN_2_JSON, Skin.class);
+		skin1.addRegions(assetManager.get(Paths.SKIN_1_ATLAS, TextureAtlas.class));
+		skin2.addRegions(assetManager.get(Paths.SKIN_2_ATLAS, TextureAtlas.class));
+
+
+	}
 
 	@Override
 	public void render() {
@@ -102,14 +99,14 @@ public class SpaceGame extends Game {
 	@Override
 	public void dispose() {
 		batch.dispose();
-
-		assetManager.dispose();
+        assetManager.dispose();
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
 		//lobbyScreen.dispose();
 		//playScreen.dispose();
 		settingsScreen.dispose();
 
-	}
+
+    }
 
 }

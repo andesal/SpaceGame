@@ -20,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -76,18 +75,13 @@ public class PlayScreen implements Screen, ReceivedDataListener
     private PooledEngine engine;
     public Sound theme;
     private EntityFactory entityFactory;
-    private Texture bg;
-    private int bgX = 0;
-    private int bgY = 0;
-    //private Skin skin2;
-    private Skin skin1;
 
     public MyProgressBar healthBar;
     public MyProgressBar fuelBar;
 
     //- Private methods ----------------------------------------------------------------------------
     private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
-        Slider engineSlider = new Slider(0, 100, 1f, true, game.getSkin());
+        Slider engineSlider = new Slider(0, 100, 1f, true, game.skin1);
         engineSlider.setPosition(posX, posY);
         engineSlider.setSize(20, SpaceGame.HEIGHT / 2 - 20);
         engineSlider.setScaleX(3);
@@ -179,7 +173,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         healthBar.setValue((float) GameSettings.START_HEALTH/100);
         uiStage.addActor(healthBar);
 
-        Label healthLabel = new Label("Health", game.getSkin());
+        Label healthLabel = new Label("Health", game.skin1);
         healthLabel.setPosition(115, SpaceGame.HEIGHT - 26);
         uiStage.addActor(healthLabel);
 
@@ -188,7 +182,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         fuelBar.setValue(GameSettings.START_FUEL/100);
         uiStage.addActor(fuelBar);
 
-        Label fuelLabel = new Label("Fuel", game.getSkin());
+        Label fuelLabel = new Label("Fuel", game.skin1);
         fuelLabel.setPosition(115, SpaceGame.HEIGHT - 41);
         uiStage.addActor(fuelLabel);
 
@@ -261,13 +255,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
 
-        //this.skin2 = new Skin(Gdx.files.internal("ui/sgx/sgxui.json"));
-        //this.skin2.addRegions(new TextureAtlas("ui/sgx/sgxui.atlas"));
-
-        this.skin1 = new Skin();
-        this.skin1.addRegions(game.assetManager.get(Paths.SKIN_1_ATLAS, TextureAtlas.class));
-        this.skin1.load(Gdx.files.internal("ui/uiskin.json"));
-
         game.p2pConnector.addReceivedDataListener(this);
         //TODO COMMENT OUT THIS
         GameSettings.setRandomSeed((new Random()).nextLong());
@@ -339,7 +326,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
     public void dispose() {
         uiStage.dispose();
         shapeRenderer.dispose();
-        bg.dispose();
         debugRenderer.dispose();
         shapeRenderer.dispose();
         theme.dispose();

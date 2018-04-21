@@ -47,9 +47,6 @@ public class PlayScreen_DEMO implements Screen {
     private Stage stage;
     private ShapeRenderer shapeRenderer;
 
-    public ParticleEffect pe;
-
-    public EntityManager entityManager;
     private PooledEngine engine;
     // Textures
     private Texture background;
@@ -98,7 +95,7 @@ public class PlayScreen_DEMO implements Screen {
     }
 
     private void createEngineSlider(final int engineIndex, float posX, float posY){
-        Slider engineSlider = new Slider(0,100,0.1f, true, game.getSkin());
+        Slider engineSlider = new Slider(0,100,0.1f, true, game.skin2);
         engineSlider.setPosition(posX,posY);
         engineSlider.setSize(20, SpaceGame.HEIGHT/2 - 20);
         engineSlider.setScaleX(3);

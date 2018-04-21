@@ -1,13 +1,9 @@
 package no.progark19.spacegame.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-
-import no.progark19.spacegame.GameSettings;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 public class Assets {
@@ -30,6 +26,9 @@ public class Assets {
         manager.load(Paths.FUEL_TEXTURE_PATH, Texture.class);
         manager.load(Paths.HEALT_TEXTURE_PATH, Texture.class);
         manager.load(Paths.PROGRESSBAR_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.BACKGROUND_MAIN_MENU_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.MENU_TEXT_TEXTURE_PATH, Texture.class);
+        manager.load(Paths.SETTING_TEXT_TEXTURE_PATH, Texture.class);
     }
 
     public void loadTextureAtlases() {
@@ -38,6 +37,10 @@ public class Assets {
     }
 
     public void loadSkins() {
+
+        manager.load(Paths.SKIN_1_JSON, Skin.class);
+        manager.load(Paths.SKIN_2_JSON, Skin.class);
+
         manager.load(Paths.SKIN_1_ATLAS, TextureAtlas.class);
         manager.load(Paths.SKIN_2_ATLAS, TextureAtlas.class);
 
