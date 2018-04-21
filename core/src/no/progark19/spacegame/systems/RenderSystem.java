@@ -79,7 +79,7 @@ public class RenderSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
 
-        //drawBackground();
+        drawBackground();
         updateBackgroundCoordinates();
 
         for (Entity entity : renderables) {

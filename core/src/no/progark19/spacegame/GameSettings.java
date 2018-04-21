@@ -54,8 +54,9 @@ public class GameSettings {
     public final static int MAX_HEALTH_SPACESHIP = 100;
     public final static int MAX_HEALTH_ASTEROIDS = 50;
 
+    public final static int START_HEALTH = 60;
+    public final static float START_FUEL = 50f;
     public final static float MAX_FUEL = 100f;
-    public final static float FUEL_USAGE = 0.25f;
 
 
     private static Random mainRandom;
