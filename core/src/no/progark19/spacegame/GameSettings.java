@@ -1,12 +1,14 @@
 package no.progark19.spacegame;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,12 +17,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import java.lang.reflect.Array;
+import java.util.Locale;
 import java.util.Random;
 
-/**
- * Created by Anders on 12.04.2018.
- */
 
 public class GameSettings {
     public static boolean isLeftPlayer = false;
@@ -36,26 +35,30 @@ public class GameSettings {
     public static final boolean SPACESHIP_STABILIZE_ROTATION = true;
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
     public static final float SPACESHIP_DENSITY = 0.5f;
-
     public static final float SPACESHIP_RESTITUTION = 0.5f;
     public static final boolean SPACESHIP_ENABLE_ROTATION = false;
-    public final static String SPACESHIP_TEXTURE_PATH = "img/spaceship.png";
     public final static Vector2 ENGINE_ORIGIN = new Vector2(9,25);
     public final static float ENGINE_MAX_FORCE = 0.1f;
-    public final static String ENGINE_TEXTURE_PATH = "img/spaceship_engine.png";
-    public final static String BACKGROUND_PATH = "img/background.png";
 
-    public final static String DEBUG_FORCEARROW_TEXTURE_PATH = "img/debug_forcearrow.png";
     public final static Vector2 DEBUG_FORCEARROW_ORIGIN = new Vector2(56.5f, 51.5f);
+    public final static float PROJECTILE_SCALE = 0.05f;
 
-    public final static String ASTEROID_FIRE_TEXTURE_PATH = "img/asteroid_fire.png";
-    public final static String ASTEROID_ICE_TEXTURE_PATH = "img/asteroid_ice.png";
 
-    // Skins
-    public final static String UISKIN1_JSON_PATH = "ui/uiskin.json";
-    public final static String UISKIN1_ATLAS_PATH = "ui/uiskon.atlas";
-    public final static String UISKIN2_JSON_PATH = "ui/sgxui/sgx-ui.json";
-    public final static String UISKIN2_ATLAS_PATH = "ui/sgxui/sgx-ui.atlas";
+    //Tags for collision filtering
+    public final static short SPACESHIP_TAG = 0x0002;
+    public final static short FIRE_ASTEROID_TAG = 0x0004;
+    public final static short ICE_ASTEROID_TAG = 0x0008;
+
+    // Gameplay settings
+    public final static int MAX_ASTEROIDS = 30;
+    public static Rectangle screenBounds = new Rectangle(-240, 720, 960, 960); //starting bounding box
+
+    public final static int MAX_HEALTH_SPACESHIP = 100;
+    public final static int MAX_HEALTH_ASTEROIDS = 50;
+
+    public final static int START_HEALTH = 60;
+    public final static float START_FUEL = 50f;
+    public final static float MAX_FUEL = 100f;
 
 
     //public static String gameFrameRate
@@ -65,7 +68,6 @@ public class GameSettings {
     public static void setRandomSeed(long seed){
         System.out.println("GotSeed:" + seed);
         mainRandom = new Random(seed);
-
     }
 
     public static Random getMainRandom(){
@@ -78,9 +80,8 @@ public class GameSettings {
 
     //FIXME move to somewhere else
     public static Body createDynamicBody(Sprite sprite, World world,
-                                         Shape shape, float density, float restitution){
+                                         Shape shape, float density, float restitution, short filterID){
         Body body;
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set((sprite.getX() + sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS,
@@ -98,16 +99,14 @@ public class GameSettings {
         fixtureDef.shape = shape;
         fixtureDef.density = density;
         fixtureDef.restitution = restitution;
-
+        fixtureDef.filter.categoryBits = filterID;
         body.createFixture(fixtureDef);
-
         shape.dispose();
-
         return body;
     }
 
 
-    public static Body generatePolygon(float x, float y, World world, Texture texture, PolygonSprite polygonSprite) {
+    public static Body generatePolygon(float x, float y, World world, Texture texture, PolygonSprite polygonSprite, short filterID) {
         Body body;
 
         BodyDef bodyDef = new BodyDef();
@@ -134,6 +133,7 @@ public class GameSettings {
         fixtureDef.shape = shape;
         fixtureDef.density = 0.7f;
         fixtureDef.restitution = 0.5f;
+        fixtureDef.filter.categoryBits = filterID;
 
         body.createFixture(fixtureDef);
         shape.dispose();
@@ -149,4 +149,18 @@ public class GameSettings {
 
         return body;
     }
+
+
+    public static Animation createAnimation(TextureAtlas atlas, float frameDuration) {
+        com.badlogic.gdx.utils.Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
+        TextureAtlas.AtlasRegion[] frames = new TextureAtlas.AtlasRegion[regions.size];
+        for(int i = 0; i < frames.length; i++) {
+            frames[i] = atlas.findRegion("explosion" + String.format(Locale.getDefault(), "%04d", Integer.parseInt(String.valueOf(i))));
+        }
+        return new Animation<TextureRegion>(frameDuration, frames);
+    }
+
+
+
+
 }

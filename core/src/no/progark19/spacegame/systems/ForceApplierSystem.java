@@ -5,30 +5,36 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
 import no.progark19.spacegame.components.ForceOnComponent;
+import no.progark19.spacegame.components.FuelUsageComponent;
 import no.progark19.spacegame.components.ParentComponent;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.Paths;
 
 /**
  * Created by Anders on 15.04.2018.
  */
 
 public class ForceApplierSystem extends EntitySystem{
+
     private ImmutableArray<Entity> entities;
-
     private Sprite controllDebugForceArrow;
+    private SpaceGame game;
 
-    public ForceApplierSystem() {
-        this.controllDebugForceArrow  = new Sprite(new Texture(GameSettings.DEBUG_FORCEARROW_TEXTURE_PATH));
+    public ForceApplierSystem(SpaceGame game) {
+        this.game = game;
+        this.controllDebugForceArrow  = new Sprite(game.assetManager.get(Paths.DEBUG_FORCEARROW_TEXTURE_PATH, Texture.class));
         this.controllDebugForceArrow.setOrigin(GameSettings.DEBUG_FORCEARROW_ORIGIN.x, GameSettings.DEBUG_FORCEARROW_ORIGIN.y);
     }
 
@@ -53,6 +59,15 @@ public class ForceApplierSystem extends EntitySystem{
             BodyComponent bcom_parent = ComponentMappers.BOD_MAP.get(parent);
             PositionComponent parposcom = ComponentMappers.POS_MAP.get(parent);
             RelativePositionComponent relcom = ComponentMappers.RELPOS_MAP.get(entity);
+            FuelUsageComponent ucom = ComponentMappers.FUEL_USAGE_MAP.get(entity);
+
+            //Update fuel consumption
+            if (ucom == null) {
+                parent.add(new FuelUsageComponent(deltaTime));
+
+            } else {
+                ucom.usage += deltaTime;
+            }
 
             Vector2 forceVector = new Vector2(fcom.force, 0);
             forceVector.setAngle(fcom.direction + parposcom.rotation);
@@ -80,6 +95,7 @@ public class ForceApplierSystem extends EntitySystem{
                         forceVector,
                         true);
             }
+
         }
     }
 }

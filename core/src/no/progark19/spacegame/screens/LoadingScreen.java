@@ -11,37 +11,37 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
 import no.progark19.spacegame.SpaceGame;
+import no.progark19.spacegame.utils.LoadingBarWithBorders;
 
 public class LoadingScreen implements Screen{
 
     private final SpaceGame game;
+
     private ShapeRenderer shapeRenderer;
+
     private float progress;
 
     public LoadingScreen(final SpaceGame game){
         this.game = game;
-        this.shapeRenderer = new ShapeRenderer();
-    }
 
-    private void queueAssets(){
-        game.assets.load("ui/uiskin.atlas", TextureAtlas.class);
+        this.shapeRenderer = new ShapeRenderer();
     }
 
     @Override
     public void show() {
-        System.out.println("LOADING"); // For debug purposessses
+        System.out.println("GAME: LOADING"); // For debug purposessses
         shapeRenderer.setProjectionMatrix(game.camera.combined);
         this.progress = 0f;
-        queueAssets();
     }
 
     private void update(float delta) {
-        progress = MathUtils.lerp(progress, game.assets.getProgress(), .1f);
-        if (game.assets.update() && progress >= game.assets.getProgress() - .001f) {
+        progress = MathUtils.lerp(progress, game.assetManager.getProgress(), .1f);
+        if (game.assetManager.update() && progress >= game.assetManager.getProgress() - .001f) {
             game.setScreen(new MainMenuScreen(game));
 //            game.setScreen(new PlayScreen(game));
         }
     }
+
 
     @Override
     public void render(float delta) {

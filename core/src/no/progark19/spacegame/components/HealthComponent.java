@@ -9,9 +9,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class HealthComponent implements Component, Pool.Poolable {
 
-    public int health = 100;
-
-    public HealthComponent() {}
+    public int health;
 
     public HealthComponent(int health) {
         this.health = health;

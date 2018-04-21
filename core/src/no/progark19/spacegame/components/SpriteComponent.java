@@ -3,9 +3,9 @@ package no.progark19.spacegame.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Pool;
 
-import java.awt.Rectangle;
 
 /**
  * Created by anderssalvesen on 09.04.2018.
@@ -13,6 +13,7 @@ import java.awt.Rectangle;
 
 public class SpriteComponent implements Component, Pool.Poolable {
     public Sprite sprite;
+    public Rectangle boundingRectangle;
 
     public SpriteComponent() {}
 
@@ -25,6 +26,9 @@ public class SpriteComponent implements Component, Pool.Poolable {
         this.sprite = sprite;
     }
 
+    public void setTexture(Texture texture) {
+        sprite.setTexture(texture);
+    }
 
     @Override
     public void reset() {
