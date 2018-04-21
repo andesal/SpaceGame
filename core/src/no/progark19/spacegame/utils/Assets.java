@@ -31,6 +31,7 @@ public class Assets {
         manager.load(Paths.BACKGROUND_MAIN_MENU_TEXTURE_PATH, Texture.class);
         manager.load(Paths.MENU_TEXT_TEXTURE_PATH, Texture.class);
         manager.load(Paths.SETTING_TEXT_TEXTURE_PATH, Texture.class);
+
     }
 
     public void loadTextureAtlases() {
@@ -54,6 +55,7 @@ public class Assets {
         manager.load(Paths.SOUND_COLLISION_SPACESHIP, Sound.class);
         manager.load(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
         manager.load(Paths.SOUND_POWERUP, Sound.class);
+        manager.load(Paths.SOUND_CHECKBOX_CLICK, Sound.class);
 
     }
 

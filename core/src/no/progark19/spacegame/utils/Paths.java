@@ -45,6 +45,7 @@ public class Paths {
     public final static String SOUND_COLLISION_SPACESHIP = "audio/collision.mp3";
     public final static String SOUND_ASTEROID_EXPLOSION = "audio/explosion1.mp3";
     public final static String SOUND_POWERUP = "audio/powerup.mp3";
+    public final static String SOUND_CHECKBOX_CLICK = "audio/checkbox_click.mp3";
 
     //TODO THRUSTER SOUND
 

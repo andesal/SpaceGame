@@ -2,6 +2,7 @@ package no.progark19.spacegame.screens;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -248,6 +249,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             );
         }
 
+        //FOR ENGINE OPERATOR PLAYER
         final Texture imageUp = new Texture("img/fire_button.png");
         final Texture imageDown = new Texture("img/ice_button.png");
         final TextureRegion regionUp = new TextureRegion(imageUp);
@@ -284,31 +286,35 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
 
-        label = new Label("", game.skin1);
-        if (GameSettings.isLeftPlayer) {
-            //label.setPosition(50,0);
-            label.setWidth(SpaceGame.WIDTH);
-        } else {
-            //label.setPosition(0,0);
-            label.setWidth(SpaceGame.WIDTH - 50);
 
-        }
-/*
+
+        //FOR LOOKOUT PLAYER
+        //TODO UPDATE LABEL COORDINATES
+        label = new Label("", game.skin1);
+        label.setPosition(0, regionDown.getRegionHeight());
+        label.setWidth(SpaceGame.HEIGHT);
         label.setHeight(SpaceGame.HEIGHT);
         label.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("ORIGINAL " + x + " : " + y);
+                Vector3 tp = game.translateScreenCoordinates(new Vector3(x, y, 0));
+                Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2, 0));
+                float dx = tp.x - sp.x;
+                float dy = tp.y - sp.y;
+                float delta = (float) Math.tanh(dy/dx);
+                Vector2 velVec = new Vector2(dx, dy);
+                System.out.println(delta);
+                velVec.rotateRad(delta);
 
-                Vector3 v3 = game.translateScreenCoordinates(new Vector3(x, y, 0));
-                System.out.println("WORLD " + v3.x + " : " + v3.y);
-                engine.addEntity(entityFactory.createAsteroid(v3.x ,v3.y ,new Vector2(0, 0), EntityFactory.ELEMENTS.FIRE));
+                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y, velVec, GameSettings.BULLET_TYPE));
+
 
                 return false;
             }
         });
         uiStage.addActor(label);
-        */
+
     }
 
     @Override
