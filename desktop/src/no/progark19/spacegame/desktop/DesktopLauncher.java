@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.interfaces.P2pConnector;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
+import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.json.JsonPayload;
 
 public class DesktopLauncher {
@@ -41,7 +42,7 @@ public class DesktopLauncher {
 			}
 
 			@Override
-			public void sendData(JsonPayload data) {
+			public void sendData(RenderableWorldState data) {
 
 			}
 
@@ -53,6 +54,11 @@ public class DesktopLauncher {
 			@Override
 			public String getOtherPeerName() {
 				return null;
+			}
+
+			@Override
+			public int decideLeadingPeer() {
+				return 0;
 			}
 		}), config);
 	}

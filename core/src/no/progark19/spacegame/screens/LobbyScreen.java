@@ -66,7 +66,9 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private boolean seedDecided = false;
     private Random random = new Random();
 
-    private ClickListener readListener = new ClickListener() {
+    TextButton buttonExit, buttonInitiate;
+
+    private ClickListener readyListener = new ClickListener() {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
             game.p2pConnector.sendData("ready|true");
@@ -163,7 +165,9 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
                     );
 
                     //Make it so they cant back off now that both are ready "unready
-                    //stage.removeListener(readListener);
+                    //stage.removeListener(readyListener);
+                    buttonInitiate.removeListener(readyListener);
+
 
                     if(!seedMessageSent){
                         thisPlayerSeed = random.nextLong();
@@ -247,84 +251,18 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
             seedDecided = true;
 
         }
-
-else {
-            System.out.println("String tag not understood!");    }
-
-
+        else {
+            System.out.println("String tag not understood!");
+        }
     }
-
 
     private void initButtons() {
         final Sound s = game.assetManager.get(Paths.SOUND_CLICK); //TODO IMPLEMENT CLICK SOUND
-        TextButton buttonExit, buttonInitiate;
         buttonInitiate = new TextButton("Initiate Game", game.skin2, "default");
         buttonInitiate.setPosition(110, 190);
         buttonInitiate.setSize(280, 60);
         buttonInitiate.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        buttonInitiate.addListener(new ClickListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                JsonPayload jpl = new JsonPayload();
-                jpl.setTAG(JsonPayloadTags.READY);
-                jpl.setValue(true);
-                game.p2pConnector.sendData(jpl);
-                LobbyScreen.this.setPlayerReady(true);
-                return true;
-            }
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                JsonPayload jpl = new JsonPayload();
-                jpl.setTAG(JsonPayloadTags.READY);
-                jpl.setValue(false);
-                game.p2pConnector.sendData(jpl);
-                LobbyScreen.this.setPlayerReady(false);
-            }
-        });
-
-        buttonExit = new TextButton("Main Menu", game.skin2, "default");
-        buttonExit.setPosition(110, 100);
-        buttonExit.setSize(280, 60);
-        buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        buttonExit.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
-            }
-        });
-
-
-        stage.addActor(buttonInitiate);
-        stage.addActor(buttonExit);
-    }
-
-
-    private void initButtons() {
-        final Sound s = game.assetManager.get(Paths.SOUND_CLICK); //TODO IMPLEMENT CLICK SOUND
-        TextButton buttonExit, buttonInitiate;
-        buttonInitiate = new TextButton("Initiate Game", game.skin2, "default");
-        buttonInitiate.setPosition(110, 190);
-        buttonInitiate.setSize(280, 60);
-        buttonInitiate.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        buttonInitiate.addListener(new ClickListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                JsonPayload jpl = new JsonPayload();
-                jpl.setTAG(JsonPayloadTags.READY);
-                jpl.setValue(true);
-                game.p2pConnector.sendData(jpl);
-                LobbyScreen.this.setPlayerReady(true);
-                return true;
-            }
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                JsonPayload jpl = new JsonPayload();
-                jpl.setTAG(JsonPayloadTags.READY);
-                jpl.setValue(false);
-                game.p2pConnector.sendData(jpl);
-                LobbyScreen.this.setPlayerReady(false);
-            }
-        });
+        buttonInitiate.addListener(readyListener);
 
         buttonExit = new TextButton("Main Menu", game.skin2, "default");
         buttonExit.setPosition(110, 100);

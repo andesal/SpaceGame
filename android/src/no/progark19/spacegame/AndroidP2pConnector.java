@@ -47,7 +47,6 @@ public class AndroidP2pConnector implements P2pConnector {
     private String otherPlayerEndpointId;
     private String otherPLayerName = "null";
 
-    //private Json json = new Json();
     private boolean isConnected = false;
     
     // Callback to receive payloads

@@ -108,7 +108,4 @@ public class SpaceGame extends Game {
 
 
     }
-
-    }
-
 }

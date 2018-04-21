@@ -59,7 +59,7 @@ public class EntityFactory {
         this.engine = engine;
     }
 
-    public Entity createAsteroid(float x, float y, Vector2 velocity, Enum element) {
+    public Entity createAsteroid(float x, float y, Vector2 velocity, String element) {
         Entity entity = new Entity();
 
         ElementComponent ecom = new ElementComponent(element);
@@ -67,7 +67,7 @@ public class EntityFactory {
         SpriteComponent scom = engine.createComponent(SpriteComponent.class);
 
         Texture texture;
-        if (element == ELEMENTS.FIRE) {
+        if (element.equals("FIRE")) {
             texture = game.assetManager.get(Paths.ASTEROID_FIRE_TEXTURE_PATH, Texture.class);
         } else {
             texture = game.assetManager.get(Paths.ASTEROID_ICE_TEXTURE_PATH, Texture.class);
@@ -81,9 +81,9 @@ public class EntityFactory {
             //Body body = GameSettings.generatePolygon(x, y, world, texture, null); //polygonsprite parameter not used in method.
             CircleShape shape = new CircleShape();
             shape.setRadius((scom.sprite.getWidth()/2)/GameSettings.BOX2D_PIXELS_TO_METERS);
-            short tag = element == ELEMENTS.FIRE ? GameSettings.FIRE_ASTEROID_TAG : GameSettings.ICE_ASTEROID_TAG;
+            short tag = element.equals("FIRE") ? GameSettings.FIRE_ASTEROID_TAG : GameSettings.ICE_ASTEROID_TAG;
 
-            Body body = GameSettings.createDynamicBody(scom.sprite, world, shape,0.5f,0.5f, tag);
+            Body body = GameSettings.createDynamicBody(scom.sprite, GameSettings.BOX2D_PHYSICSWORLD, shape,0.5f,0.5f, tag);
             body.setLinearVelocity(velocity);
             bcom.body = body;
             entity.add(bcom);   //Body Component
@@ -105,38 +105,44 @@ public class EntityFactory {
     }
 
 
-    public Entity createBaseSpaceShip(World physicsWorld, Texture texture){
-        float posx = SpaceGame.WIDTH/2;
-        float posy = SpaceGame.HEIGHT/2;
+    public Entity createBaseSpaceShip(World physicsWorld, Texture texture) {
+        float posx = SpaceGame.WIDTH / 2;
+        float posy = SpaceGame.HEIGHT / 2;
         //float posx = RenderSystem.bg.getWidth()/2;
         //float posy = RenderSystem.bg.getHeight()/2;
 
         Sprite sprite = new Sprite(texture);
         sprite.setOriginBasedPosition(posx, posy);
 
-        if (GameSettings.isPhysicsResponsible){Body body = GameSettings.createDynamicBody(
-                sprite, physicsWorld, null,
-                GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
+        HealthComponent hcom = new HealthComponent(GameSettings.START_HEALTH);
+        FuelComponent fcom = new FuelComponent(GameSettings.START_FUEL);
 
-HealthComponent hcom = new HealthComponent(GameSettings.START_HEALTH);
-        FuelComponent fcom = new FuelComponent(GameSettings.START_FUEL);        return engine.createEntity()
-                .add(new SynchronizedComponent())
-                    .add(newPositionComponent(posx, posy))
-                .add(new SpriteComponent(sprite))
-                .add(new BodyComponent(body))
-                .add(new RenderableComponent())
-                .add(new LeadCameraComponent())
-                .add(hcom)
-                .add(fcom);
-    }else {
+        if (GameSettings.isPhysicsResponsible) {
+            Body body = GameSettings.createDynamicBody(
+                    sprite, physicsWorld, null,
+                    GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
+
+            return engine.createEntity()
+                    .add(new SynchronizedComponent())
+                    .add(new PositionComponent(posx, posy))
+                    .add(new SpriteComponent(sprite))
+                    .add(new BodyComponent(body))
+                    .add(new RenderableComponent())
+                    .add(new LeadCameraComponent())
+                    .add(hcom)
+                    .add(fcom);
+        } else {
             return engine.createEntity()
                     .add(new PositionComponent(posx, posy))
                     .add(new SpriteComponent(sprite))
                     .add(new RenderableComponent())
                     .add(new LeadCameraComponent())
                     .add(new VelocityComponent())
-                    .add(new HealthComponent());
+                    .add(hcom)
+                    .add(fcom);
         }
+    }
+
 
     public Entity createShipEngine(float relx, float rely, float relRot, Entity parent, Texture texture){
         Sprite engineSprite = new Sprite(texture);
@@ -152,33 +158,39 @@ HealthComponent hcom = new HealthComponent(GameSettings.START_HEALTH);
                 .add(new ForceApplierComponent(GameSettings.ENGINE_MAX_FORCE));
     }
 
-    public Entity createProjectile(float x, float y, Vector2 velocity, Enum element) {
+    public Entity createProjectile(float x, float y, float velX, float velY, String element) {
         Entity entity = new Entity();
 
         ElementComponent ecom = new ElementComponent(element);
 
         Texture texture;
-        if (element == ELEMENTS.FIRE) {
+        if (element.equals("FIRE")) {
             texture = game.assetManager.get(Paths.FIRE_BULLET_TEXTURE_PATH, Texture.class);
         } else {
             texture = game.assetManager.get(Paths.ICE_BULLET_TEXTURE_PATH, Texture.class);
         }
 
         SpriteComponent scom = new SpriteComponent(new Sprite(texture));
-        scom.sprite.setPosition(x,y);
+        //scom.sprite.setPosition(x,y);
+        PositionComponent pcom = new PositionComponent(x, y);
 
+        VelocityComponent vcom = new VelocityComponent();
+        vcom.velx = velX;
+        vcom.vely = velY;
 
-        VelocityComponent vcom = new VelocityComponent(velocity);
-
-        entity.add(ecom).add(scom).add(vcom).add(new RenderableComponent());
+        entity.add(ecom)
+                .add(scom)
+                .add(vcom)
+                .add(pcom)
+                .add(new RenderableComponent());
         return entity;
     }
 
-    public Entity createAnimationEntity(float x, float y, Enum element) {
+    public Entity createAnimationEntity(float x, float y, String element) {
         Entity entity = new Entity();
         AnimationComponent acom;
         ElementComponent ecom = new ElementComponent(element);
-        if (element == ELEMENTS.FIRE) {
+        if (element.equals("FIRE")) {
             acom = new AnimationComponent(GameSettings.createAnimation(game.assetManager.get(Paths.FIRE_EXPLOSION_2_ATLAS, TextureAtlas.class), 1/255f));
         } else {
             acom = new AnimationComponent(GameSettings.createAnimation(game.assetManager.get(Paths.ICE_EXPLOSION_ATLAS, TextureAtlas.class), 1/149f));

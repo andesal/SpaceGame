@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -79,7 +80,7 @@ public class SpawnSystem extends EntitySystem {
             float velX = randomNumber(-200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
             float velY = randomNumber(-200,200)/ GameSettings.BOX2D_PIXELS_TO_METERS;
             fire = !fire;
-            Enum element = fire ? EntityFactory.ELEMENTS.FIRE : EntityFactory.ELEMENTS.ICE;
+            String element = fire ? "FIRE" : "ICE";
             Entity entity = entityFactory.createAsteroid(x, y, new Vector2(velX, velY), element);
             getEngine().addEntity(entity);
             numAsteroids++;
@@ -105,10 +106,10 @@ public class SpawnSystem extends EntitySystem {
 
     private ArrayList<Integer> calculateSpawnCoordinates() {
         Random r = GameSettings.getMainRandom();
-        int LeftX = randomNumber(r, (int) spawn.x, (int) notSpawn.x);
-        int RightX = randomNumber(r, (int) (notSpawn.x + notSpawn.getWidth()), (int) (spawn.x + spawn.getWidth()));
-        int bottomY = randomNumber(r ,(int) spawn.y, (int) notSpawn.y);
-        int topY = randomNumber(r, (int) (notSpawn.y + notSpawn.getHeight()), (int) (spawn.y + spawn.getHeight()));
+        int LeftX = randomNumber((int) spawn.x, (int) notSpawn.x);
+        int RightX = randomNumber((int) (notSpawn.x + notSpawn.getWidth()), (int) (spawn.x + spawn.getWidth()));
+        int bottomY = randomNumber((int) spawn.y, (int) notSpawn.y);
+        int topY = randomNumber((int) (notSpawn.y + notSpawn.getHeight()), (int) (spawn.y + spawn.getHeight()));
 
         int x = r.nextBoolean() ? LeftX : RightX;
         int y = r.nextBoolean() ? bottomY : topY;
@@ -116,8 +117,8 @@ public class SpawnSystem extends EntitySystem {
         return new ArrayList<Integer>(Arrays.asList(x, y));
     }
 
-    private int randomNumber(Random random, int min, int max) {
-        return random.nextInt(max - min) + min;
+    private int randomNumber(int min, int max) {
+        return GameSettings.getMainRandom().nextInt(max - min) + min;
     }
 
 

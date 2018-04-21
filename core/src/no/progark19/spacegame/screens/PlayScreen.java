@@ -2,7 +2,6 @@ package no.progark19.spacegame.screens;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -23,13 +22,11 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -42,16 +39,12 @@ import no.progark19.spacegame.systems.CollisionSystem;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Random;
-import java.util.Random;
 
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
-import no.progark19.spacegame.systems.AnimationSystem;
 import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
-import no.progark19.spacegame.systems.SweepSystem;
-import no.progark19.spacegame.systems.UpdateSystem;
 import no.progark19.spacegame.systems.SweepSystem;
 import no.progark19.spacegame.systems.UpdateSystem;
 import no.progark19.spacegame.utils.EntityFactory;
@@ -67,9 +60,6 @@ import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
-import no.progark19.spacegame.systems.SpawnSystem;
-import no.progark19.spacegame.utils.MyProgressBar;
-import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.RenderableWorldState;
@@ -87,19 +77,19 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     private Stage uiStage;
     private Camera uiCamera;
 
-    private BitmapFont font;
-    private GlyphLayout layout;
+    //private BitmapFont font;
+    //private GlyphLayout layout;
 
     private ShapeRenderer shapeRenderer;
-    private OrthographicCamera camera;
-    private AudioManager audioManager;
+    //private OrthographicCamera camera;
+    //private AudioManager audioManager;
     private EntityManager entityManager;
     private PooledEngine engine;
     public Sound theme;
     private EntityFactory entityFactory;
-    private Texture bg;
-    private int bgX = 0;
-    private int bgY = 0;
+    //private Texture bg;
+    //private int bgX = 0;
+    //private int bgY = 0;
 
     public MyProgressBar healthBar;
     public MyProgressBar fuelBar;
@@ -273,7 +263,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             );
         }
 
-        this.font = new BitmapFont();
+        //this.font = new BitmapFont();
         //FOR ENGINE OPERATOR PLAYER
         final Texture imageUp = new Texture("img/fire_button.png");
         final Texture imageDown = new Texture("img/ice_button.png");
@@ -308,10 +298,10 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         uiStage.addActor(elementButton);
 
 
-        this.layout = new GlyphLayout();
+        //this.layout = new GlyphLayout();
 
         label = new Label("", game.skin1);
-        if (GameSettings.isLeftPlayer) {
+        if (GameSettings.isPhysicsResponsible) {
             //label.setPosition(50,0);
             label.setWidth(SpaceGame.WIDTH);
         } else {
@@ -322,7 +312,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         //TODO UPDATE LABEL COORDINATES
         label = new Label("", game.skin1);
         label.setPosition(0, regionDown.getRegionHeight());
-        label.setWidth(SpaceGame.HEIGHT);
+        label.setWidth(SpaceGame.WIDTH);
         label.setHeight(SpaceGame.HEIGHT);
         label.addListener(new ClickListener(){
             @Override
@@ -341,7 +331,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 System.out.println("dX " + dx);
                 System.out.println("dY " + dy);
                 System.out.println("dt " + delta);
-               
+
 
                 //delta += Math.PI/2;
                 velVec.setAngleRad(delta);
@@ -351,7 +341,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
 
 
-                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y + shipTexture.getHeight()/2, velVec, GameSettings.BULLET_TYPE));
+                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y + shipTexture.getHeight()/2, velVec.x, velVec.y, GameSettings.BULLET_TYPE));
 
 
                 return false;
@@ -367,7 +357,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
                 Vector3 v3 = game.translateScreenCoordinates(new Vector3(x, y, 0));
                 System.out.println("WORLD " + v3.x + " : " + v3.y);
-                engine.addEntity(entityFactory.createAsteroid(v3.x ,v3.y ,new Vector2(0, 0), EntityFactory.ELEMENTS.FIRE));
+                engine.addEntity(entityFactory.createAsteroid(v3.x ,v3.y ,new Vector2(0, 0), "FIRE"));
 
                 return false;
             }
