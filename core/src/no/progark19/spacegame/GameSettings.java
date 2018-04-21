@@ -62,6 +62,9 @@ public class GameSettings {
 
     public static int GAME_STATE = 1; //Default Playstate
 
+    public static boolean IS_GAME_OVER = false;
+    public static boolean IS_GAME_PAUSED = false;
+
 
     //public static String gameFrameRate
 

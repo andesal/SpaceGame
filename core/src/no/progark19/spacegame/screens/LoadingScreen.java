@@ -32,6 +32,7 @@ public class LoadingScreen implements Screen{
         System.out.println("GAME: LOADING"); // For debug purposessses
         shapeRenderer.setProjectionMatrix(game.camera.combined);
         this.progress = 0f;
+
     }
 
     private void update(float delta) {

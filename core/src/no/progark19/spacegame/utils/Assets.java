@@ -39,7 +39,6 @@ public class Assets {
     }
 
     public void loadSkins() {
-
         manager.load(Paths.SKIN_1_JSON, Skin.class);
         manager.load(Paths.SKIN_2_JSON, Skin.class);
 
@@ -58,7 +57,6 @@ public class Assets {
     }
 
     public void loadMusic() {
-
         manager.load(Paths.MUSIC_MAIN_THEME, Music.class);
     }
 

@@ -2,6 +2,7 @@ package no.progark19.spacegame.screens;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -170,6 +171,7 @@ public class PlayScreen implements Screen, ReceivedDataListener
         return engineSlider;
     }
     //----------------------------------------------------------------------------------------------
+
     public PlayScreen(SpaceGame game){
         this.game = game;
         game.camera.setToOrtho(false, SpaceGame.WIDTH, SpaceGame.HEIGHT);
@@ -255,7 +257,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
             );
         }
 
-
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
 
@@ -266,7 +267,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
     @Override
     public void show() {
-
 
         System.out.println("PLAY SCREEN");
         Gdx.input.setInputProcessor(uiStage);
@@ -281,11 +281,12 @@ public class PlayScreen implements Screen, ReceivedDataListener
         switch (GameSettings.GAME_STATE) {
             case 1: //Play state
                updateRunning(delta);
-            case 2:
-                updatePause();
+            case 2: // Pause state
+                updateRunning(0);
+                pauseGame();
+            case 3: // Game Over state
+                gameOver();
         }
-
-
     }
 
     private void updateRunning(float deltaTime) {
@@ -326,11 +327,6 @@ public class PlayScreen implements Screen, ReceivedDataListener
             debugRenderer.render(GameSettings.BOX2D_PHYSICSWORLD, debugMatrix);
         }
     }
-
-    private void updatePause() {
-
-    }
-
 
     @Override
     public void resize(int width, int height) {
@@ -433,4 +429,94 @@ public void changed(ChangeEvent event, Actor actor) {
     @Override
     public void onReceive(String data) {    }
 
+
+    public void pauseGame(){
+        // Todo: Actually pause the game.
+        //GameSettings.IS_GAME_PAUSED = true;
+
+        pauseGroup = new Group();
+        final TextButton mainMenu, resumeGame, newGame;
+
+        mainMenu = new TextButton("Main Menu", game.skin2, "default");
+        mainMenu.setPosition(110, 100);
+        mainMenu.setSize(220, 40);
+        mainMenu.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        mainMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+
+        resumeGame = new TextButton("Resume Game", game.skin2, "default" );
+        resumeGame.setPosition(110, 240);
+        resumeGame.setSize(220, 40);
+        resumeGame.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        resumeGame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                resumeGame();
+            }
+        });
+
+        newGame = new TextButton("New Game", game.skin2, "default");
+        newGame.setPosition(110, 170);
+        newGame.setSize(220, 40);
+        newGame.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        newGame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new LobbyScreen(game));
+            }
+        });
+
+        //ButtonGroup<Button> pauseGroup1 = new ButtonGroup<Button>(mainMenu, resumeGame, newGame );
+
+        pauseGroup.addActor(resumeGame);
+        pauseGroup.addActor(newGame);
+        pauseGroup.addActor(mainMenu);
+
+        uiStage.addActor(pauseGroup);
+    }
+
+    public void gameOver(){
+        Group overGroup = new Group();
+        TextButton mainMenu, newGame;
+
+        //GameSettings.IS_GAME_OVER = true;
+
+        newGame = new TextButton("New Game", game.skin2, "default");
+        newGame.setPosition(110, 170);
+        newGame.setSize(220, 40);
+        newGame.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        newGame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new LobbyScreen(game));
+            }
+        });
+
+        mainMenu = new TextButton("Main Menu", game.skin2, "default");
+        mainMenu.setPosition(110, 100);
+        mainMenu.setSize(220, 40);
+        mainMenu.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        mainMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+
+        overGroup.addActor(newGame);
+        overGroup.addActor(mainMenu);
+
+        uiStage.addActor(overGroup);
+    }
+
+    public void resumeGame(){
+        if(GameSettings.IS_GAME_PAUSED){
+            GameSettings.IS_GAME_PAUSED = false;
+            pauseGroup.remove();
+        }
+    }
 }
