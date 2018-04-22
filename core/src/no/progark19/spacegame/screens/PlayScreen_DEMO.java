@@ -125,7 +125,7 @@ public class PlayScreen_DEMO implements Screen {
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
 
-        /*TODO {1} NOT IN PlayScreen -----------------------------------------------------*/
+        /*TODO {1} NOT IN PlayScreenNavigator -----------------------------------------------------*/
         uiCamera = new OrthographicCamera();
         uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
 
@@ -234,7 +234,7 @@ public class PlayScreen_DEMO implements Screen {
                     0);
             debugRenderer.render(world, debugMatrix);
         }
-        /*TODO {1} NOT IN PlayScreen -----------------------------------------------------*/
+        /*TODO {1} NOT IN PlayScreenNavigator -----------------------------------------------------*/
         //System.out.println("X: " + spaceShip.getX() + ", Y: " + spaceShip.getY());
     }
 

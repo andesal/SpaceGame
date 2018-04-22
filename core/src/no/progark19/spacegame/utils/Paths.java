@@ -28,6 +28,7 @@ public class Paths {
 
     public final static String PAUSE_LOGO_PATH = "img/pause.png";
 
+    public final static String PILOT_DASHBOARD_BACKGROUND = "img/pilot_control_panel.png";
     //TextureAtlas
     public final static String FIRE_EXPLOSION_2_ATLAS = "atlasLib/fire_explosion_2.atlas";
     public final static String ICE_EXPLOSION_ATLAS = "atlasLib/ice.atlas";

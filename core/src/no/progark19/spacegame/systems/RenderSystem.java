@@ -77,12 +77,12 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-        //Vector3 posLabel = new Vector3(game.camera.position.x, game.camera.position.y, 0);
-        //PlayScreen.label.setPosition(posLabel.x, posLabel.y);
+        //Vector3 posLabel = game.translateScreenCoordinates(new Vector3(0, 0, 0));
+        //PlayScreenNavigator.label.setPosition(posLabel.x, posLabel.y);
         drawBackground();
         updateBackgroundCoordinates();
-        //PlayScreen.label.setPosition(game.camera.position.x - SpaceGame.WIDTH/2, game.camera.position.y-SpaceGame.HEIGHT/2);
-        //System.out.println(PlayScreen.label.getX() + " _ " + PlayScreen.label.getY());
+        //PlayScreenNavigator.label.setPosition(game.camera.position.x - SpaceGame.WIDTH/2, game.camera.position.y-SpaceGame.HEIGHT/2);
+        //System.out.println(PlayScreenNavigator.label.getX() + " _ " + PlayScreenNavigator.label.getY());
         for (Entity entity : renderables) {
 
             if (ComponentMappers.LEAD_MAP.get(entity) != null) {
@@ -136,35 +136,43 @@ public class RenderSystem extends EntitySystem {
                 getEngine().removeEntity(entity);
             }
         }
-        if (GameSettings.CAMERA_FOLLOW_POSITION){
+        if (GameSettings.isNavigator && GameSettings.CAMERA_FOLLOW_POSITION) {
 
             PositionComponent pcom = ComponentMappers.POS_MAP.get(cameraFocusEntity.get(0));
             game.camera.position.set(pcom.x, pcom.y, 0);
 
-            if (GameSettings.CAMERA_FOLLOW_ROTATION){
-                game.camera.up.set(0,1,0);
-                game.camera.direction.set(0,0,-1);
+            if (GameSettings.CAMERA_FOLLOW_ROTATION) {
+                game.camera.up.set(0, 1, 0);
+                game.camera.direction.set(0, 0, -1);
                 game.camera.rotate(-pcom.rotation);
             }
             game.camera.update();
             //System.out.println("X: " + game.camera.position.x + " Y: " + game.camera.position.y);
 
-        };
+        }
     }
 
     private void drawBackground() {
-        Texture bg = game.assetManager.get(Paths.BACKGROUND_TEXTURE_PATH, Texture.class);
-        game.batch.draw(bg, bgX, bgY);
-        game.batch.draw(bg, bgX - bg.getWidth(), bgY);
-        game.batch.draw(bg, bgX + bg.getWidth(), bgY);
+        if (GameSettings.isNavigator){
+            Texture bg = game.assetManager.get(Paths.BACKGROUND_TEXTURE_PATH, Texture.class);
+            game.batch.draw(bg, bgX, bgY);
+            game.batch.draw(bg, bgX - bg.getWidth(), bgY);
+            game.batch.draw(bg, bgX + bg.getWidth(), bgY);
 
-        game.batch.draw(bg, bgX, bgY - bg.getHeight());
-        game.batch.draw(bg, bgX - bg.getWidth(), bgY - bg.getHeight());
-        game.batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getHeight());
+            game.batch.draw(bg, bgX, bgY - bg.getHeight());
+            game.batch.draw(bg, bgX - bg.getWidth(), bgY - bg.getHeight());
+            game.batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getHeight());
 
-        game.batch.draw(bg, bgX, bgY + bg.getHeight());
-        game.batch.draw(bg, bgX - bg.getWidth(), bgY + bg.getHeight());
-        game.batch.draw(bg, bgX + bg.getWidth(), bgY + bg.getHeight());
+            game.batch.draw(bg, bgX, bgY + bg.getHeight());
+            game.batch.draw(bg, bgX - bg.getWidth(), bgY + bg.getHeight());
+            game.batch.draw(bg, bgX + bg.getWidth(), bgY + bg.getHeight());
+
+        } else {
+            Texture bg = game.assetManager.get(Paths.PILOT_DASHBOARD_BACKGROUND, Texture.class);
+            game.batch.draw(bg, 0,0);
+        }
+
+
     }
 
     private void updateBackgroundCoordinates() {

@@ -72,7 +72,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
-public class PlayScreen implements Screen, ReceivedDataListener {
+public class PlayScreenNavigator implements Screen, ReceivedDataListener {
 
     private final SpaceGame game;
     private final Box2DDebugRenderer debugRenderer;
@@ -83,8 +83,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
     private boolean isGameOver;
 
-    private BitmapFont font;
-    private GlyphLayout layout;
+    private Group pauseGroup;
 
 
     private ShapeRenderer shapeRenderer;
@@ -98,88 +97,15 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
     public static Label label;
 
+    private Entity[] engines = new Entity[4];
+
 
     //- Private methods ----------------------------------------------------------------------------
-    private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
-        Slider engineSlider = new Slider(0, 100, 1f, true, game.skin1);
-        engineSlider.setPosition(posX, posY);
-        engineSlider.setSize(20, SpaceGame.HEIGHT / 2 - 20);
-        engineSlider.setScaleX(3);
-        engineSlider.setValue(50);
-        engineSlider.addListener(new ChangeListener() {
-            float rotDiff = maxRot - minRot;
-            //float lastSentValueDiff = ;
-            HashMap<String, Object> values;
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //spaceShip.changeEngineAngle(engineIndex, ((Slider) actor).getValue());
-                //FIXME dette er muligens en litt dårlig løsning på dette [ARH]
-                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
-                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
-                relposcom.rotation = minRot + rotDiff * ((Slider) actor).getValue() / 100f;
-                fcom.direction = relposcom.rotation + 90;
-
-
-                JsonPayload jpl = new JsonPayload();
-                values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION, relposcom.rotation);
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION, fcom.direction);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ROTATION_UPDATE);
-                jpl.setValue(values);
-
-                //game.p2pConnector.sendData(jpl);
-
-            }
-        });
-        engineSlider.addListener(new ClickListener() {
-            HashMap<String, Object> values;
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                engineEntity.add(new ForceOnComponent());
-
-                JsonPayload jpl = new JsonPayload();
-                values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ON_UPDATE_ISON, true);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
-                jpl.setValue(values);
-
-                //game.p2pConnector.sendData(jpl);
-
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                engineEntity.remove(ForceOnComponent.class);
-
-                JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ON_UPDATE_ISON, false);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
-                jpl.setValue(values);
-
-                //game.p2pConnector.sendData(jpl);
-            }
-        });
-
-        return engineSlider;
-    }
-
     //----------------------------------------------------------------------------------------------
-    public PlayScreen(final SpaceGame game) {
-        GameSettings.BOX2D_PHYSICSWORLD = new World(new Vector2(0, 0), true);
+    public PlayScreenNavigator(final SpaceGame game){
+        GameSettings.BOX2D_PHYSICSWORLD = new World(new Vector2(0,0), true);
         System.out.println("B2D WORLD INITIALIZED");
+
         this.game = game;
         game.camera.setToOrtho(false, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         this.uiCamera = new OrthographicCamera();
@@ -222,67 +148,29 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addSystem(new ForceApplierSystem(game));
         engine.addSystem(new CollisionSystem(game));
         engine.addSystem(new SweepSystem());
-        engine.addSystem(new UpdateSystem(game, entityFactory, healthBar, fuelBar));
+        engine.addSystem(new UpdateSystem(game, entityFactory));
         engine.addEntityListener(entityManager);
-
-        if (GameSettings.isPhysicsResponsible) {
-            engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
-            engine.addSystem(new ForceApplierSystem(game));
-        }
+        engine.addSystem(new ForceApplierSystem(game));
 
         //Create entities
-        final Texture shipTexture = game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
-        Texture engineTexture = game.assetManager.get(Paths.ENGINE_TEXTURE_PATH, Texture.class);
-
-        final Entity shipEntity = entityFactory.createBaseSpaceShip(
-                GameSettings.BOX2D_PHYSICSWORLD, shipTexture
-        );
+        final Entity shipEntity = entityFactory.createBaseSpaceShip(uiStage);
         engine.addEntity(shipEntity);
 
-        final Entity engineEntity1 = entityFactory.createShipEngine(
-                -23, -50, 315, shipEntity, engineTexture);
-        final Entity engineEntity2 = entityFactory.createShipEngine(
-                -23, 50, 225, shipEntity, engineTexture);
-        final Entity engineEntity3 = entityFactory.createShipEngine(
-                23, -50, 45, shipEntity, engineTexture);
-        final Entity engineEntity4 = entityFactory.createShipEngine(
-                23, 50, 135, shipEntity, engineTexture);
+        engines[0] = entityFactory.createShipEngine(
+                -23,-50, 315, shipEntity);
+        engines[1] = entityFactory.createShipEngine(
+                -23,50, 225, shipEntity);
+        engines[2] = entityFactory.createShipEngine(
+                23,-50, 45, shipEntity);
+        engines[3] = entityFactory.createShipEngine(
+                23,50, 135, shipEntity);
 
 
-        engine.addEntity(engineEntity1);
-        engine.addEntity(engineEntity2);
-        engine.addEntity(engineEntity3);
-        engine.addEntity(engineEntity4);
+        engine.addEntity(engines[0]);
+        engine.addEntity(engines[1]);
+        engine.addEntity(engines[2]);
+        engine.addEntity(engines[3]);
 
-        uiStage.addActor(
-                createEngineSlider(engineEntity1, 10, 10, 360, 270)
-        );
-        uiStage.addActor(
-                createEngineSlider(engineEntity2, 10, SpaceGame.HEIGHT / 2 + 20, 270, 180)
-        );
-        uiStage.addActor(
-                createEngineSlider(engineEntity3, SpaceGame.WIDTH - 25, 10, 0, 90)
-        );
-        uiStage.addActor(
-                createEngineSlider(engineEntity4, SpaceGame.WIDTH - 25, SpaceGame.HEIGHT / 2 + 20, 90, 180)
-        );
-/*
-        if(GameSettings.isPhysicsResponsible){
-            uiStage.addActor(
-                    createEngineSlider(engineEntity1, 10,10,360,270)
-            );
-            uiStage.addActor(
-                    createEngineSlider(engineEntity2, 10,SpaceGame.HEIGHT/2 + 20, 270, 180)
-            );
-        } else {
-            uiStage.addActor(
-                    createEngineSlider(engineEntity3, SpaceGame.WIDTH-25,10 ,0, 90)
-            );
-            uiStage.addActor(
-                    createEngineSlider(engineEntity4, SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20,90,180)
-            );
-        }
-        */
 
         //this.font = new BitmapFont();
         //FOR ENGINE OPERATOR PLAYER
@@ -325,7 +213,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         //this.layout = new GlyphLayout();
 
         label = new Label("", game.skin1);
-        if (GameSettings.isPhysicsResponsible) {
+        if (GameSettings.isNavigator) {
             //label.setPosition(50,0);
             //label.setWidth(SpaceGame.WIDTH);
         } else {
@@ -379,10 +267,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         });
         uiStage.addActor(label);
         */
-
-
-        this.font = new BitmapFont();
-        this.layout = new GlyphLayout();
     }
     @Override
     public void show() {
@@ -411,12 +295,15 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 updateRunning(delta);
                 uiStage.draw();
                 break;
-            case 1:
-                // Game paused
-                //Not implemented
+            case 1: // Game paused
+                pauseGame();
+                overlayStage.draw();
+                uiStage.draw();
                 break;
             case 2: // Game over
-                game.setScreen(new GameOverScreen(game));
+                gameOver();
+                overlayStage.draw();
+                uiStage.draw();
                 break;
         }
         game.batch.end();
@@ -424,15 +311,9 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
     private void updateRunning(float deltaTime) {
         engine.update(deltaTime);
+        //Draw Ui
+        //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
-        font.setColor(Color.WHITE);
-        font.getData().setScale(4);
-        layout.setText(font, String.valueOf(Gdx.graphics.getFramesPerSecond()));
-
-        font.draw(game.batch, layout,
-                SpaceGame.WIDTH / 2 - layout.width / 2, SpaceGame.HEIGHT / 2 - layout.height
-        );
-
 
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
@@ -477,7 +358,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         uiStage.dispose();
         debugRenderer.dispose();
         shapeRenderer.dispose();
-        font.dispose();
         GameSettings.BOX2D_PHYSICSWORLD.dispose();
         engine.removeAllEntities();
 
@@ -519,6 +399,8 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         }
     }));
 
+    static final String MSG_TOKEN_ENGINE_UPDATE = "engineUpdate";
+    static final String MSG_TOKEN_ENGINE_ON = "engineOn";
 
     @Override
     public synchronized void onReceive(RenderableWorldState data) {
@@ -532,17 +414,17 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             }
         }*/
 
-        for (float[] state : data.getStates()) {
+        for (float[] state: data.getStates()){
             Entity e = EntityManager.getEntity((int) state[WorldStateIndexes.WS_ENTITYID]);
             PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
             VelocityComponent vcom = ComponentMappers.VEL_MAP.get(e);
 
-            pcom.x = state[WorldStateIndexes.WS_RENDERABLE_POSX];
-            pcom.y = state[WorldStateIndexes.WS_RENDERABLE_POSY];
+            pcom.x        = state[WorldStateIndexes.WS_RENDERABLE_POSX];
+            pcom.y        = state[WorldStateIndexes.WS_RENDERABLE_POSY];
             pcom.rotation = state[WorldStateIndexes.WS_RENDERABLE_ROTATION];
 
-            vcom.velx = state[WorldStateIndexes.WS_RENDERABLE_VX];
-            vcom.vely = state[WorldStateIndexes.WS_RENDERABLE_VY];
+            vcom.velx     = state[WorldStateIndexes.WS_RENDERABLE_VX];
+            vcom.vely     = state[WorldStateIndexes.WS_RENDERABLE_VY];
             vcom.velAngle = state[WorldStateIndexes.WS_RENDERABLE_VR];
         }
     }
@@ -606,9 +488,78 @@ public class PlayScreen implements Screen, ReceivedDataListener {
     */
 
     @Override
-    public void onReceive(String data) { }
+    public void onReceive(String data) {
+        System.out.println("Received:" + data);
+        String[] msg = data.split("\\|");
 
-/*
+        if (msg[0].equals(MSG_TOKEN_ENGINE_UPDATE)){
+            Entity e = engines[Integer.valueOf(msg[1])];
+            RelativePositionComponent rpcom = ComponentMappers.RELPOS_MAP.get(e);
+            ForceApplierComponent facom  = ComponentMappers.FORCE_MAP.get(e);
+            float rotation = Float.valueOf(msg[2]);
+
+            rpcom.rotation = rotation;
+
+            facom.direction = rpcom.rotation + 90;
+
+
+
+        } else if (msg[0].equals(MSG_TOKEN_ENGINE_ON)){
+            Entity e = engines[Integer.valueOf(msg[1])];
+            if(msg[2].equals("false")) {
+                e.remove(ForceOnComponent.class);
+            } else {
+                e.add(engine.createComponent(ForceOnComponent.class));
+            }
+
+
+        } else {
+                System.out.println("String tag not understood!");
+        }
+    }
+/*    private void pauseGame(){
+
+        pauseGroup = new Group();
+        for (Actor actor : uiStage.getActors()) {
+            actor.remove();
+        }
+        final TextButton mainMenu, resumeGame;
+        mainMenu = new TextButton("Main Menu", game.skin2, "default");
+        mainMenu.setPosition(110, 300);
+        mainMenu.setSize(220, 40);
+        mainMenu.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        mainMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dispose();
+                GameSettings.GAME_STATE = 0;
+                engine.removeAllEntities();
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+
+        resumeGame = new TextButton("Resume Game", game.skin2, "default" );
+        resumeGame.setPosition(110, 350);
+        resumeGame.setSize(220, 40);
+        resumeGame.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        resumeGame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                pauseGroup.removeActor(resumeGame, true);
+                pauseGroup.removeActor(mainMenu, true);
+                //uiStage.getActors().removeValue(pauseGroup);
+                //for (Actor actor : uiStage.getActors()) {
+                //    actor.remove();
+                //}
+                resumeGame();
+            }
+        });
+
+        pauseGroup.addActor(resumeGame);
+        pauseGroup.addActor(mainMenu);
+        uiStage.addActor(pauseGroup);
+    }
+
     private void gameOver(){
         Group overGroup = new Group();
         TextButton mainMenu;

@@ -109,7 +109,7 @@ public class MainMenuScreen implements Screen {
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //game.setScreen(new LobbyScreen(game));
+
                 s.play(0.1f);
                 Music mainTheme = game.assetManager.get(Paths.MUSIC_MAIN_THEME, Music.class);
                 mainTheme.setLooping(true);
@@ -118,7 +118,9 @@ public class MainMenuScreen implements Screen {
                 //TODO GO to lobby instead
                 //game.setScreen(new LobbyScreen(game));
                 GameSettings.GAME_STATE = 0;
-                game.setScreen(new PlayScreen(game));
+                //game.setScreen(new PlayScreen(game));
+                game.setScreen(new LobbyScreen(game));
+                //game.setScreen((new PlayScreenPilot(game)));
             }
         });
 
