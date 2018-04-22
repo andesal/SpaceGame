@@ -93,9 +93,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
 
     private Group pauseGroup;
 
-    private BitmapFont font;
-    private GlyphLayout layout;
-
 
     private ShapeRenderer shapeRenderer;
     private EntityManager entityManager;
@@ -294,13 +291,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         });
         uiStage.addActor(label);
         */
-
-
-
-    }
-
-        this.font = new BitmapFont();
-        this.layout = new GlyphLayout();
     }
 
     @Override
@@ -349,15 +339,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         //Draw Ui
         //FIXME skal dette være i et ESC system?
         game.batch.setProjectionMatrix(uiCamera.combined);
-        //TODO This was supposed to print the FPS, but doesnt!
-        font.setColor(Color.WHITE);
-        font.getData().setScale(4);
-        layout.setText(font, String.valueOf(Gdx.graphics.getFramesPerSecond()));
-
-        font.draw(game.batch, layout,
-                SpaceGame.WIDTH/2 - layout.width/2, SpaceGame.HEIGHT/2 - layout.height
-        );
-
 
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
@@ -402,7 +383,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         uiStage.dispose();
         debugRenderer.dispose();
         shapeRenderer.dispose();
-        font.dispose();
         GameSettings.BOX2D_PHYSICSWORLD.dispose();
 
     }
