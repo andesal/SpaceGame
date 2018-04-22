@@ -6,16 +6,16 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IntervalSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SynchronizedComponent;
 import no.progark19.spacegame.interfaces.P2pConnector;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.json.JsonPayload;
 import no.progark19.spacegame.utils.json.WorldStateIndexes;

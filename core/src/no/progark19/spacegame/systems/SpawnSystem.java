@@ -5,17 +5,15 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
@@ -24,13 +22,13 @@ import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.SweepComponent;
 import no.progark19.spacegame.components.VelocityComponent;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.utils.Paths;
 
 public class SpawnSystem extends EntitySystem {
 
     private EntityFactory entityFactory;
-    private World world;
     private SpaceGame game;
     boolean fire = true;
 
@@ -43,10 +41,9 @@ public class SpawnSystem extends EntitySystem {
     boolean yeah = true;
 
     //TODO BOUNDING BOX TO kvadrat.....
-    public SpawnSystem(SpaceGame game, World world, EntityFactory entityFactory) {
+    public SpawnSystem(SpaceGame game, EntityFactory entityFactory) {
         this.game = game;
         this.entityFactory = entityFactory;
-        this.world = world;
         //------------Testing projectile-----------------
         //engine.addEntity(entityFactory.createAsteroid(game.camera .position.x + 100 ,game. camera.position.y,new Vector2(0, 0), world, false));
         //engine.addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y -100,new Vector2(0, 0), world, false));
@@ -80,13 +77,16 @@ public class SpawnSystem extends EntitySystem {
         }
 
         if (yeah) {
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y + 300 ,new Vector2(1, -1), "ICE"));
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y + 100 ,new Vector2(0, 0), "FIRE"));
 
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y-20 ,new Vector2(0, 0), "FIRE"));
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 500 ,game.camera.position.y-50 ,new Vector2(0, 0), "ICE"));
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 800 ,game.camera.position.y-50 ,new Vector2(0, 0), "FIRE"));
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y+300 ,new Vector2(0, -1), "ICE"));
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y-300 ,new Vector2(0, +1), "FIRE"));
+            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y-20 ,new Vector2(0, 0), "ICE"));
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 500 ,game.camera.position.y-50 ,new Vector2(0, 0), "ICE"));
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 800 ,game.camera.position.y-50 ,new Vector2(0, 0), "FIRE"));
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y+600 ,new Vector2(0, -1), "ICE"));
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y-600 ,new Vector2(0, +1), "FIRE"));
             yeah = false;
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 300 ,game.camera.position.y-300 ,new Vector2(1, 1), "ICE"));
 
 
         }
@@ -116,7 +116,7 @@ public class SpawnSystem extends EntitySystem {
                 entity.add(new RenderableComponent());
             }
             if (! spawn.contains(x, y)) {
-                world.destroyBody(bcom.body);
+                GameSettings.BOX2D_PHYSICSWORLD.destroyBody(bcom.body);
                 entity.add(new SweepComponent());
                 numAsteroids--;
 

@@ -12,13 +12,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import org.omg.CORBA.Bounds;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.BodyComponent;
@@ -35,10 +28,7 @@ import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.components.SynchronizedComponent;
-import no.progark19.spacegame.components.VelocityComponent;
-import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.systems.RenderSystem;
 
 
 public class EntityFactory {

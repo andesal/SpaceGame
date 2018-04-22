@@ -1,6 +1,6 @@
 package no.progark19.spacegame.screens;
 
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.utils.Paths;
 

@@ -1,15 +1,12 @@
 package no.progark19.spacegame.screens;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -33,10 +30,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.gameObjects.SpaceShip;
-import no.progark19.spacegame.managers.EntityManager;
 
 /**
  * Lager denne klassen kun for å teste dritt, legger det vi trenger til i Playscreen når det funker

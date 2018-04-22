@@ -10,15 +10,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -34,7 +29,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
-import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.systems.AnimationSystem;
 import no.progark19.spacegame.systems.CollisionSystem;
 
@@ -50,14 +44,13 @@ import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.systems.SweepSystem;
 import no.progark19.spacegame.systems.UpdateSystem;
 import no.progark19.spacegame.utils.EntityFactory;
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.ForceApplierComponent;
 import no.progark19.spacegame.components.ForceOnComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
-import no.progark19.spacegame.managers.AudioManager;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.systems.ComponentMappers;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
@@ -208,11 +201,11 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         //Add engine systems
         engine.addSystem(new ControlSystem(game, entityFactory));
         engine.addSystem(new RenderSystem(game, uiStage));
-        engine.addSystem(new SpawnSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
-        engine.addSystem(new MovementSystem(GameSettings.BOX2D_PHYSICSWORLD));
+        engine.addSystem(new SpawnSystem(game, entityFactory));
+        engine.addSystem(new MovementSystem());
         engine.addSystem(new ForceApplierSystem(game));
         engine.addSystem(new AnimationSystem(game));
-        engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
+        engine.addSystem(new CollisionSystem(game));
         engine.addSystem(new SweepSystem());
         engine.addSystem(new UpdateSystem(game, entityFactory, healthBar, fuelBar));
         engine.addEntityListener(entityManager);

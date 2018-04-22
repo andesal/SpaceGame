@@ -5,12 +5,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
@@ -20,6 +19,7 @@ import no.progark19.spacegame.components.ParentComponent;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.Paths;
 
 /**

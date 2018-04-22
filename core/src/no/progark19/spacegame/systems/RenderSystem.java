@@ -5,13 +5,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
@@ -22,14 +20,13 @@ import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.ParentComponent;
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.components.PositionComponent;
-import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.screens.PlayScreen;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.Paths;
 
 public class RenderSystem extends EntitySystem {

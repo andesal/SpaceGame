@@ -5,18 +5,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.Vector2;
 
 
-import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.SpriteComponent;
-import no.progark19.spacegame.components.SweepComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.utils.EntityFactory;
-import no.progark19.spacegame.utils.Paths;
 
 public class ControlSystem extends EntitySystem {
 

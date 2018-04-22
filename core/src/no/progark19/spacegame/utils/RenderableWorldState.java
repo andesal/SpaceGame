@@ -1,6 +1,5 @@
 package no.progark19.spacegame.utils;
 
-import com.badlogic.gdx.utils.Array;
 
 import java.io.Serializable;
 import java.util.ArrayList;

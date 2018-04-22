@@ -1,4 +1,4 @@
-package no.progark19.spacegame;
+package no.progark19.spacegame.utils;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;

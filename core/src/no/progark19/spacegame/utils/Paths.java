@@ -1,10 +1,5 @@
 package no.progark19.spacegame.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 /**
  * Created by anderssalvesen on 19.04.2018.
  */
