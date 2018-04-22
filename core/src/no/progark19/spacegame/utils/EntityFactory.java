@@ -95,8 +95,6 @@ public class EntityFactory {
         }
 
         HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH_ASTEROIDS);
-
-
         entity.add(ecom);   //Element Component
         entity.add(scom);
         entity.add(new PositionComponent(x, y));
@@ -121,7 +119,6 @@ public class EntityFactory {
             Body body = GameSettings.createDynamicBody(
                     sprite, physicsWorld, null,
                     GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
-
             return engine.createEntity()
                     .add(new SynchronizedComponent())
                     .add(new PositionComponent(posx, posy))
@@ -132,6 +129,7 @@ public class EntityFactory {
                     .add(hcom)
                     .add(fcom);
         } else {
+            //FOR DEBUGGING
             return engine.createEntity()
                     .add(new PositionComponent(posx, posy))
                     .add(new SpriteComponent(sprite))
@@ -158,7 +156,7 @@ public class EntityFactory {
                 .add(new ForceApplierComponent(GameSettings.ENGINE_MAX_FORCE));
     }
 
-    public Entity createProjectile(float x, float y, float velX, float velY, String element) {
+    public Entity createProjectile(float x, float y, float velX, float velY, String element, float relativeRotation) {
         Entity entity = new Entity();
 
         ElementComponent ecom = new ElementComponent(element);
@@ -177,7 +175,7 @@ public class EntityFactory {
         VelocityComponent vcom = new VelocityComponent();
         vcom.velx = velX;
         vcom.vely = velY;
-
+        //vcom.velAngle = relativeRotation;
         entity.add(ecom)
                 .add(scom)
                 .add(vcom)

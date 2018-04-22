@@ -8,6 +8,8 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
+import org.omg.CORBA.CODESET_INCOMPATIBLE;
+
 import java.util.Iterator;
 
 import no.progark19.spacegame.GameSettings;
@@ -99,6 +101,7 @@ public class MovementSystem extends EntitySystem {
         }*/
 
         for (Entity entity : bodyEntities){
+
 
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
             PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);

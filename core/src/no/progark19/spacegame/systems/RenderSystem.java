@@ -80,7 +80,7 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-        //Vector3 posLabel = game.translateScreenCoordinates(new Vector3(0, 0, 0));
+        //Vector3 posLabel = new Vector3(game.camera.position.x, game.camera.position.y, 0);
         //PlayScreen.label.setPosition(posLabel.x, posLabel.y);
         drawBackground();
         updateBackgroundCoordinates();

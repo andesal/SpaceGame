@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -33,6 +34,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
+import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.systems.AnimationSystem;
 import no.progark19.spacegame.systems.CollisionSystem;
 
@@ -229,13 +231,13 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         );
         engine.addEntity(shipEntity);
 
-        Entity engineEntity1 = entityFactory.createShipEngine(
+        final Entity engineEntity1 = entityFactory.createShipEngine(
                 -23,-50, 315, shipEntity, engineTexture);
-        Entity engineEntity2 = entityFactory.createShipEngine(
+        final Entity engineEntity2 = entityFactory.createShipEngine(
                 -23,50, 225, shipEntity, engineTexture);
-        Entity engineEntity3 = entityFactory.createShipEngine(
+        final Entity engineEntity3 = entityFactory.createShipEngine(
                 23,-50, 45, shipEntity, engineTexture);
-        Entity engineEntity4 = entityFactory.createShipEngine(
+        final Entity engineEntity4 = entityFactory.createShipEngine(
                 23,50, 135, shipEntity, engineTexture);
 
 
@@ -273,7 +275,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         final ImageButton elementButton = new ImageButton(trDrawUp, trDrawDown);
         final Sound sound = game.assetManager.get(Paths.SOUND_CHECKBOX_CLICK);
         elementButton.addListener(new ClickListener(){
-            boolean toggleState = true;
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
@@ -283,7 +284,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                     oldStyle.imageDown = trDrawDown;
                     elementButton.setStyle(oldStyle);
                     GameSettings.BULLET_TYPE = "ICE";
-                    sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
+                    sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
                 } else  {
                     ImageButton.ImageButtonStyle oldStyle = elementButton.getStyle();
                     oldStyle.imageUp = trDrawUp;
@@ -291,6 +292,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                     elementButton.setStyle(oldStyle);
                     GameSettings.BULLET_TYPE = "FIRE";
                     sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
+
                 }
             }
         });
@@ -311,19 +313,19 @@ public class PlayScreen implements Screen, ReceivedDataListener {
 
         //FOR LOOKOUT PLAYER
         //TODO UPDATE LABEL COORDINATES
-        label = new Label("", game.skin1);
-        label.setPosition(0, regionDown.getRegionHeight());
+        label = new Label("LALALA", game.skin1);
+        label.setPosition(0, 0);
         //label.setPosition(game.translateScreenCoordinates(new Vector3(40,0,0)).x, regionDown.getRegionHeight());
         //FØKKER SEG NÅR MAN ENDRER POSISJON PÅ LABEL
 
-        label.setWidth(SpaceGame.HEIGHT);
+        label.setWidth(SpaceGame.WIDTH);
         label.setHeight(SpaceGame.HEIGHT);
         label.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("ORIGINAL " + x + " : " + y);
                 Vector3 tp = game.translateScreenCoordinates(new Vector3(x, y, 0));
-                Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2 - shipTexture.getHeight()/2, 0));
+                Vector3 sp = game.translateScreenCoordinates(new Vector3(game.camera.position.x, game.camera.position.y - shipTexture.getHeight()/2, 0));
                 float dx = tp.x - sp.x;
                 float dy = tp.y - sp.y;
                 float delta = (float) Math.atan(dy/dx);
@@ -332,16 +334,24 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                     delta += Math.PI;
 
                 }
+
+                //Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, 0,vely, "ICE", 0 );
+                //engine.addEntity(entity);
+                //BodyComponent bcom = ComponentMappers.BOD_MAP.get(shipEntity);
+
+                //engine.addEntity(entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, 0,100,  GameSettings.BULLET_TYPE, bcom.body.getAngle()));
+
+                /*
                 velVec.setAngleRad(delta);
+                System.out.println(delta);
+                float relativeRotation = ComponentMappers.POS_MAP.get(shipEntity).rotation;
+                //engine.addEntity(entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, 0,100,  GameSettings.BULLET_TYPE, relativeRotation));
+                Body body = new Body();
+                body.get
 
-
-
-
-
-                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y + shipTexture.getHeight()/2, velVec.x, velVec.y, GameSettings.BULLET_TYPE));
-
-
+                */
                 return false;
+
             }
         });
         uiStage.addActor(label);

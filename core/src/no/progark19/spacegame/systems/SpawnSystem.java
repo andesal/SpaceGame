@@ -59,15 +59,14 @@ public class SpawnSystem extends EntitySystem {
 
     public void update(float deltaTime) {
         if (yeah) {
-            /*
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y-20 ,new Vector2(0, 0), EntityFactory.ELEMENTS.FIRE));
 
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 500 ,game.camera.position.y-50 ,new Vector2(0, 0), EntityFactory.ELEMENTS.FIRE));
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 800 ,game.camera.position.y-50 ,new Vector2(0, 0), EntityFactory.ELEMENTS.ICE));
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y+300 ,new Vector2(0, -1), EntityFactory.ELEMENTS.ICE));
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y-300 ,new Vector2(0, +1), EntityFactory.ELEMENTS.FIRE));
+            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y-20 ,new Vector2(0, 0), "FIRE"));
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 500 ,game.camera.position.y-50 ,new Vector2(0, 0), "FIRE"));
+            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 800 ,game.camera.position.y-50 ,new Vector2(0, 0), "FIRE"));
+            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y+300 ,new Vector2(0, -1), "FIRE"));
+            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y-300 ,new Vector2(0, +1), "FIRE"));
             yeah = false;
-            */
+
 
         }
         notSpawn = new Rectangle(game.camera.position.x - 720, game.camera.position.y - 1080, 1440, 2160);
