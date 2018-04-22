@@ -305,6 +305,9 @@ public class PlayScreen implements Screen, ReceivedDataListener
 
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
+        uiStage.act(Gdx.graphics.getDeltaTime());
+        //entityManager.update();
+
 
         switch (GameSettings.GAME_STATE) {
             case 0: // Game running
@@ -326,13 +329,11 @@ public class PlayScreen implements Screen, ReceivedDataListener
     }
 
     private void updateRunning(float deltaTime) {
-        uiStage.act(Gdx.graphics.getDeltaTime());
-        //entityManager.update();
         engine.update(deltaTime);
         //Draw Ui
         //FIXME skal dette være i et ESC system?
-        game.batch.setProjectionMatrix(uiCamera.combined);
 
+        game.batch.setProjectionMatrix(uiCamera.combined);
         //TODO This was supposed to print the FPS, but doesnt!
         font.setColor(Color.WHITE);
         font.getData().setScale(4);
@@ -487,7 +488,7 @@ public void changed(ChangeEvent event, Actor actor) {
             public void clicked(InputEvent event, float x, float y) {
                 pauseGroup.removeActor(resumeGame, true);
                 pauseGroup.removeActor(mainMenu, true);
-                uiStage.getActors().removeValue(pauseGroup);
+                //uiStage.getActors().removeValue(pauseGroup);
                 //for (Actor actor : uiStage.getActors()) {
                 //    actor.remove();
                 //}
