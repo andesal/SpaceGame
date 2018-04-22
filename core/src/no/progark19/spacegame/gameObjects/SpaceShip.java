@@ -1,14 +1,12 @@
 package no.progark19.spacegame.gameObjects;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 
-import no.progark19.spacegame.GameSettings;
-import no.progark19.spacegame.screens.PlayScreen_DEMO;
+import no.progark19.spacegame.utils.GameSettings;
 
 /**
  * Created by Anders on 10.04.2018.

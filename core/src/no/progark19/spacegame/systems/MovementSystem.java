@@ -6,18 +6,17 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.Iterator;
 
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
-import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.SweepComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.ComponentMappers;
 
 // Handles the movement of movable objects in the game world
 
@@ -27,18 +26,11 @@ public class MovementSystem extends EntitySystem {
     //private ImmutableArray<Entity> projectiles;
     ImmutableArray<Entity> bodyEntities;
     ImmutableArray<Entity> nonBodyEntities;
-    private World world;
 
 
     boolean y = true;
 
-    public MovementSystem(World world) {
-        this.world = world;
-    }
-
-    public MovementSystem(int priority) {
-        super(priority);
-    }
+    public MovementSystem(){}
 
     public void addedToEngine(Engine engine) {
         bodyEntities = engine.getEntitiesFor(Family
@@ -73,18 +65,18 @@ public class MovementSystem extends EntitySystem {
 
         Iterator<Entity> i = EntityManager.flaggedForRemoval.iterator();
 
-        if(!world.isLocked()) {
+        if(!GameSettings.BOX2D_PHYSICSWORLD.isLocked()) {
             while(i.hasNext()) {
                 Entity entity = i.next();
                 Body b = ComponentMappers.BOD_MAP.get(entity).body;
                 entity.add(new SweepComponent());
-                world.destroyBody(b);
+                GameSettings.BOX2D_PHYSICSWORLD.destroyBody(b);
                 i.remove();
             }
         }
 
 
-        world.step(1f/60f, 6,2);
+        GameSettings.BOX2D_PHYSICSWORLD.step(1f/60f, 6,2);
 
         /*for (Entity entity : asteroids) {
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
@@ -99,6 +91,7 @@ public class MovementSystem extends EntitySystem {
         }*/
 
         for (Entity entity : bodyEntities){
+
 
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
             PositionComponent pcom = ComponentMappers.POS_MAP.get(entity);

@@ -51,17 +51,18 @@ public class SpaceGame extends Game {
 
 	@Override
 	public void create() {
-		assets = new Assets();
-		assetManager = assets.manager;
-		assets.loadTextureAtlases();
-		assets.loadDebugThings();
-		assets.loadTextures();
-		assets.loadSkins();
-		assets.loadSounds();
-		assets.loadMusic();
-		while (! assetManager.update()) {
-			System.out.println("LOADING");
-		}
+        assets = new Assets();
+        assetManager = assets.manager;
+        assets.loadTextureAtlases();
+        assets.loadDebugThings();
+        assets.loadTextures();
+        assets.loadSkins();
+        assets.loadSounds();
+        assets.loadMusic();
+        while (! assetManager.update()) {
+            System.out.println("LOADING");
+        }
+
 		camera = new OrthographicCamera();
 		//camera.setToOrtho(false, WIDTH, HEIGHT);
 		batch = new SpriteBatch();
@@ -103,7 +104,5 @@ public class SpaceGame extends Game {
 		loadingScreen.dispose();
 		mainMenuScreen.dispose();
 		settingsScreen.dispose();
-
-
     }
 }

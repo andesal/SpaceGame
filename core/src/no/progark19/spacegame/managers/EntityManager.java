@@ -3,17 +3,15 @@ package no.progark19.spacegame.managers;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.SpriteComponent;
-import no.progark19.spacegame.systems.ComponentMappers;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.EntityFactory;
 
 
@@ -29,7 +27,6 @@ public class EntityManager implements EntityListener{
 
     private static HashMap<Integer, Entity> integerEntityMap = new HashMap<Integer, Entity>();
     private static HashMap<Entity, Integer> entityIntegerMap = new HashMap<Entity, Integer>();
-    public static HashMap<Contact, Entity> contactEntityHashMap = new HashMap<Contact, Entity>();
 
     public EntityManager(PooledEngine engine, EntityFactory entityFactory) {
         this.engine = engine;
@@ -43,9 +40,6 @@ public class EntityManager implements EntityListener{
             BodyComponent bcom = ComponentMappers.BOD_MAP.get(entity);
             bcom.body.setUserData(entity);
         }
-        if (ComponentMappers.POWER_MAP.get(entity) != null) {
-            System.out.println("POWERUP ADDED");
-        }
         integerEntityMap.put(entityID, entity);
         entityIntegerMap.put(entity, entityID);
         entityID ++;
@@ -53,7 +47,7 @@ public class EntityManager implements EntityListener{
 
     @Override
     public void entityRemoved(Entity entity) {
-        if (ComponentMappers.BOD_MAP.get(entity) != null) {
+        if (ComponentMappers.BOD_MAP.get(entity) != null && ComponentMappers.LEAD_MAP.get(entity) == null) {
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
             ElementComponent ecom = ComponentMappers.ELEMENT_MAP.get(entity);
             float x = scom.sprite.getX() + scom.sprite.getOriginX();

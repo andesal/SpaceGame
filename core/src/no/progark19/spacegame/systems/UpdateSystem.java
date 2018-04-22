@@ -7,9 +7,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.audio.Sound;
 
-import java.lang.reflect.GenericArrayType;
-
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.DamagedComponent;
 import no.progark19.spacegame.components.ElementComponent;
@@ -22,6 +20,7 @@ import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.RewardComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
@@ -79,6 +78,7 @@ public class UpdateSystem extends EntitySystem {
                     hbcom.bar.setValue((float) hcom.health/100);
                     if (hcom.health <= 0) {
                         System.out.println("GAME OVER HEALTH");
+                        GameSettings.GAME_STATE = 2;
                     }
                 }
                 entity.remove(DamagedComponent.class);

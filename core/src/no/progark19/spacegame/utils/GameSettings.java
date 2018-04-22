@@ -1,4 +1,4 @@
-package no.progark19.spacegame;
+package no.progark19.spacegame.utils;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -28,7 +28,7 @@ public class GameSettings {
     public static final boolean CAMERA_FOLLOW_ROTATION = true;
     public static final boolean BOX2D_DRAWDEBUG = true;
     public static final float BOX2D_PIXELS_TO_METERS = 100f;  // Used to scale box2d drawings
-    public final static World BOX2D_PHYSICSWORLD = new World(new Vector2(0,0), true);
+    public static World BOX2D_PHYSICSWORLD;
 
     public static final boolean SPACESHIP_STABILIZE_ROTATION = true;
     public static final float SPACESHIP_STABILIZATION_SCALAR = 0.995f;
@@ -61,7 +61,7 @@ public class GameSettings {
     public static float MUSIC_VOLUME = 1;
     public static float EFFECTS_VOLUME = 1;
 
-    public static int GAME_STATE = 1; //Default Playstate
+    public static int GAME_STATE = 0; //Default Playstate
 
     public static String BULLET_TYPE = "FIRE";
     //public static String gameFrameRate

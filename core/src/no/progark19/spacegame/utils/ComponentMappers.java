@@ -1,4 +1,4 @@
-package no.progark19.spacegame.systems;
+package no.progark19.spacegame.utils;
 
 import com.badlogic.ashley.core.ComponentMapper;
 

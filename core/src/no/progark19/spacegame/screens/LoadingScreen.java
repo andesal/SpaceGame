@@ -3,15 +3,13 @@ package no.progark19.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
 import no.progark19.spacegame.SpaceGame;
-import no.progark19.spacegame.utils.LoadingBarWithBorders;
 
 public class LoadingScreen implements Screen{
 
@@ -27,12 +25,6 @@ public class LoadingScreen implements Screen{
         this.shapeRenderer = new ShapeRenderer();
     }
 
-    //TODO move to assetManager/Assetsmanager
-    private void queueAssets(){
-        game.assetManager.load("ui/uiskin.atlas", TextureAtlas.class);
-
-    }
-
     @Override
     public void show() {
         System.out.println("GAME: LOADING"); // For debug purposessses
@@ -43,11 +35,10 @@ public class LoadingScreen implements Screen{
     private void update(float delta) {
         progress = MathUtils.lerp(progress, game.assetManager.getProgress(), .1f);
         if (game.assetManager.update() && progress >= game.assetManager.getProgress() - .001f) {
-                //game.setScreen(new MainMenuScreen(game));
             game.setScreen(new MainMenuScreen(game));
+//            game.setScreen(new PlayScreen(game));
         }
     }
-
 
 
     @Override
@@ -91,6 +82,5 @@ public class LoadingScreen implements Screen{
     @Override
     public void dispose() {
         shapeRenderer.dispose();
-
     }
 }

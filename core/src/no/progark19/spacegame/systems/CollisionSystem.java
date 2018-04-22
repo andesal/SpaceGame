@@ -1,55 +1,30 @@
 package no.progark19.spacegame.systems;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.World;
 
-import java.lang.reflect.GenericArrayType;
-import java.util.ArrayList;
-
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.SpaceGame;
-import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.DamagedComponent;
 import no.progark19.spacegame.components.ElementComponent;
-import no.progark19.spacegame.components.FuelComponent;
-import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.LeadCameraComponent;
-import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.PowerupComponent;
-import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.RewardComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.SweepComponent;
-import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.utils.Paths;
 
@@ -66,15 +41,11 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
 
 
     private SpaceGame game;
-    private World world;
-    private EntityFactory entityFactory;
 
 
-    public CollisionSystem(SpaceGame game, World world, EntityFactory entityFactory) {
+    public CollisionSystem(SpaceGame game) {
         this.game = game;
-        this.world = world;
-        this.entityFactory = entityFactory;
-        world.setContactListener(this);
+        GameSettings.BOX2D_PHYSICSWORLD.setContactListener(this);
 
     }
 
@@ -154,26 +125,7 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
             EntityManager.flaggedForRemoval.add(entityB);
             Sound sound = game.assetManager.get(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
             sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
-
         }
-
-        /*
-
-        if (a == GameSettings.FIRE_ASTEROID_TAG && b == GameSettings.FIRE_ASTEROID_TAG) {
-            //System.out.println("FIRE FIRE");
-        }
-        if (a == GameSettings.ICE_ASTEROID_TAG && b == GameSettings.ICE_ASTEROID_TAG) {
-
-            //System.out.println("ICE ICE");
-
-        }
-        if ((a == GameSettings.FIRE_ASTEROID_TAG && b == GameSettings.ICE_ASTEROID_TAG) || (a == GameSettings.ICE_ASTEROID_TAG && b == GameSettings.FIRE_ASTEROID_TAG)) {
-            //System.out.println("ICE FIRE");
-
-        }
-        */
-
-
     }
 
     @Override

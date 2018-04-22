@@ -15,6 +15,8 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import no.progark19.spacegame.GameSettings;
+import com.badlogic.gdx.physics.box2d.World;
+
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.BodyComponent;
@@ -90,8 +92,6 @@ public class EntityFactory {
         }
 
         HealthComponent hcom = new HealthComponent(GameSettings.MAX_HEALTH_ASTEROIDS);
-
-
         entity.add(ecom);   //Element Component
         entity.add(scom);
         entity.add(new PositionComponent(x, y));
@@ -129,7 +129,6 @@ public class EntityFactory {
             Body body = GameSettings.createDynamicBody(
                     sprite, GameSettings.BOX2D_PHYSICSWORLD, null,
                     GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
-
             return engine.createEntity()
                     .add(new SynchronizedComponent())
                     .add(new PositionComponent(posx, posy))
@@ -142,6 +141,7 @@ public class EntityFactory {
                     .add(pbcom)
                     .add(fbcom);
         } else {
+            //FOR DEBUGGING
             return engine.createEntity()
                     .add(new PositionComponent(posx, posy))
                     .add(new SpriteComponent(sprite))
@@ -181,13 +181,11 @@ public class EntityFactory {
         }
 
         SpriteComponent scom = new SpriteComponent(new Sprite(texture));
-        //scom.sprite.setPosition(x,y);
         PositionComponent pcom = new PositionComponent(x, y);
 
         VelocityComponent vcom = new VelocityComponent();
         vcom.velx = velX;
         vcom.vely = velY;
-
         entity.add(ecom)
                 .add(scom)
                 .add(vcom)

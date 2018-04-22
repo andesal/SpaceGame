@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import java.util.Random;
 
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.utils.Paths;

@@ -1,10 +1,5 @@
 package no.progark19.spacegame.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 /**
  * Created by anderssalvesen on 19.04.2018.
  */
@@ -29,6 +24,8 @@ public class Paths {
     public final static String MENU_TEXT_TEXTURE_PATH = "textImg/SPACE_GAME_TEXT_V.png";
     public final static String LOBBY_TEXT_TEXTURE_PATH = "textImg/LOBBY_TEXT.png";
     public final static String SETTING_TEXT_TEXTURE_PATH = "textImg/SETTINGS_TEXT.png";
+    public final static String PAUSE_LOGO_PATH = "img/pause.png";
+
     public final static String PILOT_DASHBOARD_BACKGROUND = "img/pilot_control_panel.png";
     //TextureAtlas
     public final static String FIRE_EXPLOSION_2_ATLAS = "atlasLib/fire_explosion_2.atlas";

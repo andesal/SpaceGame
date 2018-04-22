@@ -20,12 +20,13 @@ import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.ParentComponent;
-import no.progark19.spacegame.GameSettings;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.Paths;
 
 public class RenderSystem extends EntitySystem {
