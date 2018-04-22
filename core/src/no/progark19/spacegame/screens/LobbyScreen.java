@@ -98,7 +98,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
 
         onSupportedDevice = Gdx.app.getType() == Application.ApplicationType.Android;
         //FIXME REMOVE
-        onSupportedDevice = true;
+        //onSupportedDevice = true;
 
     }
 

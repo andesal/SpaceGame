@@ -14,16 +14,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -82,9 +85,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
     private Camera uiCamera;
 
     private boolean isGameOver;
-
-    private Group pauseGroup;
-
 
     private ShapeRenderer shapeRenderer;
     private EntityManager entityManager;
@@ -213,13 +213,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         //this.layout = new GlyphLayout();
 
         label = new Label("", game.skin1);
-        if (GameSettings.isNavigator) {
-            //label.setPosition(50,0);
-            //label.setWidth(SpaceGame.WIDTH);
-        } else {
-            //label.setPosition(0,0);
-            //label.setHeight(SpaceGame.HEIGHT);
-        }
 
         /*
         //FOR LOOKOUT PLAYER
@@ -296,9 +289,9 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
                 uiStage.draw();
                 break;
             case 1: // Game paused
-                pauseGame();
-                overlayStage.draw();
-                uiStage.draw();
+                //pauseGame();
+                //overlayStage.draw();
+                //uiStage.draw();
                 break;
             case 2: // Game over
                 gameOver();
@@ -559,7 +552,7 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         pauseGroup.addActor(mainMenu);
         uiStage.addActor(pauseGroup);
     }
-
+*/
     private void gameOver(){
         Group overGroup = new Group();
         TextButton mainMenu;
@@ -582,6 +575,4 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
 
         uiStage.addActor(overGroup);
     }
-    */
-
 }

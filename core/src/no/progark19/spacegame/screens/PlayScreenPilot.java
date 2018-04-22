@@ -11,18 +11,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -34,28 +33,26 @@ import java.util.HashMap;
 import java.util.Queue;
 import java.util.Random;
 
-import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.systems.AnimationSystem;
-import no.progark19.spacegame.systems.CollisionSystem;
-import no.progark19.spacegame.systems.ComponentMappers;
-import no.progark19.spacegame.systems.ControlSystem;
-import no.progark19.spacegame.systems.ForceApplierSystem;
-import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.RenderSystem;
-import no.progark19.spacegame.systems.SpawnSystem;
-import no.progark19.spacegame.systems.SweepSystem;
-import no.progark19.spacegame.systems.UpdateSystem;
+import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.EntityFactory;
+import no.progark19.spacegame.utils.GameSettings;
 import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.RenderableWorldState;
 import no.progark19.spacegame.utils.json.WorldStateIndexes;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 
 public class PlayScreenPilot implements Screen, ReceivedDataListener {
@@ -64,6 +61,7 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
     private Matrix4 debugMatrix;
     private Stage uiStage;
     private Camera uiCamera;
+    private Stage overlayStage;
 
     //private BitmapFont font;
     //private GlyphLayout layout;
@@ -142,10 +140,14 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
         this.uiCamera = new OrthographicCamera();
         this.uiStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
         this.shapeRenderer = new ShapeRenderer();
+        this.overlayStage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, uiCamera));
+
+
         engine = new PooledEngine();
 
         entityFactory = new EntityFactory(game, engine);
         entityManager = new EntityManager(engine, entityFactory);
+
 
         /*Label healthLabel = new Label("Health", game.skin1);
         healthLabel.setPosition(135, SpaceGame.HEIGHT - 26);
@@ -238,10 +240,17 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
     @Override
     public void render(float delta) {
         switch (GameSettings.GAME_STATE) {
-            case 1: //Play state
+            case 0: //Play state
                updateRunning(delta);
-            case 2:
-                updatePause();
+                break;
+            case 1:
+                //updatePause();
+                break;
+            case 2: // Game over
+                gameOver();
+                overlayStage.draw();
+                uiStage.draw();
+                break;
         }
 
 
@@ -262,8 +271,8 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
         game.batch.setProjectionMatrix(uiCamera.combined);
 
 
-        uiStage.act(Gdx.graphics.getDeltaTime());
-        uiStage.draw();
+        //uiStage.act(Gdx.graphics.getDeltaTime());
+        //uiStage.draw();
 
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
@@ -307,7 +316,6 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
     @Override
     public void dispose() {
         uiStage.dispose();
-        shapeRenderer.dispose();
         shapeRenderer.dispose();
         theme.dispose();
     }
@@ -439,6 +447,29 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
 
 
     }
+    private void gameOver(){
+        Group overGroup = new Group();
+        TextButton mainMenu;
+
+        mainMenu = new TextButton("Main Menu", game.skin2, "default");
+        mainMenu.setPosition(110, 300);
+        mainMenu.setSize(220, 40);
+        mainMenu.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        mainMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dispose();
+                GameSettings.GAME_STATE = 0;
+                engine.removeAllEntities();
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+
+        overGroup.addActor(mainMenu);
+
+        uiStage.addActor(overGroup);
+    }
+
 
 
 }
