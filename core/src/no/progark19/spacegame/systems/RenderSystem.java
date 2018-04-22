@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
@@ -79,7 +80,8 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-
+        //Vector3 posLabel = game.translateScreenCoordinates(new Vector3(0, 0, 0));
+        //PlayScreen.label.setPosition(posLabel.x, posLabel.y);
         drawBackground();
         updateBackgroundCoordinates();
         //PlayScreen.label.setPosition(game.camera.position.x - SpaceGame.WIDTH/2, game.camera.position.y-SpaceGame.HEIGHT/2);
