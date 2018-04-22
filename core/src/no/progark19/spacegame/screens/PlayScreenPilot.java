@@ -244,9 +244,10 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
                 //updatePause();
                 break;
             case 2: // Game over
-                gameOver();
                 overlayStage.draw();
                 uiStage.draw();
+                dispose();
+                game.setScreen(new GameOverScreen(game));
                 break;
         }
 
@@ -374,6 +375,8 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
 
 
     }
+
+    /*
     private void gameOver(){
         Group overGroup = new Group();
         TextButton mainMenu;
@@ -396,6 +399,7 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
 
         uiStage.addActor(overGroup);
     }
+    */
 
 
 

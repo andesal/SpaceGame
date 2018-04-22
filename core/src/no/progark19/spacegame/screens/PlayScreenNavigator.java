@@ -229,9 +229,8 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
                 //uiStage.draw();
                 break;
             case 2: // Game over
-                gameOver();
-                overlayStage.draw();
-                //uiStage.draw();
+                dispose();
+                game.setScreen(new GameOverScreen(game));
                 break;
         }
         game.batch.end();
@@ -246,6 +245,7 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
 
+        //DEBUG
         //uiStage.act(Gdx.graphics.getDeltaTime());
         //uiStage.draw();
 
@@ -288,8 +288,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         shapeRenderer.dispose();
         GameSettings.BOX2D_PHYSICSWORLD.dispose();
         engine.removeAllEntities();
-
-
     }
 
     private Object lock = new Object();
@@ -333,14 +331,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
     @Override
     public synchronized void onReceive(RenderableWorldState data) {
         System.out.println("Got data");
-        /*synchronized (lock) {
-            worldStateQueue.add(data);
-            if (worldStateWorker.getState() == Thread.State.NEW) {
-                worldStateWorker.start();
-            } else {
-                lock.notify();
-            }
-        }*/
 
         for (float[] state: data.getStates()){
             Entity e = EntityManager.getEntity((int) state[WorldStateIndexes.WS_ENTITYID]);
@@ -367,12 +357,8 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
             RelativePositionComponent rpcom = ComponentMappers.RELPOS_MAP.get(e);
             ForceApplierComponent facom  = ComponentMappers.FORCE_MAP.get(e);
             float rotation = Float.valueOf(msg[2]);
-
             rpcom.rotation = rotation;
-
             facom.direction = rpcom.rotation + 90;
-
-
 
         } else if (msg[0].equals(MSG_TOKEN_ENGINE_ON)){
             Entity e = engines[Integer.valueOf(msg[1])];
@@ -382,76 +368,8 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
                 e.add(engine.createComponent(ForceOnComponent.class));
             }
 
-
         } else {
                 System.out.println("String tag not understood!");
         }
-    }
-/*    private void pauseGame(){
-
-        pauseGroup = new Group();
-        for (Actor actor : uiStage.getActors()) {
-            actor.remove();
-        }
-        final TextButton mainMenu, resumeGame;
-        mainMenu = new TextButton("Main Menu", game.skin2, "default");
-        mainMenu.setPosition(110, 300);
-        mainMenu.setSize(220, 40);
-        mainMenu.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        mainMenu.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                GameSettings.GAME_STATE = 0;
-                engine.removeAllEntities();
-                game.setScreen(new MainMenuScreen(game));
-            }
-        });
-
-        resumeGame = new TextButton("Resume Game", game.skin2, "default" );
-        resumeGame.setPosition(110, 350);
-        resumeGame.setSize(220, 40);
-        resumeGame.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        resumeGame.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                pauseGroup.removeActor(resumeGame, true);
-                pauseGroup.removeActor(mainMenu, true);
-                //uiStage.getActors().removeValue(pauseGroup);
-                //for (Actor actor : uiStage.getActors()) {
-                //    actor.remove();
-                //}
-                resumeGame();
-            }
-        });
-
-        pauseGroup.addActor(resumeGame);
-        pauseGroup.addActor(mainMenu);
-        uiStage.addActor(pauseGroup);
-    }
-*/
-    private void gameOver(){
-        game.p2pConnector.sendData("gameover");
-        game.p2pConnector.disconnect();
-        Group overGroup = new Group();
-        TextButton mainMenu;
-
-        mainMenu = new TextButton("Main Menu", game.skin2, "default");
-        mainMenu.setPosition(110, 300);
-        mainMenu.setSize(220, 40);
-        mainMenu.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
-        mainMenu.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                GameSettings.GAME_STATE = 0;
-                engine.removeAllEntities();
-                game.setScreen(new MainMenuScreen(game));
-            }
-        });
-
-        overGroup.addActor(mainMenu);
-
-        uiStage.addActor(overGroup);
     }
 }

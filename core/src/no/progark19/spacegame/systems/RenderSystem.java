@@ -77,12 +77,8 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-        //Vector3 posLabel = game.translateScreenCoordinates(new Vector3(0, 0, 0));
-        //PlayScreenNavigator.label.setPosition(posLabel.x, posLabel.y);
         drawBackground();
         updateBackgroundCoordinates();
-        //PlayScreenNavigator.label.setPosition(game.camera.position.x - SpaceGame.WIDTH/2, game.camera.position.y-SpaceGame.HEIGHT/2);
-        //System.out.println(PlayScreenNavigator.label.getX() + " _ " + PlayScreenNavigator.label.getY());
         for (Entity entity : renderables) {
 
             if (ComponentMappers.LEAD_MAP.get(entity) != null) {
@@ -147,7 +143,6 @@ public class RenderSystem extends EntitySystem {
                 game.camera.rotate(-pcom.rotation);
             }
             game.camera.update();
-            //System.out.println("X: " + game.camera.position.x + " Y: " + game.camera.position.y);
 
         }
     }

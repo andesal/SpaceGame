@@ -60,17 +60,14 @@ public class SpaceGame extends Game {
         assets.loadSounds();
         assets.loadMusic();
         while (! assetManager.update()) {
-            System.out.println("LOADING");
+            //System.out.println("LOADING");
         }
 
 		camera = new OrthographicCamera();
-		//camera.setToOrtho(false, WIDTH, HEIGHT);
 		batch = new SpriteBatch();
 
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
-		//lobbyScreen = new LobbyScreen(this);
-        //playScreen = new PlayScreenNavigator(this);
 		settingsScreen = new SettingsScreen(this);
 		this.setScreen(loadingScreen);
 
@@ -78,8 +75,6 @@ public class SpaceGame extends Game {
 		skin2 = assetManager.get(Paths.SKIN_2_JSON, Skin.class);
 		skin1.addRegions(assetManager.get(Paths.SKIN_1_ATLAS, TextureAtlas.class));
 		skin2.addRegions(assetManager.get(Paths.SKIN_2_ATLAS, TextureAtlas.class));
-
-
 	}
 
 	@Override

@@ -68,12 +68,14 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     private Random random = new Random();
 
     TextButton buttonExit, buttonInitiate;
+    private Sound click;
+
 
     private ClickListener readyListener = new ClickListener() {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
             game.p2pConnector.sendData("ready|true");
-
+            click.play(0.1f);
             LobbyScreen.this.setPlayerReady(true);
             return true;
         }
@@ -95,7 +97,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
         this.shapeRenderer = new ShapeRenderer();
         this.font = new BitmapFont();
         this.layout = new GlyphLayout();
-
+        click = game.assetManager.get(Paths.SOUND_CLICK);
         onSupportedDevice = Gdx.app.getType() == Application.ApplicationType.Android;
         //FIXME REMOVE
         //onSupportedDevice = true;
@@ -261,7 +263,6 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     }
 
     private void initButtons() {
-        final Sound s = game.assetManager.get(Paths.SOUND_CLICK); //TODO IMPLEMENT CLICK SOUND
         buttonInitiate = new TextButton("Initiate Game", game.skin2, "default");
         buttonInitiate.setPosition(110, 190);
         buttonInitiate.setSize(280, 60);
@@ -276,6 +277,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MainMenuScreen(game));
+                click.play(0.1f);
             }
         });
 

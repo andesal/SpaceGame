@@ -57,6 +57,10 @@ public class DesktopLauncher {
 			}
 
 			@Override
+			public void disconnect() {
+
+			}
+
 			public int decideLeadingPeer() {
 				return 0;
 			}

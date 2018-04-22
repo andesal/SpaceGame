@@ -12,45 +12,13 @@ import com.badlogic.gdx.utils.Pool;
 
 public class AnimationComponent implements Component, Pool.Poolable{
 
-    public TextureRegion region;
     public Array<TextureRegion> frames;
-
-    public int frameCount;
-    public float maxFrameTime;
-    public float currentFrameTime;
     public int frame;
-    public int frameWidth;
-    public int frameHeight;
-    private boolean dirRight;
-
     public Animation animation;
 
     public AnimationComponent(Animation animation) {
         this.animation = animation;
     }
-
-    /*
-    public AnimationComponent (TextureRegion region, int rows, int cols, float cycleTime, boolean direction) {
-        this.region = region;
-        this.dirRight = direction;
-        frames = new Array<TextureRegion>();
-
-        frameWidth = region.getRegionWidth()/cols;
-        frameHeight = region.getRegionHeight()/rows;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++)  {
-                TextureRegion r = new TextureRegion(region, j * frameWidth, i * frameHeight, frameWidth, frameHeight);
-                if (dirRight) {
-                    r.flip(true, false);
-                }
-                frames.add(r);
-            }
-        }
-        frameCount = rows * cols;
-        maxFrameTime = cycleTime / frameCount;
-        frame = 0;
-    }
-    */
 
     public TextureRegion getCurrentFrame() {
         return frames.get(frame);

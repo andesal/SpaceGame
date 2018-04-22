@@ -91,13 +91,11 @@ public class UpdateSystem extends EntitySystem {
                 HealthComponent hcom = ComponentMappers.HEALTH_MAP.get(entity);
                 if (hcom.health + rcom.reward <= GameSettings.MAX_HEALTH_SPACESHIP) {
                     hcom.health += rcom.reward;
-                    //healthBar.setValue((float) hcom.health/100);
                 }
             } else {
                 FuelComponent fcom = ComponentMappers.FUEL_MAP.get(entity);
                 if (fcom.fuel + rcom.reward <= GameSettings.MAX_FUEL) {
                     fcom.fuel += rcom.reward;
-                    //fuelBar.setValue((ComponentMappers.FUEL_MAP.get(entity).fuel + rcom.reward)/100);
                 }
             }
             Sound sound = game.assetManager.get(Paths.SOUND_POWERUP, Sound.class);
@@ -111,10 +109,8 @@ public class UpdateSystem extends EntitySystem {
             fcom.fuel -= ucom.usage;
             entity.remove(FuelUsageComponent.class);
             if (fcom.fuel <= 0) {
-                System.out.println("GAME OVER FUEL");
+                //System.out.println("GAME OVER FUEL"); Not implemented
             } else {
-                //fuelBar.setValue(fcom.fuel/100);
-
             }
             entity.remove(FuelUsageComponent.class);
         }

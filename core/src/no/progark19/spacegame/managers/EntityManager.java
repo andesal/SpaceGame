@@ -19,9 +19,7 @@ public class EntityManager implements EntityListener{
 
     private PooledEngine engine;
     private EntityFactory entityFactory;
-    private World world;
     public static ArrayList<Entity> flaggedForRemoval = new ArrayList<Entity>();
-
 
     private int entityID = 0;
 

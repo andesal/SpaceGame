@@ -7,12 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import javafx.scene.shape.Path;
-
-/**
- * Created by anderssalvesen on 15.04.2018.
- */
-
 public class Assets {
 
 

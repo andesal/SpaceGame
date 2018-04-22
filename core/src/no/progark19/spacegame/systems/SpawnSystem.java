@@ -41,14 +41,9 @@ public class SpawnSystem extends EntitySystem {
     private Rectangle notSpawn = new Rectangle();
     boolean yeah = true;
 
-    //TODO BOUNDING BOX TO kvadrat.....
     public SpawnSystem(SpaceGame game, EntityFactory entityFactory) {
         this.game = game;
         this.entityFactory = entityFactory;
-        //------------Testing projectile-----------------
-        //engine.addEntity(entityFactory.createAsteroid(game.camera .position.x + 100 ,game. camera.position.y,new Vector2(0, 0), world, false));
-        //engine.addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y -100,new Vector2(0, 0), world, false));
-        //-----------------------------------------------
     }
 
 
@@ -63,7 +58,6 @@ public class SpawnSystem extends EntitySystem {
 
     public void update(float deltaTime) {
         if (bullets.size() == 0) {
-
             Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, -500,0, GameSettings.BULLET_TYPE);
             getEngine().addEntity(entity);
             Sound sound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
@@ -78,24 +72,9 @@ public class SpawnSystem extends EntitySystem {
             }
         }
 
-        /*if (yeah) {
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y + 300 ,new Vector2(1, -1), "ICE"));
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y + 100 ,new Vector2(0, 0), "FIRE"));
-
-            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y-20 ,new Vector2(0, 0), "ICE"));
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 500 ,game.camera.position.y-50 ,new Vector2(0, 0), "ICE"));
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 800 ,game.camera.position.y-50 ,new Vector2(0, 0), "FIRE"));
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y+600 ,new Vector2(0, -1), "ICE"));
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y-600 ,new Vector2(0, +1), "FIRE"));
-            yeah = false;
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 300 ,game.camera.position.y-300 ,new Vector2(1, 1), "ICE"));
-
-
-        }*/
         notSpawn = new Rectangle(game.camera.position.x - 720, game.camera.position.y - 1080, 1440, 2160);
         spawn = new Rectangle(notSpawn.x - 480, notSpawn.y - 720, 2400, 3600);
-        //TODO This while on game start (IF game.started (boolean in settings) . If new asteroids is needed, re-use entity (Remove & add renderable component and re-calculate coordinates, reset health etc)
-        //TODO if asteroid explodes (collision system), update pos, health etc .
+
         while (numAsteroids < GameSettings.MAX_ASTEROIDS) {
             int x = calculateSpawnCoordinates().get(0);
             int y = calculateSpawnCoordinates().get(1);
@@ -124,15 +103,6 @@ public class SpawnSystem extends EntitySystem {
 
             }
         }
-        /*
-        GameSettings.screenBounds.set((int) game.camera.position.x - (SpaceGame.WIDTH), (int) game.camera.position.y - (SpaceGame.WIDTH), SpaceGame.WIDTH * 2, (SpaceGame.WIDTH * 2));
-        for (Entity entity : bullets) {
-            SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
-            if (!GameSettings.screenBounds.contains(scom.sprite.getX(), scom.sprite.getY())) {
-                entity.add(new SweepComponent());
-            }
-        }
-        */
     }
 
     private ArrayList<Integer> calculateSpawnCoordinates() {

@@ -17,11 +17,8 @@ import no.progark19.spacegame.components.ParentComponent;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
-import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.RewardComponent;
-import no.progark19.spacegame.components.SoundComponent;
 import no.progark19.spacegame.components.SpriteComponent;
-import no.progark19.spacegame.components.SweepComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 
 /**
@@ -60,10 +57,6 @@ public class ComponentMappers {
     public static final ComponentMapper<RelativePositionComponent> RELPOS_MAP = ComponentMapper.getFor(RelativePositionComponent.class);
 
     public static final ComponentMapper<RewardComponent> REW_COMP = ComponentMapper.getFor(RewardComponent.class);
-
-    public static final ComponentMapper<RenderableComponent> RENDER_MAP = ComponentMapper.getFor(RenderableComponent.class);
-
-    public static final ComponentMapper<SoundComponent> SOUND_MAP = ComponentMapper.getFor(SoundComponent.class);
 
     public static final ComponentMapper<SpriteComponent> SPRITE_MAP = ComponentMapper.getFor(SpriteComponent.class);
 
