@@ -41,6 +41,9 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final SpaceGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
+        game.camera.direction.set(0,0,-1);
+        game.camera.up.set(0,1,0);
+        game.camera.update();
         this.shapeRenderer = new ShapeRenderer();
     }
 
@@ -61,10 +64,10 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.getBatch().begin();
-
+        stage.act(delta);
         stage.getBatch().draw(game.assetManager.get(Paths.BACKGROUND_MAIN_MENU_TEXTURE_PATH, Texture.class), 0, 0, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         stage.getBatch().draw(game.assetManager.get(Paths.MENU_TEXT_TEXTURE_PATH, Texture.class), SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
-        update(delta);
+
 
         stage.getBatch().end();
         stage.draw();
@@ -106,7 +109,7 @@ public class MainMenuScreen implements Screen {
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                //game.setScreen(new LobbyScreen(game));
                 s.play(0.1f);
                 Music mainTheme = game.assetManager.get(Paths.MUSIC_MAIN_THEME, Music.class);
                 mainTheme.setLooping(true);
@@ -114,6 +117,7 @@ public class MainMenuScreen implements Screen {
                 mainTheme.play();
                 //TODO GO to lobby instead
                 //game.setScreen(new LobbyScreen(game));
+                GameSettings.GAME_STATE = 0;
                 game.setScreen(new PlayScreen(game));
             }
         });

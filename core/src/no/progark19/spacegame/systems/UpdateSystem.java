@@ -73,6 +73,7 @@ public class UpdateSystem extends EntitySystem {
                     healthBar.setValue((float) hcom.health/100);
                     if (hcom.health <= 0) {
                         System.out.println("GAME OVER HEALTH");
+                        GameSettings.GAME_STATE = 2;
                     }
                 }
                 entity.remove(DamagedComponent.class);
