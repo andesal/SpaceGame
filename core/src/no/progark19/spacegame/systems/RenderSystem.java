@@ -137,7 +137,7 @@ public class RenderSystem extends EntitySystem {
         }
         if (GameSettings.CAMERA_FOLLOW_POSITION){
 
-            PositionComponent pcom = ComponentMappers.POS_MAP.get(cameraFocusEntity.get(0));
+/*            PositionComponent pcom = ComponentMappers.POS_MAP.get(cameraFocusEntity.get(0));
             game.camera.position.set(pcom.x, pcom.y, 0);
 
             if (GameSettings.CAMERA_FOLLOW_ROTATION){
@@ -147,23 +147,31 @@ public class RenderSystem extends EntitySystem {
             }
             game.camera.update();
             //System.out.println("X: " + game.camera.position.x + " Y: " + game.camera.position.y);
-
+*/
         };
     }
 
     private void drawBackground() {
-        Texture bg = game.assetManager.get(Paths.BACKGROUND_TEXTURE_PATH, Texture.class);
-        game.batch.draw(bg, bgX, bgY);
-        game.batch.draw(bg, bgX - bg.getWidth(), bgY);
-        game.batch.draw(bg, bgX + bg.getWidth(), bgY);
+        if (GameSettings.isNavigator){
+            Texture bg = game.assetManager.get(Paths.BACKGROUND_TEXTURE_PATH, Texture.class);
+            game.batch.draw(bg, bgX, bgY);
+            game.batch.draw(bg, bgX - bg.getWidth(), bgY);
+            game.batch.draw(bg, bgX + bg.getWidth(), bgY);
 
-        game.batch.draw(bg, bgX, bgY - bg.getHeight());
-        game.batch.draw(bg, bgX - bg.getWidth(), bgY - bg.getHeight());
-        game.batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getHeight());
+            game.batch.draw(bg, bgX, bgY - bg.getHeight());
+            game.batch.draw(bg, bgX - bg.getWidth(), bgY - bg.getHeight());
+            game.batch.draw(bg, bgX + bg.getWidth(), bgY - bg.getHeight());
 
-        game.batch.draw(bg, bgX, bgY + bg.getHeight());
-        game.batch.draw(bg, bgX - bg.getWidth(), bgY + bg.getHeight());
-        game.batch.draw(bg, bgX + bg.getWidth(), bgY + bg.getHeight());
+            game.batch.draw(bg, bgX, bgY + bg.getHeight());
+            game.batch.draw(bg, bgX - bg.getWidth(), bgY + bg.getHeight());
+            game.batch.draw(bg, bgX + bg.getWidth(), bgY + bg.getHeight());
+
+        } else {
+            Texture bg = game.assetManager.get(Paths.PILOT_DASHBOARD_BACKGROUND, Texture.class);
+            game.batch.draw(bg, 0,0);
+        }
+
+
     }
 
     private void updateBackgroundCoordinates() {

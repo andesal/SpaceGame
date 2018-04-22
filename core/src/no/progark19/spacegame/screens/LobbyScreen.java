@@ -244,7 +244,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
             game.p2pConnector.removeReceivedDataListener(this);
             otherPlayerSeed = Long.valueOf(msg[1]);
 
-            GameSettings.isPhysicsResponsible = otherPlayerSeed > thisPlayerSeed;
+            GameSettings.isNavigator = otherPlayerSeed > thisPlayerSeed;
 
             GameSettings.setRandomSeed(otherPlayerSeed + thisPlayerSeed);
 

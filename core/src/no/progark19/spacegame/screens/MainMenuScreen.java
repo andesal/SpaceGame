@@ -114,7 +114,11 @@ public class MainMenuScreen implements Screen {
                 mainTheme.play();
                 //TODO GO to lobby instead
                 //game.setScreen(new LobbyScreen(game));
-                game.setScreen(new PlayScreenNavigator(game));
+                if (GameSettings.isNavigator) {
+                    game.setScreen(new PlayScreenNavigator(game));
+                } else {
+                    game.setScreen(new PlayScreenPilot(game));
+                }
             }
         });
 

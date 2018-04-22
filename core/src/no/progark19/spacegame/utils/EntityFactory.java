@@ -70,7 +70,7 @@ public class EntityFactory {
         scom.sprite = new Sprite(texture);
         scom.sprite.setPosition(x, y);
 
-        if (GameSettings.isPhysicsResponsible){
+        if (GameSettings.isNavigator){
 
             BodyComponent bcom = engine.createComponent(BodyComponent.class);
             //Body body = GameSettings.generatePolygon(x, y, world, texture, null); //polygonsprite parameter not used in method.
@@ -125,7 +125,7 @@ public class EntityFactory {
 
         FuelComponent fcom = new FuelComponent(GameSettings.START_FUEL);
 
-        if (GameSettings.isPhysicsResponsible) {
+        if (GameSettings.isNavigator) {
             Body body = GameSettings.createDynamicBody(
                     sprite, GameSettings.BOX2D_PHYSICSWORLD, null,
                     GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
@@ -154,8 +154,8 @@ public class EntityFactory {
     }
 
 
-    public Entity createShipEngine(float relx, float rely, float relRot, Entity parent, Texture texture){
-        Sprite engineSprite = new Sprite(texture);
+    public Entity createShipEngine(float relx, float rely, float relRot, Entity parent){
+        Sprite engineSprite = new Sprite(game.assetManager.get(Paths.ENGINE_TEXTURE_PATH, Texture.class));
 
         engineSprite.setOrigin(GameSettings.ENGINE_ORIGIN.x, GameSettings.ENGINE_ORIGIN.y);
         engineSprite.setRotation(relRot);

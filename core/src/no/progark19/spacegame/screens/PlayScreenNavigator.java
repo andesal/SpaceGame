@@ -10,8 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -53,7 +51,6 @@ import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.ForceApplierComponent;
 import no.progark19.spacegame.components.ForceOnComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
-import no.progark19.spacegame.managers.AudioManager;
 import no.progark19.spacegame.managers.EntityManager;
 import no.progark19.spacegame.systems.ComponentMappers;
 import no.progark19.spacegame.systems.ControlSystem;
@@ -215,26 +212,23 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         engine.addSystem(new UpdateSystem(game, entityFactory));
         engine.addEntityListener(entityManager);
 
-        if (GameSettings.isPhysicsResponsible) {
+        if (GameSettings.isNavigator) {
             engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
             engine.addSystem(new ForceApplierSystem(game));
         }
 
         //Create entities
-        final Texture shipTexture = game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
-        Texture engineTexture = game.assetManager.get(Paths.ENGINE_TEXTURE_PATH, Texture.class);
-
         final Entity shipEntity = entityFactory.createBaseSpaceShip(uiStage);
         engine.addEntity(shipEntity);
 
         Entity engineEntity1 = entityFactory.createShipEngine(
-                -23,-50, 315, shipEntity, engineTexture);
+                -23,-50, 315, shipEntity);
         Entity engineEntity2 = entityFactory.createShipEngine(
-                -23,50, 225, shipEntity, engineTexture);
+                -23,50, 225, shipEntity);
         Entity engineEntity3 = entityFactory.createShipEngine(
-                23,-50, 45, shipEntity, engineTexture);
+                23,-50, 45, shipEntity);
         Entity engineEntity4 = entityFactory.createShipEngine(
-                23,50, 135, shipEntity, engineTexture);
+                23,50, 135, shipEntity);
 
 
         engine.addEntity(engineEntity1);
@@ -242,21 +236,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         engine.addEntity(engineEntity3);
         engine.addEntity(engineEntity4);
 
-        if(GameSettings.isPhysicsResponsible){
-            uiStage.addActor(
-                    createEngineSlider(engineEntity1, 10,10,360,270)
-            );
-            uiStage.addActor(
-                    createEngineSlider(engineEntity2, 10,SpaceGame.HEIGHT/2 + 20, 270, 180)
-            );
-        } else {
-            uiStage.addActor(
-                    createEngineSlider(engineEntity3, SpaceGame.WIDTH-25,10 ,0, 90)
-            );
-            uiStage.addActor(
-                    createEngineSlider(engineEntity4, SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20,90,180)
-            );
-        }
 
         //this.font = new BitmapFont();
         //FOR ENGINE OPERATOR PLAYER
@@ -299,7 +278,7 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         //this.layout = new GlyphLayout();
 
         label = new Label("", game.skin1);
-        if (GameSettings.isPhysicsResponsible) {
+        if (GameSettings.isNavigator) {
             //label.setPosition(50,0);
             //label.setWidth(SpaceGame.WIDTH);
         } else {
@@ -321,7 +300,7 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("ORIGINAL " + x + " : " + y);
                 Vector3 tp = game.translateScreenCoordinates(new Vector3(x, y, 0));
-                Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2 - shipTexture.getHeight()/2, 0));
+                Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2, 0));
                 float dx = tp.x - sp.x;
                 float dy = tp.y - sp.y;
                 float delta = (float) Math.atan(dy/dx);
@@ -336,7 +315,7 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
 
 
 
-                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y + shipTexture.getHeight()/2, velVec.x, velVec.y, GameSettings.BULLET_TYPE));
+                engine.addEntity(entityFactory.createProjectile(sp.x, sp.y, velVec.x, velVec.y, GameSettings.BULLET_TYPE));
 
 
                 return false;
