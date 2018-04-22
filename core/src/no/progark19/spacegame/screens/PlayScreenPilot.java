@@ -38,7 +38,6 @@ import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.RenderSystem;
 import no.progark19.spacegame.utils.ComponentMappers;
 import no.progark19.spacegame.utils.EntityFactory;
@@ -161,7 +160,7 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
         engine.addSystem(new RenderSystem(game, uiStage));
         //engine.addSystem(new AnimationSystem(game));
         //engine.addSystem(new SweepSystem());
-        engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
+        //engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
         engine.addEntityListener(entityManager);
 
         Table table = new Table();
@@ -188,7 +187,7 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
 
         //this.font = new BitmapFont();
         //FOR ENGINE OPERATOR PLAYER
-        final Texture imageUp = new Texture("img/fire_button.png");
+        /*final Texture imageUp = new Texture("img/fire_button.png");
         final Texture imageDown = new Texture("img/ice_button.png");
         final TextureRegion regionUp = new TextureRegion(imageUp);
         final TextureRegion regionDown = new TextureRegion(imageDown);
@@ -221,7 +220,7 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
             }
         });
         elementButton.setPosition(10, 20);
-        uiStage.addActor(elementButton);
+        uiStage.addActor(elementButton);*/
     }
 
 
@@ -233,8 +232,6 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
         Gdx.input.setInputProcessor(uiStage);
 
         game.p2pConnector.addReceivedDataListener(this);
-        //TODO COMMENT OUT THIS
-        GameSettings.setRandomSeed((new Random()).nextLong());
     }
 
     @Override
@@ -317,7 +314,9 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
     public void dispose() {
         uiStage.dispose();
         shapeRenderer.dispose();
-        theme.dispose();
+        if (theme != null){
+            theme.dispose();
+        }
     }
 
     private Object lock = new Object();
@@ -359,88 +358,16 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
     @Override
     public synchronized void onReceive(RenderableWorldState data) {
         System.out.println("Got data");
-        /*synchronized (lock) {
-            worldStateQueue.add(data);
-            if (worldStateWorker.getState() == Thread.State.NEW) {
-                worldStateWorker.start();
-            } else {
-                lock.notify();
-            }
-        }*/
-
-        for (float[] state: data.getStates()){
-            Entity e = EntityManager.getEntity((int) state[WorldStateIndexes.WS_ENTITYID]);
-            PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
-            VelocityComponent vcom = ComponentMappers.VEL_MAP.get(e);
-
-            pcom.x        = state[WorldStateIndexes.WS_RENDERABLE_POSX];
-            pcom.y        = state[WorldStateIndexes.WS_RENDERABLE_POSY];
-            pcom.rotation = state[WorldStateIndexes.WS_RENDERABLE_ROTATION];
-
-            vcom.velx     = state[WorldStateIndexes.WS_RENDERABLE_VX];
-            vcom.vely     = state[WorldStateIndexes.WS_RENDERABLE_VY];
-            vcom.velAngle = state[WorldStateIndexes.WS_RENDERABLE_VR];
-        }
-
-        /*int TAG = data.getTAG();
-        HashMap<String, Object> values;
-        int entityID;
-        Entity engineEntity;
-
-        switch (TAG){
-            case JsonPayloadTags.ENGINE_ROTATION_UPDATE:
-                values = (HashMap<String, Object>) data.getValue();
-                entityID = (Integer) values.get(JsonPayloadTags.ENGINE_UPDATE_ENGINEID);
-                float rotation = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION);
-                float forceDir = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION);
-
-                engineEntity = EntityManager.getEntity(entityID);
-
-                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
-                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
-
-
-                relposcom.rotation = rotation;
-                fcom.direction = forceDir;
-
-
-                break;
-            case JsonPayloadTags.ENGINE_ON_UPDATE:
-                values = (HashMap<String, Object>) data.getValue();
-                entityID = (Integer) values.get(JsonPayloadTags.ENGINE_UPDATE_ENGINEID);
-                boolean isOn = (Boolean) values.get(JsonPayloadTags.ENGINE_ON_UPDATE_ISON);
-
-                engineEntity = EntityManager.getEntity(entityID);
-                if (isOn) {
-                    engineEntity.add(new ForceOnComponent());
-                } else {
-                    engineEntity.remove(ForceOnComponent.class);
-                }
-
-                break;
-            case JsonPayloadTags.SYNC_BODY:
-                values = (HashMap<String, Object>) data.getValue();
-                entityID = (Integer) values.get(JsonPayloadTags.SYNC_ENTITYID);
-                rotation = (Float) values.get(JsonPayloadTags.SYNC_ROTATION);
-                posX = (Float) values.get(JsonPayloadTags.SYNC_POSX);
-                posY = (Float) values.get(JsonPayloadTags.SYNC_POSY);
-
-                PositionComponent pcom = ComponentMappers.POS_MAP.get(EntityManager.getEntity(entityID));
-                pcom.rotation = rotation;
-                pcom.x = posX;
-                pcom.y = posY;
-
-                break;
-            default:
-                System.out.println("NOT LEGAL JSON TAG");
-        }*/
-
 
     }
 
     @Override
     public void onReceive(String data) {
-
+        if (data.equals("gameover")){
+            game.p2pConnector.disconnect();
+            uiStage.clear();
+            GameSettings.GAME_STATE = 2;
+        }
     }
 
     private void drawProgressBars() {

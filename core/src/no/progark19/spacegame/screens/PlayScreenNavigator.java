@@ -10,8 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
@@ -19,15 +17,12 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -37,14 +32,11 @@ import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import no.progark19.spacegame.systems.CollisionSystem;
 
-import java.util.HashMap;
 import java.util.Queue;
-import java.util.Random;
 
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.interfaces.ReceivedDataListener;
-import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.SpawnSystem;
 import no.progark19.spacegame.systems.SweepSystem;
 import no.progark19.spacegame.systems.UpdateSystem;
@@ -56,15 +48,12 @@ import no.progark19.spacegame.components.ForceOnComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.managers.EntityManager;
 import no.progark19.spacegame.utils.ComponentMappers;
-import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
 import no.progark19.spacegame.systems.RenderSystem;
 import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.RenderableWorldState;
-import no.progark19.spacegame.utils.json.JsonPayload;
-import no.progark19.spacegame.utils.json.JsonPayloadTags;
 import no.progark19.spacegame.utils.json.WorldStateIndexes;
 
 
@@ -141,7 +130,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         uiStage.addActor(fuelLabel);
 
         //Add engine systems
-        engine.addSystem(new ControlSystem(game, entityFactory));
         engine.addSystem(new RenderSystem(game, uiStage));
         engine.addSystem(new SpawnSystem(game, entityFactory));
         engine.addSystem(new MovementSystem());
@@ -209,57 +197,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         elementButton.setPosition(30, 20);
         uiStage.addActor(elementButton);
 
-
-        //this.layout = new GlyphLayout();
-
-        label = new Label("", game.skin1);
-
-        /*
-        //FOR LOOKOUT PLAYER
-        //TODO UPDATE LABEL COORDINATES
-        label = new Label("LALALA", game.skin1);
-        label.setPosition(0, 0);
-        //label.setPosition(game.translateScreenCoordinates(new Vector3(40,0,0)).x, regionDown.getRegionHeight());
-        //FØKKER SEG NÅR MAN ENDRER POSISJON PÅ LABEL
-
-        label.setWidth(SpaceGame.WIDTH);
-        label.setHeight(SpaceGame.HEIGHT);
-        label.addListener(new ClickListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("ORIGINAL " + x + " : " + y);
-                Vector3 tp = game.translateScreenCoordinates(new Vector3(x, y, 0));
-                Vector3 sp = game.translateScreenCoordinates(new Vector3(game.camera.position.x, game.camera.position.y - shipTexture.getHeight()/2, 0));
-                float dx = tp.x - sp.x;
-                float dy = tp.y - sp.y;
-                float delta = (float) Math.atan(dy/dx);
-                Vector2 velVec = new Vector2(dx, dy);
-                if (tp.x < sp.x) {
-                    delta += Math.PI;
-
-                }
-
-                //Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, 0,vely, "ICE", 0 );
-                //engine.addEntity(entity);
-                //BodyComponent bcom = ComponentMappers.BOD_MAP.get(shipEntity);
-
-                //engine.addEntity(entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, 0,100,  GameSettings.BULLET_TYPE, bcom.body.getAngle()));
-
-                /*
-                velVec.setAngleRad(delta);
-                System.out.println(delta);
-                float relativeRotation = ComponentMappers.POS_MAP.get(shipEntity).rotation;
-                //engine.addEntity(entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, 0,100,  GameSettings.BULLET_TYPE, relativeRotation));
-                Body body = new Body();
-                body.get
-
-
-                return false;
-
-            }
-        });
-        uiStage.addActor(label);
-        */
     }
     @Override
     public void show() {
@@ -268,8 +205,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         Gdx.input.setInputProcessor(uiStage);
 
         game.p2pConnector.addReceivedDataListener(this);
-        //TODO COMMENT OUT THIS
-        GameSettings.setRandomSeed((new Random()).nextLong());
     }
 
     @Override
@@ -296,7 +231,7 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
             case 2: // Game over
                 gameOver();
                 overlayStage.draw();
-                uiStage.draw();
+                //uiStage.draw();
                 break;
         }
         game.batch.end();
@@ -311,8 +246,8 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         uiStage.act(Gdx.graphics.getDeltaTime());
         uiStage.draw();
 
-        uiStage.act(Gdx.graphics.getDeltaTime());
-        uiStage.draw();
+        //uiStage.act(Gdx.graphics.getDeltaTime());
+        //uiStage.draw();
 
         //Draw physics debug info
         /*
@@ -422,64 +357,6 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         }
     }
 
-        /*
-        int TAG = data.getTAG();
-        HashMap<String, Object> values;
-        int entityID;
-        Entity engineEntity;
-
-        switch (TAG){
-            case JsonPayloadTags.ENGINE_ROTATION_UPDATE:
-                values = (HashMap<String, Object>) data.getValue();
-                entityID = (Integer) values.get(JsonPayloadTags.ENGINE_UPDATE_ENGINEID);
-                float rotation = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION);
-                float forceDir = (Float) values.get(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION);
-
-                engineEntity = EntityManager.getEntity(entityID);
-
-                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
-                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
-
-
-                relposcom.rotation = rotation;
-                fcom.direction = forceDir;
-
-
-                break;
-            case JsonPayloadTags.ENGINE_ON_UPDATE:
-                values = (HashMap<String, Object>) data.getValue();
-                entityID = (Integer) values.get(JsonPayloadTags.ENGINE_UPDATE_ENGINEID);
-                boolean isOn = (Boolean) values.get(JsonPayloadTags.ENGINE_ON_UPDATE_ISON);
-
-                engineEntity = EntityManager.getEntity(entityID);
-                if (isOn) {
-                    engineEntity.add(new ForceOnComponent());
-                } else {
-                    engineEntity.remove(ForceOnComponent.class);
-                }
-
-                break;
-            case JsonPayloadTags.SYNC_BODY:
-                values = (HashMap<String, Object>) data.getValue();
-                entityID = (Integer) values.get(JsonPayloadTags.SYNC_ENTITYID);
-                rotation = (Float) values.get(JsonPayloadTags.SYNC_ROTATION);
-                posX = (Float) values.get(JsonPayloadTags.SYNC_POSX);
-                posY = (Float) values.get(JsonPayloadTags.SYNC_POSY);
-
-                PositionComponent pcom = ComponentMappers.POS_MAP.get(EntityManager.getEntity(entityID));
-                pcom.rotation = rotation;
-                pcom.x = posX;
-                pcom.y = posY;
-
-                break;
-            default:
-                System.out.println("NOT LEGAL JSON TAG");
-        }
-
-
-    }
-    */
-
     @Override
     public void onReceive(String data) {
         System.out.println("Received:" + data);
@@ -554,6 +431,8 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
     }
 */
     private void gameOver(){
+        game.p2pConnector.sendData("gameover");
+        game.p2pConnector.disconnect();
         Group overGroup = new Group();
         TextButton mainMenu;
 

@@ -217,12 +217,15 @@ public class AndroidP2pConnector implements P2pConnector {
     }
 
     @Override
+    public void disconnect() {
+        if (isConnected) {
+            connectionsClient.stopAllEndpoints();
+        }
+    }
+
+    @Override
     public boolean hasConnection() {
         return isConnected;
     }
 
-    @Override
-    public int decideLeadingPeer() {
-        return 0;
-    }
 }

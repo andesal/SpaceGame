@@ -63,6 +63,7 @@ public class SpawnSystem extends EntitySystem {
 
     public void update(float deltaTime) {
         if (bullets.size() == 0) {
+
             Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, -500,0, GameSettings.BULLET_TYPE);
             getEngine().addEntity(entity);
             Sound sound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
@@ -77,7 +78,7 @@ public class SpawnSystem extends EntitySystem {
             }
         }
 
-        if (yeah) {
+        /*if (yeah) {
             //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y + 300 ,new Vector2(1, -1), "ICE"));
             //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y + 100 ,new Vector2(0, 0), "FIRE"));
 
@@ -90,7 +91,7 @@ public class SpawnSystem extends EntitySystem {
             //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 300 ,game.camera.position.y-300 ,new Vector2(1, 1), "ICE"));
 
 
-        }
+        }*/
         notSpawn = new Rectangle(game.camera.position.x - 720, game.camera.position.y - 1080, 1440, 2160);
         spawn = new Rectangle(notSpawn.x - 480, notSpawn.y - 720, 2400, 3600);
         //TODO This while on game start (IF game.started (boolean in settings) . If new asteroids is needed, re-use entity (Remove & add renderable component and re-calculate coordinates, reset health etc)

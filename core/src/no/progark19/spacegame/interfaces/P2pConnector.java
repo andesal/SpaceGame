@@ -23,5 +23,5 @@ public interface P2pConnector {
 
     String getOtherPeerName();
 
-    int decideLeadingPeer();
+    void disconnect();
 }

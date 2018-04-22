@@ -112,51 +112,6 @@ public class GameSettings {
     }
 
 
-    public static Body generatePolygon(float x, float y, World world, Texture texture, PolygonSprite polygonSprite, short filterID) {
-        Body body;
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x / BOX2D_PIXELS_TO_METERS, y / BOX2D_PIXELS_TO_METERS);
-
-        body = world.createBody(bodyDef);
-        //System.out.println(body.getPosition().x);
-        //System.out.println(body.getPosition().y);
-
-        PolygonShape shape = new PolygonShape();
-
-        float vertexArray[] = {
-                0.0f, 0.3f,
-                0.1f, 0.0f,
-                0.4f, 0.0f,
-                0.5f, 0.3f,
-                0.25f, 0.5f
-        };
-
-        shape.set(vertexArray);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 0.7f;
-        fixtureDef.restitution = 0.5f;
-        fixtureDef.filter.categoryBits = filterID;
-
-        body.createFixture(fixtureDef);
-        shape.dispose();
-
-        short triangles[] = new EarClippingTriangulator().computeTriangles(vertexArray).toArray();
-        // use your texture region
-        //Texture texture = new Texture("badlogic.jpg");
-        TextureRegion textureRegion = new TextureRegion(texture);
-        PolygonRegion polygonRegion = new PolygonRegion(textureRegion, vertexArray, triangles);
-
-        polygonSprite = new PolygonSprite(polygonRegion);
-        polygonSprite.setOrigin(0, 0);
-
-        return body;
-    }
-
-
     public static Animation createAnimation(TextureAtlas atlas, float frameDuration) {
         com.badlogic.gdx.utils.Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
         TextureAtlas.AtlasRegion[] frames = new TextureAtlas.AtlasRegion[regions.size];
