@@ -17,6 +17,11 @@ public interface P2pConnector {
 
     void removeReceivedDataListener(ReceivedDataListener listener);
 
+    /**
+     * This method serializes bigger worldstate objects to a sendable format, it is not used in the
+     * current implementation, but migth be useful for later iterations
+     * @param data
+     */
     void sendData(RenderableWorldState data);
 
     void sendData(String data);

@@ -66,7 +66,7 @@ public class UpdateSystem extends EntitySystem {
                 EntityManager.flaggedForRemoval.add(entity);
                 float x = scom.sprite.getX() + scom.sprite.getOriginX();
                 float y = scom.sprite.getY() + scom.sprite.getOriginY();
-                if (ecom.element.equals("FIRE")) {
+                if ("FIRE".equals(ecom.element)) {
                     getEngine().addEntity(entityFactory.createPowerup(x, y, EntityFactory.POWERUPS.HEALTH));
                 } else {
                     getEngine().addEntity(entityFactory.createPowerup(x, y, EntityFactory.POWERUPS.FUEL));
@@ -74,8 +74,8 @@ public class UpdateSystem extends EntitySystem {
                 Sound sound = game.assetManager.get(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
                 sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
             } else {
-                if (hbcom != null) {
-                    hbcom.bar.setValue((float) hcom.health/100);
+                if (hcom != null) {
+                    //hbcom.bar.setValue((float) hcom.health/100);
                     if (hcom.health <= 0) {
                         System.out.println("GAME OVER HEALTH");
                         GameSettings.GAME_STATE = 2;

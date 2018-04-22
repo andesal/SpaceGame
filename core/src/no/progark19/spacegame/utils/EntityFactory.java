@@ -116,11 +116,11 @@ public class EntityFactory {
         pbcom.bar.setValue((float) GameSettings.START_HEALTH/100);
         uiStage.addActor(pbcom.bar);*/
 
-        /*FuelBarComponent fbcom = engine.createComponent(FuelBarComponent.class);
+        FuelBarComponent fbcom = engine.createComponent(FuelBarComponent.class);
         fbcom.bar = new MyProgressBar(100, 10, Color.GREEN);
         fbcom.bar.setPosition(30, Gdx.graphics.getHeight() - 35);
         fbcom.bar.setValue(GameSettings.START_FUEL/100);
-        uiStage.addActor(fbcom.bar);*/
+        uiStage.addActor(fbcom.bar);
 
 
         FuelComponent fcom = new FuelComponent(GameSettings.START_FUEL);
@@ -137,9 +137,9 @@ public class EntityFactory {
                     .add(new RenderableComponent())
                     .add(new LeadCameraComponent())
                     .add(hcom)
-                    .add(fcom);
+                    .add(fcom)
                     //.add(pbcom)
-                    //.add(fbcom);
+                    .add(fbcom);
         } else {
             //FOR DEBUGGING
             return engine.createEntity()

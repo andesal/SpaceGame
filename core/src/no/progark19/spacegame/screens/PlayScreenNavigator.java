@@ -229,6 +229,8 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
                 //uiStage.draw();
                 break;
             case 2: // Game over
+                game.p2pConnector.sendData("gameover");
+                game.p2pConnector.disconnect();
                 dispose();
                 game.setScreen(new GameOverScreen(game));
                 break;

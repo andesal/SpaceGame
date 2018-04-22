@@ -244,8 +244,9 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
                 //updatePause();
                 break;
             case 2: // Game over
-                overlayStage.draw();
-                uiStage.draw();
+                //overlayStage.draw();
+                //uiStage.draw();
+                game.p2pConnector.disconnect();
                 dispose();
                 game.setScreen(new GameOverScreen(game));
                 break;
