@@ -156,7 +156,7 @@ public class EntityFactory {
                 .add(new ForceApplierComponent(GameSettings.ENGINE_MAX_FORCE));
     }
 
-    public Entity createProjectile(float x, float y, float velX, float velY, String element, float relativeRotation) {
+    public Entity createProjectile(float x, float y, float velX, float velY, String element) {
         Entity entity = new Entity();
 
         ElementComponent ecom = new ElementComponent(element);
@@ -169,13 +169,11 @@ public class EntityFactory {
         }
 
         SpriteComponent scom = new SpriteComponent(new Sprite(texture));
-        //scom.sprite.setPosition(x,y);
         PositionComponent pcom = new PositionComponent(x, y);
 
         VelocityComponent vcom = new VelocityComponent();
         vcom.velx = velX;
         vcom.vely = velY;
-        //vcom.velAngle = relativeRotation;
         entity.add(ecom)
                 .add(scom)
                 .add(vcom)

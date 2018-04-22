@@ -81,7 +81,7 @@ public class ForceApplierSystem extends EntitySystem{
             //FIXME Remove; only for debug
             controllDebugForceArrow.setOriginBasedPosition(relX, relY);
             controllDebugForceArrow.setRotation(forceVector.angle());
-            RenderSystem.forceDraw(controllDebugForceArrow);
+            //RenderSystem.forceDraw(controllDebugForceArrow);
             //------------------------------------------------
 
             //bcom_parent.body.applyForceToCenter(forceVector, true);

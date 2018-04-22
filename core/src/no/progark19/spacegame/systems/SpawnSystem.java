@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -22,7 +23,9 @@ import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.SweepComponent;
+import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.utils.EntityFactory;
+import no.progark19.spacegame.utils.Paths;
 
 public class SpawnSystem extends EntitySystem {
 
@@ -31,11 +34,9 @@ public class SpawnSystem extends EntitySystem {
     private SpaceGame game;
     boolean fire = true;
 
-    private ImmutableArray<Entity> entities;
     private ImmutableArray<Entity> asteroids;
-    private ImmutableArray<Entity> obstacles;
-    private ImmutableArray<Entity> collectables;
-    private int numAsteroids = 30;
+    private ImmutableArray<Entity> bullets;
+    private int numAsteroids = 0;
 
     private Rectangle spawn = new Rectangle();
     private Rectangle notSpawn = new Rectangle();
@@ -55,15 +56,35 @@ public class SpawnSystem extends EntitySystem {
 
     public void addedToEngine(Engine engine) {
         asteroids = engine.getEntitiesFor(Family.all(BodyComponent.class, SpriteComponent.class, HealthComponent.class, ElementComponent.class).get());
+        bullets = engine.getEntitiesFor(Family.all(
+                ElementComponent.class,
+                SpriteComponent.class,
+                VelocityComponent.class).get());
     }
 
+
     public void update(float deltaTime) {
+        if (bullets.size() == 0) {
+            Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, -500,0, GameSettings.BULLET_TYPE);
+            getEngine().addEntity(entity);
+            Sound sound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
+            sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
+        }
+
+        GameSettings.screenBounds.set((int) game.camera.position.x - (SpaceGame.WIDTH), (int) game.camera.position.y - (SpaceGame.WIDTH), SpaceGame.WIDTH * 2, (SpaceGame.WIDTH * 2));
+        for (Entity entity : bullets) {
+            SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
+            if (!GameSettings.screenBounds.contains(scom.sprite.getX(), scom.sprite.getY())) {
+                entity.add(new SweepComponent());
+            }
+        }
+
         if (yeah) {
 
             getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 200 ,game.camera.position.y-20 ,new Vector2(0, 0), "FIRE"));
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 500 ,game.camera.position.y-50 ,new Vector2(0, 0), "FIRE"));
+            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 500 ,game.camera.position.y-50 ,new Vector2(0, 0), "ICE"));
             getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x - 800 ,game.camera.position.y-50 ,new Vector2(0, 0), "FIRE"));
-            //getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y+300 ,new Vector2(0, -1), "FIRE"));
+            getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y+300 ,new Vector2(0, -1), "ICE"));
             getEngine().addEntity(entityFactory.createAsteroid(game.camera.position.x ,game.camera.position.y-300 ,new Vector2(0, +1), "FIRE"));
             yeah = false;
 
@@ -101,6 +122,15 @@ public class SpawnSystem extends EntitySystem {
 
             }
         }
+        /*
+        GameSettings.screenBounds.set((int) game.camera.position.x - (SpaceGame.WIDTH), (int) game.camera.position.y - (SpaceGame.WIDTH), SpaceGame.WIDTH * 2, (SpaceGame.WIDTH * 2));
+        for (Entity entity : bullets) {
+            SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
+            if (!GameSettings.screenBounds.contains(scom.sprite.getX(), scom.sprite.getY())) {
+                entity.add(new SweepComponent());
+            }
+        }
+        */
     }
 
     private ArrayList<Integer> calculateSpawnCoordinates() {

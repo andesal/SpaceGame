@@ -188,21 +188,21 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         entityManager = new EntityManager(engine, entityFactory);
 
         healthBar = new MyProgressBar(100, 10, Color.RED);
-        healthBar.setPosition(30, Gdx.graphics.getHeight() - 20);
+        healthBar.setPosition(40, Gdx.graphics.getHeight() - 20);
         healthBar.setValue((float) GameSettings.START_HEALTH/100);
         uiStage.addActor(healthBar);
 
         Label healthLabel = new Label("Health", game.skin1);
-        healthLabel.setPosition(135, SpaceGame.HEIGHT - 26);
+        healthLabel.setPosition(145, SpaceGame.HEIGHT - 26);
         uiStage.addActor(healthLabel);
 
         fuelBar = new MyProgressBar(100, 10, Color.GREEN);
-        fuelBar.setPosition(30, Gdx.graphics.getHeight() - 35);
+        fuelBar.setPosition(40, Gdx.graphics.getHeight() - 35);
         fuelBar.setValue(GameSettings.START_FUEL/100);
         uiStage.addActor(fuelBar);
 
         Label fuelLabel = new Label("Fuel", game.skin1);
-        fuelLabel.setPosition(135, SpaceGame.HEIGHT - 41);
+        fuelLabel.setPosition(145, SpaceGame.HEIGHT - 41);
         uiStage.addActor(fuelLabel);
 
         //Add engine systems
@@ -246,6 +246,19 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addEntity(engineEntity3);
         engine.addEntity(engineEntity4);
 
+        uiStage.addActor(
+                createEngineSlider(engineEntity1, 10,10,360,270)
+        );
+        uiStage.addActor(
+                createEngineSlider(engineEntity2, 10,SpaceGame.HEIGHT/2 + 20, 270, 180)
+        );
+        uiStage.addActor(
+                createEngineSlider(engineEntity3, SpaceGame.WIDTH-25,10 ,0, 90)
+        );
+        uiStage.addActor(
+                createEngineSlider(engineEntity4, SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20,90,180)
+        );
+/*
         if(GameSettings.isPhysicsResponsible){
             uiStage.addActor(
                     createEngineSlider(engineEntity1, 10,10,360,270)
@@ -261,6 +274,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                     createEngineSlider(engineEntity4, SpaceGame.WIDTH-25,SpaceGame.HEIGHT/2 + 20,90,180)
             );
         }
+        */
 
         //this.font = new BitmapFont();
         //FOR ENGINE OPERATOR PLAYER
@@ -296,7 +310,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 }
             }
         });
-        elementButton.setPosition(10, 20);
+        elementButton.setPosition(30, 20);
         uiStage.addActor(elementButton);
 
 
@@ -311,6 +325,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             //label.setHeight(SpaceGame.HEIGHT);
         }
 
+        /*
         //FOR LOOKOUT PLAYER
         //TODO UPDATE LABEL COORDINATES
         label = new Label("LALALA", game.skin1);
@@ -349,12 +364,14 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 Body body = new Body();
                 body.get
 
-                */
+
                 return false;
 
             }
         });
         uiStage.addActor(label);
+        */
+
 
 
     }
@@ -408,6 +425,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         game.batch.end();
 
         //Draw physics debug info
+        /*
         if(GameSettings.BOX2D_DRAWDEBUG){
             debugMatrix = game.camera.combined.cpy().scale(
                     GameSettings.BOX2D_PIXELS_TO_METERS,
@@ -415,6 +433,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                     0);
             debugRenderer.render(GameSettings.BOX2D_PHYSICSWORLD, debugMatrix);
         }
+        */
     }
 
     private void updatePause() {

@@ -43,22 +43,7 @@ public class ControlSystem extends EntitySystem {
     //TODO remove asteroid entity if dead
     public void update(float deltaTime) {
         //TODO REMOVE FLIP
-        if (bullets.size() == 0) {
-            Entity entity = entityFactory.createProjectile(game.camera.position.x, game.camera.position.y, -500,0, "ICE", 0);
-            getEngine().addEntity(entity);
-            //Sound sound = game.assetManager.get(Paths.SOUND_SHOT_FIRED);
-            //sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
-        }
-        GameSettings.screenBounds.set((int) game.camera.position.x - (SpaceGame.WIDTH), (int) game.camera.position.y - (SpaceGame.WIDTH), SpaceGame.WIDTH * 2, (SpaceGame.WIDTH * 2));
-        temp += deltaTime;
-        if (temp > 1) {
-            for (Entity entity : bullets) {
-                SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
-                if (!GameSettings.screenBounds.contains(scom.sprite.getX(), scom.sprite.getY())) {
-                    entity.add(new SweepComponent());
-                }
-            }
-        }
+
     }
 
 
