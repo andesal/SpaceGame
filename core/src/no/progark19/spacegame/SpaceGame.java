@@ -11,9 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import no.progark19.spacegame.screens.LoadingScreen;
-import no.progark19.spacegame.screens.LobbyScreen;
 import no.progark19.spacegame.screens.MainMenuScreen;
-import no.progark19.spacegame.screens.PlayScreen;
 import no.progark19.spacegame.screens.SettingsScreen;
 import no.progark19.spacegame.utils.Assets;
 import no.progark19.spacegame.utils.Paths;
@@ -71,7 +69,7 @@ public class SpaceGame extends Game {
 		loadingScreen = new LoadingScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
 		//lobbyScreen = new LobbyScreen(this);
-        //playScreen = new PlayScreen(this);
+        //playScreen = new PlayScreenNavigator(this);
 		settingsScreen = new SettingsScreen(this);
 		this.setScreen(loadingScreen);
 

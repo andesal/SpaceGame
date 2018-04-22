@@ -5,13 +5,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
@@ -24,12 +22,10 @@ import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.ParentComponent;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.components.PositionComponent;
-import no.progark19.spacegame.components.PowerupComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.screens.PlayScreen;
 import no.progark19.spacegame.utils.Paths;
 
 public class RenderSystem extends EntitySystem {
@@ -81,11 +77,11 @@ public class RenderSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
         //Vector3 posLabel = game.translateScreenCoordinates(new Vector3(0, 0, 0));
-        //PlayScreen.label.setPosition(posLabel.x, posLabel.y);
+        //PlayScreenNavigator.label.setPosition(posLabel.x, posLabel.y);
         drawBackground();
         updateBackgroundCoordinates();
-        //PlayScreen.label.setPosition(game.camera.position.x - SpaceGame.WIDTH/2, game.camera.position.y-SpaceGame.HEIGHT/2);
-        //System.out.println(PlayScreen.label.getX() + " _ " + PlayScreen.label.getY());
+        //PlayScreenNavigator.label.setPosition(game.camera.position.x - SpaceGame.WIDTH/2, game.camera.position.y-SpaceGame.HEIGHT/2);
+        //System.out.println(PlayScreenNavigator.label.getX() + " _ " + PlayScreenNavigator.label.getY());
         for (Entity entity : renderables) {
 
             if (ComponentMappers.LEAD_MAP.get(entity) != null) {

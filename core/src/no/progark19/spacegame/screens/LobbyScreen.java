@@ -120,7 +120,7 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     public void render(float delta) {
         //TODO clean up method
         if(seedDecided){
-            game.setScreen(new PlayScreen(game));
+            game.setScreen(new PlayScreenNavigator(game));
         }
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

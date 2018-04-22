@@ -7,9 +7,11 @@ import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.DamagedComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
+import no.progark19.spacegame.components.FuelBarComponent;
 import no.progark19.spacegame.components.FuelComponent;
 import no.progark19.spacegame.components.FuelUsageComponent;
 import no.progark19.spacegame.components.HealthComponent;
+import no.progark19.spacegame.components.HealthbarComponent;
 import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.ParentComponent;
 import no.progark19.spacegame.components.PositionComponent;
@@ -27,6 +29,9 @@ import no.progark19.spacegame.components.VelocityComponent;
  */
 
 public class ComponentMappers {
+    public static final ComponentMapper<HealthbarComponent> HEALTHBAR_MAP = ComponentMapper.getFor(HealthbarComponent.class);
+
+    public static final ComponentMapper<FuelBarComponent> FUELBAR_MAP = ComponentMapper.getFor(FuelBarComponent.class);
 
     public static final ComponentMapper<AnimationComponent> ANI_MAP = ComponentMapper.getFor(AnimationComponent.class);
 

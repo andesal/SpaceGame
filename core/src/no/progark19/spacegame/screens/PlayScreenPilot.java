@@ -1,7 +1,7 @@
 package no.progark19.spacegame.screens;
 
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -10,8 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -27,39 +25,36 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
-import no.progark19.spacegame.systems.AnimationSystem;
-import no.progark19.spacegame.systems.CollisionSystem;
-
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Random;
 
-import no.progark19.spacegame.components.PositionComponent;
-import no.progark19.spacegame.components.VelocityComponent;
-import no.progark19.spacegame.interfaces.ReceivedDataListener;
-import no.progark19.spacegame.systems.NetworkSystem;
-import no.progark19.spacegame.systems.SpawnSystem;
-import no.progark19.spacegame.systems.SweepSystem;
-import no.progark19.spacegame.systems.UpdateSystem;
-import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.ForceApplierComponent;
 import no.progark19.spacegame.components.ForceOnComponent;
+import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
-import no.progark19.spacegame.managers.AudioManager;
+import no.progark19.spacegame.components.VelocityComponent;
+import no.progark19.spacegame.interfaces.ReceivedDataListener;
 import no.progark19.spacegame.managers.EntityManager;
+import no.progark19.spacegame.systems.AnimationSystem;
+import no.progark19.spacegame.systems.CollisionSystem;
 import no.progark19.spacegame.systems.ComponentMappers;
 import no.progark19.spacegame.systems.ControlSystem;
 import no.progark19.spacegame.systems.ForceApplierSystem;
 import no.progark19.spacegame.systems.MovementSystem;
+import no.progark19.spacegame.systems.NetworkSystem;
 import no.progark19.spacegame.systems.RenderSystem;
+import no.progark19.spacegame.systems.SpawnSystem;
+import no.progark19.spacegame.systems.SweepSystem;
+import no.progark19.spacegame.systems.UpdateSystem;
+import no.progark19.spacegame.utils.EntityFactory;
 import no.progark19.spacegame.utils.MyProgressBar;
 import no.progark19.spacegame.utils.Paths;
 import no.progark19.spacegame.utils.RenderableWorldState;
@@ -68,8 +63,7 @@ import no.progark19.spacegame.utils.json.JsonPayloadTags;
 import no.progark19.spacegame.utils.json.WorldStateIndexes;
 
 
-
-public class PlayScreen implements Screen, ReceivedDataListener {
+public class PlayScreenPilot implements Screen, ReceivedDataListener {
 
     private final SpaceGame game;
     private final Box2DDebugRenderer debugRenderer;
@@ -114,17 +108,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 relposcom.rotation = minRot + rotDiff*((Slider) actor).getValue()/100f;
                 fcom.direction = relposcom.rotation + 90;
 
-
-                JsonPayload jpl = new JsonPayload();
-                values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION, relposcom.rotation);
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION, fcom.direction);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ROTATION_UPDATE);
-                jpl.setValue(values);
-
                 //game.p2pConnector.sendData(jpl);
 
             }
@@ -136,33 +119,12 @@ public class PlayScreen implements Screen, ReceivedDataListener {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 engineEntity.add(new ForceOnComponent());
 
-                System.out.println("X " + x + " :" + " Y " + y);
-                JsonPayload jpl = new JsonPayload();
-                values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ON_UPDATE_ISON, true);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
-                jpl.setValue(values);
-
-                //game.p2pConnector.sendData(jpl);
-
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 engineEntity.remove(ForceOnComponent.class);
-
-                JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ON_UPDATE_ISON, false);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
-                jpl.setValue(values);
 
                 //game.p2pConnector.sendData(jpl);
             }
@@ -171,7 +133,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         return engineSlider;
     }
     //----------------------------------------------------------------------------------------------
-    public PlayScreen(final SpaceGame game){
+    public PlayScreenPilot(final SpaceGame game){
         this.game = game;
         game.camera.setToOrtho(false, SpaceGame.WIDTH, SpaceGame.HEIGHT);
         this.uiCamera = new OrthographicCamera();
@@ -185,19 +147,9 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         entityFactory = new EntityFactory(game, engine);
         entityManager = new EntityManager(engine, entityFactory);
 
-        healthBar = new MyProgressBar(100, 10, Color.RED);
-        healthBar.setPosition(30, Gdx.graphics.getHeight() - 20);
-        healthBar.setValue((float) GameSettings.START_HEALTH/100);
-        uiStage.addActor(healthBar);
-
         Label healthLabel = new Label("Health", game.skin1);
         healthLabel.setPosition(135, SpaceGame.HEIGHT - 26);
         uiStage.addActor(healthLabel);
-
-        fuelBar = new MyProgressBar(100, 10, Color.GREEN);
-        fuelBar.setPosition(30, Gdx.graphics.getHeight() - 35);
-        fuelBar.setValue(GameSettings.START_FUEL/100);
-        uiStage.addActor(fuelBar);
 
         Label fuelLabel = new Label("Fuel", game.skin1);
         fuelLabel.setPosition(135, SpaceGame.HEIGHT - 41);
@@ -212,7 +164,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         engine.addSystem(new AnimationSystem(game));
         engine.addSystem(new CollisionSystem(game, GameSettings.BOX2D_PHYSICSWORLD, entityFactory));
         engine.addSystem(new SweepSystem());
-        engine.addSystem(new UpdateSystem(game, entityFactory, healthBar, fuelBar));
+        engine.addSystem(new UpdateSystem(game, entityFactory));
         engine.addEntityListener(entityManager);
 
         if (GameSettings.isPhysicsResponsible) {
@@ -224,9 +176,7 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         final Texture shipTexture = game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class);
         Texture engineTexture = game.assetManager.get(Paths.ENGINE_TEXTURE_PATH, Texture.class);
 
-        final Entity shipEntity = entityFactory.createBaseSpaceShip(
-                GameSettings.BOX2D_PHYSICSWORLD, shipTexture
-        );
+        final Entity shipEntity = entityFactory.createBaseSpaceShip(uiStage);
         engine.addEntity(shipEntity);
 
         Entity engineEntity1 = entityFactory.createShipEngine(

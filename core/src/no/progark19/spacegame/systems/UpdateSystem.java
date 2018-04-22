@@ -13,9 +13,11 @@ import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
 import no.progark19.spacegame.components.DamagedComponent;
 import no.progark19.spacegame.components.ElementComponent;
+import no.progark19.spacegame.components.FuelBarComponent;
 import no.progark19.spacegame.components.FuelComponent;
 import no.progark19.spacegame.components.FuelUsageComponent;
 import no.progark19.spacegame.components.HealthComponent;
+import no.progark19.spacegame.components.HealthbarComponent;
 import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.RewardComponent;
 import no.progark19.spacegame.components.SpriteComponent;
@@ -28,37 +30,40 @@ public class UpdateSystem extends EntitySystem {
 
     private SpaceGame game;
     private EntityFactory entityFactory;
-    private MyProgressBar healthBar;
-    private MyProgressBar fuelBar;
 
     private ImmutableArray<Entity> damaged;
     private ImmutableArray<Entity> rewarded;
     private ImmutableArray<Entity> spaceship;
 
 
-    public UpdateSystem(SpaceGame game, EntityFactory entityFactory, MyProgressBar healthBar, MyProgressBar fuelBar) {
+    public UpdateSystem(SpaceGame game, EntityFactory entityFactory) {
         this.entityFactory = entityFactory;
-        this.healthBar = healthBar;
-        this.fuelBar = fuelBar;
         this.game = game;
     }
 
     public void addedToEngine(Engine engine) {
+
+
         damaged = engine.getEntitiesFor(Family.all(DamagedComponent.class, HealthComponent.class).get());
         rewarded = engine.getEntitiesFor(Family.all(RewardComponent.class).get());
         spaceship = engine.getEntitiesFor(Family.all(FuelUsageComponent.class).get());
+
     }
 
     public void update(float deltatTime) {
         for (Entity entity : damaged) {
             HealthComponent hcom = ComponentMappers.HEALTH_MAP.get(entity);
             DamagedComponent dcom = ComponentMappers.DAM_MAP.get(entity);
-            LeadCameraComponent lcom = ComponentMappers.LEAD_MAP.get(entity); //Used to check if entity is spaceship...
+
+            HealthbarComponent hbcom = ComponentMappers.HEALTHBAR_MAP.get(entity);
+            FuelBarComponent fbcom = ComponentMappers.FUELBAR_MAP.get(entity);
+
+
             SpriteComponent scom = ComponentMappers.SPRITE_MAP.get(entity);
             ElementComponent ecom = ComponentMappers.ELEMENT_MAP.get(entity);
             hcom.health -= dcom.damage;
 
-            if (hcom.health <= 0 && lcom == null) {
+            if (hcom.health <= 0 && fbcom == null) {
                 EntityManager.flaggedForRemoval.add(entity);
                 float x = scom.sprite.getX() + scom.sprite.getOriginX();
                 float y = scom.sprite.getY() + scom.sprite.getOriginY();
@@ -70,8 +75,8 @@ public class UpdateSystem extends EntitySystem {
                 Sound sound = game.assetManager.get(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
                 sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
             } else {
-                if (lcom != null) {
-                    healthBar.setValue((float) hcom.health/100);
+                if (hbcom != null) {
+                    hbcom.bar.setValue((float) hcom.health/100);
                     if (hcom.health <= 0) {
                         System.out.println("GAME OVER HEALTH");
                     }
@@ -86,13 +91,13 @@ public class UpdateSystem extends EntitySystem {
                 HealthComponent hcom = ComponentMappers.HEALTH_MAP.get(entity);
                 if (hcom.health + rcom.reward <= GameSettings.MAX_HEALTH_SPACESHIP) {
                     hcom.health += rcom.reward;
-                    healthBar.setValue((float) hcom.health/100);
+                    //healthBar.setValue((float) hcom.health/100);
                 }
             } else {
                 FuelComponent fcom = ComponentMappers.FUEL_MAP.get(entity);
                 if (fcom.fuel + rcom.reward <= GameSettings.MAX_FUEL) {
                     fcom.fuel += rcom.reward;
-                    fuelBar.setValue((ComponentMappers.FUEL_MAP.get(entity).fuel + rcom.reward)/100);
+                    //fuelBar.setValue((ComponentMappers.FUEL_MAP.get(entity).fuel + rcom.reward)/100);
                 }
             }
             Sound sound = game.assetManager.get(Paths.SOUND_POWERUP, Sound.class);
@@ -108,7 +113,7 @@ public class UpdateSystem extends EntitySystem {
             if (fcom.fuel <= 0) {
                 System.out.println("GAME OVER FUEL");
             } else {
-                fuelBar.setValue(fcom.fuel/100);
+                //fuelBar.setValue(fcom.fuel/100);
 
             }
             entity.remove(FuelUsageComponent.class);

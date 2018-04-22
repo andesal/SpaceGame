@@ -4,19 +4,15 @@ package no.progark19.spacegame.utils;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.World;
-
-import org.omg.CORBA.Bounds;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import no.progark19.spacegame.GameSettings;
 import no.progark19.spacegame.SpaceGame;
@@ -24,21 +20,20 @@ import no.progark19.spacegame.components.AnimationComponent;
 import no.progark19.spacegame.components.BodyComponent;
 import no.progark19.spacegame.components.ElementComponent;
 import no.progark19.spacegame.components.ForceApplierComponent;
+import no.progark19.spacegame.components.FuelBarComponent;
 import no.progark19.spacegame.components.FuelComponent;
 import no.progark19.spacegame.components.HealthComponent;
 import no.progark19.spacegame.components.LeadCameraComponent;
 import no.progark19.spacegame.components.ParentComponent;
 import no.progark19.spacegame.components.PositionComponent;
 import no.progark19.spacegame.components.PowerupComponent;
+import no.progark19.spacegame.components.HealthbarComponent;
 import no.progark19.spacegame.components.RelativePositionComponent;
 import no.progark19.spacegame.components.RenderableComponent;
 import no.progark19.spacegame.components.SpriteComponent;
 import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.components.SynchronizedComponent;
-import no.progark19.spacegame.components.VelocityComponent;
-import no.progark19.spacegame.components.VelocityComponent;
 import no.progark19.spacegame.managers.EntityManager;
-import no.progark19.spacegame.systems.RenderSystem;
 
 
 public class EntityFactory {
@@ -105,21 +100,34 @@ public class EntityFactory {
     }
 
 
-    public Entity createBaseSpaceShip(World physicsWorld, Texture texture) {
+    public Entity createBaseSpaceShip(Stage uiStage) {
         float posx = SpaceGame.WIDTH / 2;
         float posy = SpaceGame.HEIGHT / 2;
         //float posx = RenderSystem.bg.getWidth()/2;
         //float posy = RenderSystem.bg.getHeight()/2;
 
-        Sprite sprite = new Sprite(texture);
+        Sprite sprite = new Sprite(game.assetManager.get(Paths.SPACESHIP_TEXTURE_PATH, Texture.class));
         sprite.setOriginBasedPosition(posx, posy);
 
         HealthComponent hcom = new HealthComponent(GameSettings.START_HEALTH);
+        HealthbarComponent pbcom = engine.createComponent(HealthbarComponent.class);
+        pbcom.bar = new MyProgressBar(100, 10, Color.RED);
+        pbcom.bar.setPosition(30, Gdx.graphics.getHeight() - 20);
+        pbcom.bar.setValue((float) GameSettings.START_HEALTH/100);
+        uiStage.addActor(pbcom.bar);
+
+        FuelBarComponent fbcom = engine.createComponent(FuelBarComponent.class);
+        fbcom.bar = new MyProgressBar(100, 10, Color.GREEN);
+        fbcom.bar.setPosition(30, Gdx.graphics.getHeight() - 35);
+        fbcom.bar.setValue(GameSettings.START_FUEL/100);
+        uiStage.addActor(fbcom.bar);
+
+
         FuelComponent fcom = new FuelComponent(GameSettings.START_FUEL);
 
         if (GameSettings.isPhysicsResponsible) {
             Body body = GameSettings.createDynamicBody(
-                    sprite, physicsWorld, null,
+                    sprite, GameSettings.BOX2D_PHYSICSWORLD, null,
                     GameSettings.SPACESHIP_DENSITY, GameSettings.SPACESHIP_RESTITUTION, GameSettings.SPACESHIP_TAG);
 
             return engine.createEntity()
@@ -130,7 +138,9 @@ public class EntityFactory {
                     .add(new RenderableComponent())
                     .add(new LeadCameraComponent())
                     .add(hcom)
-                    .add(fcom);
+                    .add(fcom)
+                    .add(pbcom)
+                    .add(fbcom);
         } else {
             return engine.createEntity()
                     .add(new PositionComponent(posx, posy))
