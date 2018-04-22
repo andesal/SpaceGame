@@ -187,21 +187,21 @@ public class PlayScreen implements Screen, ReceivedDataListener {
         entityManager = new EntityManager(engine, entityFactory);
 
         healthBar = new MyProgressBar(100, 10, Color.RED);
-        healthBar.setPosition(30, Gdx.graphics.getHeight() - 20);
+        healthBar.setPosition(40, Gdx.graphics.getHeight() - 20);
         healthBar.setValue((float) GameSettings.START_HEALTH/100);
         uiStage.addActor(healthBar);
 
         Label healthLabel = new Label("Health", game.skin1);
-        healthLabel.setPosition(135, SpaceGame.HEIGHT - 26);
+        healthLabel.setPosition(145, SpaceGame.HEIGHT - 26);
         uiStage.addActor(healthLabel);
 
         fuelBar = new MyProgressBar(100, 10, Color.GREEN);
-        fuelBar.setPosition(30, Gdx.graphics.getHeight() - 35);
+        fuelBar.setPosition(40, Gdx.graphics.getHeight() - 35);
         fuelBar.setValue(GameSettings.START_FUEL/100);
         uiStage.addActor(fuelBar);
 
         Label fuelLabel = new Label("Fuel", game.skin1);
-        fuelLabel.setPosition(135, SpaceGame.HEIGHT - 41);
+        fuelLabel.setPosition(145, SpaceGame.HEIGHT - 41);
         uiStage.addActor(fuelLabel);
 
         //Add engine systems
@@ -284,18 +284,18 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                     oldStyle.imageDown = trDrawDown;
                     elementButton.setStyle(oldStyle);
                     GameSettings.BULLET_TYPE = "ICE";
-                    sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
+                    sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
                 } else  {
                     ImageButton.ImageButtonStyle oldStyle = elementButton.getStyle();
                     oldStyle.imageUp = trDrawUp;
                     oldStyle.imageDown = trDrawUp;
                     elementButton.setStyle(oldStyle);
                     GameSettings.BULLET_TYPE = "FIRE";
-                    sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
+                    sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
                 }
             }
         });
-        elementButton.setPosition(10, 20);
+        elementButton.setPosition(40, 20);
         uiStage.addActor(elementButton);
 
 
@@ -323,7 +323,6 @@ public class PlayScreen implements Screen, ReceivedDataListener {
                 System.out.println("ORIGINAL " + x + " : " + y);
                 Vector3 tp = game.translateScreenCoordinates(new Vector3(x, y, 0));
                 Vector3 sp = game.translateScreenCoordinates(new Vector3(SpaceGame.WIDTH/2, SpaceGame.HEIGHT/2 - shipTexture.getHeight()/2, 0));
-                Vector3 ed = game.translateScreenCoordinates(new Vector3(game.camera.position.x, game.camera.position.y, 0));
 
                 System.out.println(shipEntity.getComponent(PositionComponent.class).rotation);
 
