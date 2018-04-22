@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-import no.progark19.spacegame.systems.AnimationSystem;
-
 /**
  * Created by anderssalvesen on 15.04.2018.
  */

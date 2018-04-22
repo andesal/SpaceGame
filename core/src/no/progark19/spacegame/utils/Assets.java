@@ -36,6 +36,8 @@ public class Assets {
         manager.load(Paths.SETTING_TEXT_TEXTURE_PATH, Texture.class);
         manager.load(Paths.LOBBY_TEXT_TEXTURE_PATH, Texture.class);
         manager.load(Paths.PAUSE_LOGO_PATH, Texture.class);
+        manager.load(Paths.GAME_OVER_TEXTURE_PATH, Texture.class);
+
 
     }
 

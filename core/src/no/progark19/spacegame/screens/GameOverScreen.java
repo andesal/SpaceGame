@@ -1,10 +1,115 @@
 package no.progark19.spacegame.screens;
 
-import com.badlogic.gdx.Screen;
+import no.progark19.spacegame.utils.GameSettings;
+import no.progark19.spacegame.SpaceGame;
+import no.progark19.spacegame.utils.Paths;
 
-/**
- * Created by anderssalvesen on 22.04.2018.
- */
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 public class GameOverScreen implements Screen {
+
+    private static final int LOGO_WIDTH = 260;
+    private static final int LOGO_HEIGHT = 150;
+    private static final int LOGO_Y = 500;
+
+    private final SpaceGame game;
+
+    private Stage stage;
+
+    private TextButton buttonExit;
+
+
+    private ShapeRenderer shapeRenderer;
+
+    public GameOverScreen(final SpaceGame game){
+        this.game = game;
+        this.stage = new Stage(new FitViewport(SpaceGame.WIDTH, SpaceGame.HEIGHT, game.camera));
+        game.camera.direction.set(0,0,-1);
+        game.camera.up.set(0,1,0);
+        game.camera.update();
+        this.shapeRenderer = new ShapeRenderer();
+    }
+
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(stage);
+        stage.clear();
+        initButtons();
+    }
+
+    public void update(float delta){
+        stage.act(delta);
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.getBatch().begin();
+        stage.act(delta);
+        stage.getBatch().draw(game.assetManager.get(Paths.GAME_OVER_TEXTURE_PATH, Texture.class), SpaceGame.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
+
+
+        stage.getBatch().end();
+        stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+        shapeRenderer.dispose();
+    }
+
+    private void initButtons(){
+        final Sound s = game.assetManager.get(Paths.SOUND_CLICK);
+        buttonExit = new TextButton("Exit", game.skin2, "default");
+        buttonExit.setPosition(110, 250);
+        buttonExit.setSize(280, 60);
+        buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(.5f), moveBy(0, -20, .5f, Interpolation.pow5Out))));
+        buttonExit.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
+        stage.addActor(buttonExit);
+    }
 }

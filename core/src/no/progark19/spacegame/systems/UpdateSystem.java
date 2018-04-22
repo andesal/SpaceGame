@@ -67,7 +67,7 @@ public class UpdateSystem extends EntitySystem {
                     getEngine().addEntity(entityFactory.createPowerup(x, y, EntityFactory.POWERUPS.FUEL));
                 }
                 Sound sound = game.assetManager.get(Paths.SOUND_ASTEROID_EXPLOSION, Sound.class);
-                sound.play(0.3f * GameSettings.EFFECTS_VOLUME);
+                sound.play(0.1f * GameSettings.EFFECTS_VOLUME);
             } else {
                 if (lcom != null) {
                     healthBar.setValue((float) hcom.health/100);

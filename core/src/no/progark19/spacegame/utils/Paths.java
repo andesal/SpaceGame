@@ -24,6 +24,8 @@ public class Paths {
     public final static String MENU_TEXT_TEXTURE_PATH = "textImg/SPACE_GAME_TEXT_V.png";
     public final static String LOBBY_TEXT_TEXTURE_PATH = "textImg/LOBBY_TEXT.png";
     public final static String SETTING_TEXT_TEXTURE_PATH = "textImg/SETTINGS_TEXT.png";
+    public final static String GAME_OVER_TEXTURE_PATH = "textImg/GAME_OVER.png";
+
     public final static String PAUSE_LOGO_PATH = "img/pause.png";
 
     //TextureAtlas
@@ -43,9 +45,6 @@ public class Paths {
     public final static String SOUND_ASTEROID_EXPLOSION = "audio/explosion1.mp3";
     public final static String SOUND_POWERUP = "audio/powerup.mp3";
     public final static String SOUND_CHECKBOX_CLICK = "audio/checkbox_click.mp3";
-
-    //TODO THRUSTER SOUND
-
 
     //Music
     public final static String MUSIC_MAIN_THEME = "audio/theme.mp3";
