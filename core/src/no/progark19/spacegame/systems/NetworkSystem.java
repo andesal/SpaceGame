@@ -31,6 +31,7 @@ public class NetworkSystem extends IntervalSystem {
 
 
     private ImmutableArray<Entity> synchronizedPhysicsObjects;
+    //private ImmutableArray<Enti>
 
     public NetworkSystem(float interval, P2pConnector connector) {
         super(interval);
@@ -45,6 +46,8 @@ public class NetworkSystem extends IntervalSystem {
                         PositionComponent.class,
                         SynchronizedComponent.class)
                 .get());
+
+
     }
 
     @Override
@@ -52,7 +55,7 @@ public class NetworkSystem extends IntervalSystem {
         //System.out.println("SYNCING");
         RenderableWorldState rws = new RenderableWorldState(synchronizedPhysicsObjects.size());
         for (Entity e: synchronizedPhysicsObjects) {
-            PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
+            /*PositionComponent pcom = ComponentMappers.POS_MAP.get(e);
             BodyComponent     bcom = ComponentMappers.BOD_MAP.get(e);
 
             float[] state = new float[WorldStateIndexes.WS_NUMBER_OF_VALUES];
@@ -78,6 +81,6 @@ public class NetworkSystem extends IntervalSystem {
             payload.setValue(payloadMap);*/
 
         }
-        connector.sendData(rws);
+        //connector.sendData(rws);
     }
 }

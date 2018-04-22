@@ -1,6 +1,7 @@
 package no.progark19.spacegame.screens;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -119,9 +120,12 @@ public class LobbyScreen implements Screen, ReceivedDataListener {
     @Override
     public void render(float delta) {
         //TODO clean up method
-        if(seedDecided){
+        if(seedDecided && GameSettings.isNavigator){
             game.setScreen(new PlayScreenNavigator(game));
+        } else if (seedDecided && !GameSettings.isNavigator) {
+            game.setScreen(new PlayScreenPilot(game));
         }
+
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.setProjectionMatrix(game.camera.combined);

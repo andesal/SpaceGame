@@ -37,6 +37,8 @@ public class Assets {
         manager.load(Paths.MENU_TEXT_TEXTURE_PATH, Texture.class);
         manager.load(Paths.SETTING_TEXT_TEXTURE_PATH, Texture.class);
         manager.load(Paths.PILOT_DASHBOARD_BACKGROUND, Texture.class);
+
+        manager.load(Paths.LOBBY_TEXT_TEXTURE_PATH, Texture.class);
     }
 
     public void loadTextureAtlases() {

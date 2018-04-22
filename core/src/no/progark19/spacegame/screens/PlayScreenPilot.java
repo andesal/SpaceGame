@@ -83,15 +83,21 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
 
 
     //- Private methods ----------------------------------------------------------------------------
-    private Slider createEngineSlider(final Entity engineEntity, final float minRot, final float maxRot) {
+    private Slider createEngineSlider(final int engineIndex, final float minRot, final float maxRot) {
         Slider engineSlider = new Slider(0, 100, 1f, true, game.skin1);
         engineSlider.setScaleX(3);
         engineSlider.setValue(50);
         engineSlider.addListener(new ChangeListener() {
+
             float rotDiff = maxRot - minRot;
-            HashMap<String, Object> values;
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                String message =  PlayScreenNavigator.MSG_TOKEN_ENGINE_UPDATE + "|"
+                                + engineIndex + "|"
+                                + (minRot + rotDiff*((Slider) actor).getValue()/100f);
+
+                game.p2pConnector.sendData(message);
+
                 //spaceShip.changeEngineAngle(engineIndex, ((Slider) actor).getValue());
                 //FIXME dette er muligens en litt dårlig løsning på dette [ARH]
                 //RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
@@ -109,15 +115,21 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //engineEntity.add(new ForceOnComponent());
+                String message =  PlayScreenNavigator.MSG_TOKEN_ENGINE_ON + "|"
+                        + engineIndex  + "|"
+                        + "true";
 
+                game.p2pConnector.sendData(message);
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                //engineEntity.remove(ForceOnComponent.class);
+                String message =  PlayScreenNavigator.MSG_TOKEN_ENGINE_ON + "|"
+                        + engineIndex  + "|"
+                        + "false";
 
-                //game.p2pConnector.sendData(jpl);
+                game.p2pConnector.sendData(message);
             }
         });
 
@@ -151,23 +163,23 @@ public class PlayScreenPilot implements Screen, ReceivedDataListener {
         engine.addEntityListener(entityManager);
 
         Table table = new Table();
-        table.setDebug(true);
+        //table.setDebug(true);
         table.setFillParent(true);
         table.top().left();
         table.row().height(SpaceGame.HEIGHT/2 + 70);
 
         table.add(
-                createEngineSlider(null, 360,270)
+                createEngineSlider(0, 360,270)
         ).width((SpaceGame.WIDTH- 40)/4).padLeft(20).padTop(20);
         table.add(
-                createEngineSlider(null, 270, 180)
+                createEngineSlider(1, 270, 180)
         ).width((SpaceGame.WIDTH- 40)/4).padTop(20);
 
         table.add(
-                createEngineSlider(null, 0, 90)
+                createEngineSlider(2, 0, 90)
         ).width((SpaceGame.WIDTH- 40)/4).padTop(20);
         table.add(
-                createEngineSlider(null, 90,180)
+                createEngineSlider(3, 90,180)
         ).width((SpaceGame.WIDTH- 40)/4).padTop(20);
 
         uiStage.addActor(table);

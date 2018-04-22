@@ -208,7 +208,7 @@ public class AndroidP2pConnector implements P2pConnector {
 
     @Override
     public void sendData(String data) {
-        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(data.getBytes()));
+        connectionsClient.sendPayload(otherPlayerEndpointId, Payload.fromBytes(SerializationUtils.serialize(data)));
     }
 
     @Override

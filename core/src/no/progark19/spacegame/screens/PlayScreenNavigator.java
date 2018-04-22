@@ -90,83 +90,10 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
 
     public static Label label;
 
+    private Entity[] engines = new Entity[4];
+
 
     //- Private methods ----------------------------------------------------------------------------
-    private Slider createEngineSlider(final Entity engineEntity, float posX, float posY, final float minRot, final float maxRot) {
-        Slider engineSlider = new Slider(0, 100, 1f, true, game.skin1);
-        Rectangle re = new Rectangle(0,0,SpaceGame.WIDTH, SpaceGame.HEIGHT);
-        engineSlider.setPosition(posX, posY);
-        engineSlider.setSize(20, SpaceGame.HEIGHT / 2 - 20);
-        engineSlider.setScaleX(3);
-        engineSlider.setValue(50);
-        engineSlider.addListener(new ChangeListener() {
-            float rotDiff = maxRot - minRot;
-            HashMap<String, Object> values;
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //spaceShip.changeEngineAngle(engineIndex, ((Slider) actor).getValue());
-                //FIXME dette er muligens en litt dårlig løsning på dette [ARH]
-                RelativePositionComponent relposcom = ComponentMappers.RELPOS_MAP.get(engineEntity);
-                ForceApplierComponent fcom = ComponentMappers.FORCE_MAP.get(engineEntity);
-                relposcom.rotation = minRot + rotDiff*((Slider) actor).getValue()/100f;
-                fcom.direction = relposcom.rotation + 90;
-
-
-                JsonPayload jpl = new JsonPayload();
-                values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_ROTATION, relposcom.rotation);
-                values.put(JsonPayloadTags.ENGINE_ROTATION_UPDATE_FORCEDIRECTION, fcom.direction);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ROTATION_UPDATE);
-                jpl.setValue(values);
-
-                //game.p2pConnector.sendData(jpl);
-
-            }
-        });
-
-        engineSlider.addListener(new ClickListener() {
-            HashMap<String, Object> values;
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                engineEntity.add(new ForceOnComponent());
-
-                System.out.println("X " + x + " :" + " Y " + y);
-                JsonPayload jpl = new JsonPayload();
-                values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ON_UPDATE_ISON, true);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
-                jpl.setValue(values);
-
-                //game.p2pConnector.sendData(jpl);
-
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                engineEntity.remove(ForceOnComponent.class);
-
-                JsonPayload jpl = new JsonPayload();
-                HashMap<String, Object> values = new HashMap<String, Object>();
-
-                values.put(JsonPayloadTags.ENGINE_UPDATE_ENGINEID, EntityManager.getEntityID(engineEntity));
-                values.put(JsonPayloadTags.ENGINE_ON_UPDATE_ISON, false);
-
-                jpl.setTAG(JsonPayloadTags.ENGINE_ON_UPDATE);
-                jpl.setValue(values);
-
-                //game.p2pConnector.sendData(jpl);
-            }
-        });
-
-        return engineSlider;
-    }
     //----------------------------------------------------------------------------------------------
     public PlayScreenNavigator(final SpaceGame game){
         this.game = game;
@@ -211,30 +138,26 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         engine.addSystem(new SweepSystem());
         engine.addSystem(new UpdateSystem(game, entityFactory));
         engine.addEntityListener(entityManager);
-
-        if (GameSettings.isNavigator) {
-            engine.addSystem(new NetworkSystem(GameSettings.WORLDSYNCH_REFRESH_RATE, game.p2pConnector));
-            engine.addSystem(new ForceApplierSystem(game));
-        }
+        engine.addSystem(new ForceApplierSystem(game));
 
         //Create entities
         final Entity shipEntity = entityFactory.createBaseSpaceShip(uiStage);
         engine.addEntity(shipEntity);
 
-        Entity engineEntity1 = entityFactory.createShipEngine(
+        engines[0] = entityFactory.createShipEngine(
                 -23,-50, 315, shipEntity);
-        Entity engineEntity2 = entityFactory.createShipEngine(
+        engines[1] = entityFactory.createShipEngine(
                 -23,50, 225, shipEntity);
-        Entity engineEntity3 = entityFactory.createShipEngine(
+        engines[2] = entityFactory.createShipEngine(
                 23,-50, 45, shipEntity);
-        Entity engineEntity4 = entityFactory.createShipEngine(
+        engines[3] = entityFactory.createShipEngine(
                 23,50, 135, shipEntity);
 
 
-        engine.addEntity(engineEntity1);
-        engine.addEntity(engineEntity2);
-        engine.addEntity(engineEntity3);
-        engine.addEntity(engineEntity4);
+        engine.addEntity(engines[0]);
+        engine.addEntity(engines[1]);
+        engine.addEntity(engines[2]);
+        engine.addEntity(engines[3]);
 
 
         //this.font = new BitmapFont();
@@ -453,6 +376,8 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
         }
     }));
 
+    static final String MSG_TOKEN_ENGINE_UPDATE = "engineUpdate";
+    static final String MSG_TOKEN_ENGINE_ON = "engineOn";
 
     @Override
     public synchronized void onReceive(RenderableWorldState data) {
@@ -538,7 +463,33 @@ public class PlayScreenNavigator implements Screen, ReceivedDataListener {
 
     @Override
     public void onReceive(String data) {
+        System.out.println("Received:" + data);
+        String[] msg = data.split("\\|");
 
+        if (msg[0].equals(MSG_TOKEN_ENGINE_UPDATE)){
+            Entity e = engines[Integer.valueOf(msg[1])];
+            RelativePositionComponent rpcom = ComponentMappers.RELPOS_MAP.get(e);
+            ForceApplierComponent facom  = ComponentMappers.FORCE_MAP.get(e);
+            float rotation = Float.valueOf(msg[2]);
+
+            rpcom.rotation = rotation;
+
+            facom.direction = rpcom.rotation + 90;
+
+
+
+        } else if (msg[0].equals(MSG_TOKEN_ENGINE_ON)){
+            Entity e = engines[Integer.valueOf(msg[1])];
+            if(msg[2].equals("false")) {
+                e.remove(ForceOnComponent.class);
+            } else {
+                e.add(engine.createComponent(ForceOnComponent.class));
+            }
+
+
+        } else {
+                System.out.println("String tag not understood!");
+        }
     }
 
     private void drawProgressBars() {

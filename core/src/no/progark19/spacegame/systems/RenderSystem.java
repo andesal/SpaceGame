@@ -135,20 +135,20 @@ public class RenderSystem extends EntitySystem {
                 getEngine().removeEntity(entity);
             }
         }
-        if (GameSettings.CAMERA_FOLLOW_POSITION){
+        if (GameSettings.isNavigator && GameSettings.CAMERA_FOLLOW_POSITION) {
 
-/*            PositionComponent pcom = ComponentMappers.POS_MAP.get(cameraFocusEntity.get(0));
+            PositionComponent pcom = ComponentMappers.POS_MAP.get(cameraFocusEntity.get(0));
             game.camera.position.set(pcom.x, pcom.y, 0);
 
-            if (GameSettings.CAMERA_FOLLOW_ROTATION){
-                game.camera.up.set(0,1,0);
-                game.camera.direction.set(0,0,-1);
+            if (GameSettings.CAMERA_FOLLOW_ROTATION) {
+                game.camera.up.set(0, 1, 0);
+                game.camera.direction.set(0, 0, -1);
                 game.camera.rotate(-pcom.rotation);
             }
             game.camera.update();
             //System.out.println("X: " + game.camera.position.x + " Y: " + game.camera.position.y);
-*/
-        };
+
+        }
     }
 
     private void drawBackground() {
